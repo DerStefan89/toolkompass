@@ -58,7 +58,7 @@ export const metadata: Metadata = {
 // Auf der Tools-Seite ist children = tools/page.tsx
 // Das wechselt automatisch — du musst nichts tun.
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // lang="de" = Browser weiß: das ist Deutsch
     // className= gibt beiden Schriften Zugriff auf die ganze Seite
