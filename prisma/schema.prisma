@@ -1,0 +1,541 @@
+// ToolKompass — Prisma Schema (final)
+//
+// Bereiche:
+//   1. Enums
+//   2. Tag-System (intern)
+//   3. Kern-Inhalt (Tool, Category, ToolStack, Article, Comparison)
+//   4. Relationen (Many-to-Many Join-Tabellen)
+//   5. Affiliate-Links
+//   6. Analytics (Append-only Event-Log)
+//   7. Nutzer-Accounts (später aktivieren)
+//   8. Cashback-System (später aktivieren)
+//   9. Rating (später aktivieren)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// 1. ENUMS
+// ============================================================
+
+enum Locale {
+  de
+  en
+}
+
+enum ArticleType {
+  guide
+  top_list
+  comparison
+  tutorial
+}
+
+enum PageViewEntityType {
+  tool
+  category
+  stack
+  article
+  comparison
+}
+
+enum CashbackStatus {
+  pending
+  confirmed
+  rejected
+  paid_out
+}
+
+enum PayoutStatus {
+  requested
+  processing
+  completed
+  failed
+}
+
+// ============================================================
+// 2. TAG-SYSTEM
+// ============================================================
+
+model TagGroup {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tags        Tag[]
+
+  @@index([slug])
+}
+
+model Tag {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  tagGroupId  String
+  tagGroup    TagGroup @relation(fields: [tagGroupId], references: [id])
+
+  tools       ToolTag[]
+  categories  CategoryTag[]
+  stacks      ToolStackTag[]
+  articles    ArticleTag[]
+
+  @@index([tagGroupId])
+  @@index([slug])
+}
+
+// ============================================================
+// 3. KERN-INHALT
+// ============================================================
+
+model Vendor {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  website     String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tools       Tool[]
+
+  @@index([slug])
+}
+
+model Tool {
+  id                   String    @id @default(cuid())
+  slug                 String    @unique
+  startingPriceMonthly Float?
+  hasFreePlan          Boolean   @default(false)
+  isAffiliate          Boolean   @default(false)
+  targetAudiences      String[]
+  published            Boolean   @default(false)
+  publishedAt          DateTime?
+  lastCheckedAt        DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  vendorId             String
+  vendor               Vendor            @relation(fields: [vendorId], references: [id])
+  translations         ToolTranslation[]
+  categories           ToolCategory[]
+  tags                 ToolTag[]
+  affiliateLinks       AffiliateLink[]
+  comparisonsAsToolA   Comparison[]      @relation("ComparisonToolA")
+  comparisonsAsToolB   Comparison[]      @relation("ComparisonToolB")
+  articleMentions      ArticleTool[]
+  stackItems           ToolStackItem[]
+  pageViews            PageView[]
+  ratings              Rating[]
+
+  @@index([slug])
+  @@index([published])
+  @@index([isAffiliate])
+  @@index([vendorId])
+}
+
+model ToolTranslation {
+  id               String   @id @default(cuid())
+  locale           Locale
+  name             String
+  shortDescription String
+  longDescription  String?
+  features         String[]
+  strengths        String[]
+  weaknesses       String[]
+  bestFor          String[]
+  notIdealFor      String[]
+
+  toolId           String
+  tool             Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@unique([toolId, locale])
+  @@index([toolId])
+  @@index([locale])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  icon        String?
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  translations CategoryTranslation[]
+  tools        ToolCategory[]
+  tags         CategoryTag[]
+  pageViews    PageView[]
+
+  @@index([slug])
+  @@index([published])
+}
+
+model CategoryTranslation {
+  id          String   @id @default(cuid())
+  locale      Locale
+  name        String
+  description String
+
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, locale])
+  @@index([categoryId])
+  @@index([locale])
+}
+
+model ToolStack {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  translations ToolStackTranslation[]
+  tools        ToolStackItem[]
+  tags         ToolStackTag[]
+  pageViews    PageView[]
+
+  @@index([slug])
+}
+
+model ToolStackTranslation {
+  id             String    @id @default(cuid())
+  locale         Locale
+  name           String
+  description    String?
+  targetAudience String
+
+  toolStackId    String
+  toolStack      ToolStack @relation(fields: [toolStackId], references: [id], onDelete: Cascade)
+
+  @@unique([toolStackId, locale])
+  @@index([toolStackId])
+  @@index([locale])
+}
+
+model Article {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  locale      Locale      @default(de)
+  title       String
+  subtitle    String
+  type        ArticleType
+  published   Boolean     @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  sections    ArticleSection[]
+  tools       ArticleTool[]
+  tags        ArticleTag[]
+  pageViews   PageView[]
+
+  @@index([slug])
+  @@index([published])
+  @@index([locale])
+  @@index([type])
+}
+
+model ArticleSection {
+  id        String  @id @default(cuid())
+  heading   String?
+  content   String
+  sortOrder Int     @default(0)
+
+  articleId String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+}
+
+model Comparison {
+  id        String          @id @default(cuid())
+  slug      String          @unique
+  locale    Locale          @default(de)
+  verdict   String
+  published Boolean         @default(false)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  toolAId   String
+  toolBId   String
+  toolA     Tool            @relation("ComparisonToolA", fields: [toolAId], references: [id])
+  toolB     Tool            @relation("ComparisonToolB", fields: [toolBId], references: [id])
+
+  rows      ComparisonRow[]
+  pageViews PageView[]
+
+  @@index([slug])
+  @@index([published])
+  @@index([locale])
+}
+
+model ComparisonRow {
+  id           String     @id @default(cuid())
+  criterion    String
+  toolAValue   String
+  toolBValue   String
+  sortOrder    Int        @default(0)
+
+  comparisonId String
+  comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+}
+
+// ============================================================
+// 4. RELATIONEN
+// ============================================================
+
+model ToolCategory {
+  toolId     String
+  categoryId String
+  tool       Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([toolId, categoryId])
+}
+
+model ToolTag {
+  toolId String
+  tagId  String
+  tool   Tool   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([toolId, tagId])
+  @@index([tagId])
+}
+
+model CategoryTag {
+  categoryId String
+  tagId      String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([categoryId, tagId])
+  @@index([tagId])
+}
+
+model ToolStackTag {
+  toolStackId String
+  tagId       String
+  toolStack   ToolStack @relation(fields: [toolStackId], references: [id], onDelete: Cascade)
+  tag         Tag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([toolStackId, tagId])
+  @@index([tagId])
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@index([tagId])
+}
+
+model ToolStackItem {
+  toolStackId String
+  toolId      String
+  sortOrder   Int       @default(0)
+  note        String?
+  toolStack   ToolStack @relation(fields: [toolStackId], references: [id], onDelete: Cascade)
+  tool        Tool      @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@id([toolStackId, toolId])
+}
+
+model ArticleTool {
+  articleId String
+  toolId    String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tool      Tool    @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, toolId])
+}
+
+// ============================================================
+// 5. AFFILIATE-LINKS
+// ============================================================
+
+model AffiliateLink {
+  id           String   @id @default(cuid())
+  toolId       String
+  label        String
+  url          String
+  trackingSlug String   @unique
+  isActive     Boolean  @default(true)
+  isPrimary    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tool              Tool               @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  clicks            AffiliateClick[]
+  cashbackEarnings  CashbackEarning[]
+
+  @@index([toolId])
+  @@index([trackingSlug])
+  @@index([isActive])
+}
+
+// ============================================================
+// 6. ANALYTICS
+// ============================================================
+
+model PageView {
+  id           String             @id @default(cuid())
+  entityType   PageViewEntityType
+  entityId     String
+  locale       Locale             @default(de)
+  referrer     String?
+  sessionId    String?
+  createdAt    DateTime           @default(now())
+
+  toolId       String?
+  tool         Tool?       @relation(fields: [toolId], references: [id])
+  categoryId   String?
+  category     Category?   @relation(fields: [categoryId], references: [id])
+  stackId      String?
+  stack        ToolStack?  @relation(fields: [stackId], references: [id])
+  articleId    String?
+  article      Article?    @relation(fields: [articleId], references: [id])
+  comparisonId String?
+  comparison   Comparison? @relation(fields: [comparisonId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@index([toolId])
+  @@index([categoryId])
+  @@index([locale])
+}
+
+model AffiliateClick {
+  id              String   @id @default(cuid())
+  affiliateLinkId String
+  sessionId       String?
+  referrer        String?
+  createdAt       DateTime @default(now())
+
+  affiliateLink   AffiliateLink @relation(fields: [affiliateLinkId], references: [id])
+
+  @@index([affiliateLinkId])
+  @@index([createdAt])
+}
+
+// ============================================================
+// 7. NUTZER-ACCOUNTS
+// ============================================================
+
+model User {
+  id              String    @id @default(cuid())
+  supabaseId      String    @unique
+  email           String    @unique
+  firstName       String?
+  lastName        String?
+  company         String?
+  industry        String?
+  locale          Locale    @default(de)
+  acceptedTermsAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  cashbackAccount CashbackAccount?
+  ratings         Rating[]
+
+  @@index([supabaseId])
+  @@index([email])
+}
+
+// ============================================================
+// 8. CASHBACK-SYSTEM
+// ============================================================
+
+model CashbackAccount {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  balanceCents     Int      @default(0)
+  totalEarnedCents Int      @default(0)
+  totalPaidCents   Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user     User              @relation(fields: [userId], references: [id])
+  earnings CashbackEarning[]
+  payouts  Payout[]
+
+  @@index([userId])
+}
+
+model CashbackEarning {
+  id                String         @id @default(cuid())
+  cashbackAccountId String
+  affiliateLinkId   String
+  amountCents       Int
+  status            CashbackStatus @default(pending)
+  confirmedAt       DateTime?
+  rejectedAt        DateTime?
+  externalReference String?
+  note              String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  cashbackAccount CashbackAccount @relation(fields: [cashbackAccountId], references: [id])
+  affiliateLink   AffiliateLink   @relation(fields: [affiliateLinkId], references: [id])
+
+  @@index([cashbackAccountId])
+  @@index([affiliateLinkId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Payout {
+  id                String       @id @default(cuid())
+  cashbackAccountId String
+  amountCents       Int
+  status            PayoutStatus @default(requested)
+  payoutMethod      String
+  payoutReference   String?
+  processedAt       DateTime?
+  failureReason     String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  cashbackAccount CashbackAccount @relation(fields: [cashbackAccountId], references: [id])
+
+  @@index([cashbackAccountId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ============================================================
+// 9. RATING
+// ============================================================
+
+model Rating {
+  id         String   @id @default(cuid())
+  toolId     String
+  score      Int
+  comment    String?
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  tool       Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@index([toolId])
+  @@index([isApproved])
+  @@index([userId])
+}
