@@ -20,7 +20,7 @@ import { Heart, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 const navLinks = [
-  { label: 'Entdecken', href: '/tools' },
+  { label: 'Entdecken', href: '/kategorien' },
   { label: 'Vergleichen', href: '/vergleichen' },
   { label: 'Tool-Stacks', href: '/tool-stacks' },
   { label: 'Ratgeber', href: '/ratgeber' },
