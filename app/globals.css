@@ -1,0 +1,39 @@
+/* Tailwind laden — gibt uns alle Hilfsklassen wie "flex", "text-center" etc. */
+@import "tailwindcss";
+
+/* ============================================
+   DESIGN TOKENS — die Farbpalette von ToolKompass
+   Quelle: design-refs/1_Landing_Page.png
+   ============================================ */
+
+/* :root bedeutet: diese Variablen gelten für die GANZE Website */
+:root {
+  --color-bg: #f5f0e8;          /* Creme — der Hintergrund überall */
+  --color-bg-card: #ffffff;     /* Weiß — der Hintergrund von Cards */
+  --color-cta: #1e3a2a;         /* Dunkelgrün — alle Buttons */
+  --color-cta-hover: #152d1f;   /* Noch dunkler — wenn man drüberfährt */
+  --color-text-primary: #1a1a1a;   /* Fast Schwarz — Überschriften */
+  --color-text-secondary: #666666; /* Grau — Untertexte */
+  --color-border: #e0dbd0;      /* Helles Beige — Linien und Rahmen */
+  --color-badge-bg: #f0ece2;    /* Sehr helles Beige — Badge-Hintergrund */
+  --radius-card: 8px;           /* Wie rund die Ecken von Cards sind */
+  --radius-btn: 6px;            /* Wie rund die Ecken von Buttons sind */
+  --shadow-card: 0 1px 4px rgba(0,0,0,0.06); /* Dezenter Schatten */
+}
+
+/* @theme gibt Tailwind Zugriff auf unsere Variablen.
+   Danach kannst du z.B. className="bg-cream" schreiben
+   statt style={{ backgroundColor: "var(--color-bg)" }} */
+@theme inline {
+  --color-cream: var(--color-bg);
+  --font-headline: var(--font-playfair);
+  --font-body: var(--font-inter);
+  /* ...etc */
+}
+
+/* Grundregeln für den ganzen Body */
+body {
+  background-color: var(--color-bg);       /* Creme-Hintergrund */
+  color: var(--color-text-primary);        /* Standard-Textfarbe */
+  font-family: var(--font-inter), sans-serif; /* Standard-Schrift */
+}
