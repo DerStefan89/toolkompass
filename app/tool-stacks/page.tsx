@@ -1,8 +1,28 @@
-// TOOL-STACKS SEITE (app/tool-stacks/page.tsx)
-// Zeigt geplante Tool-Stacks für verschiedene Nutzertypen.
-// URL: /tool-stacks
+/**
+ * Datei: app/tool-stacks/page.tsx
+ *
+ * Zweck: Übersicht aller publizierten Tool-Stacks — lädt echte Daten aus Prisma.
+ * Zeigt Tool-Anzahl und Zielgruppe pro Stack.
+ *
+ * Design-Referenz:
+ * - design-refs/5_Tool_Stacks.png
+ */
 
-export default function ToolStacksSeite() {
+import { prisma } from '@/lib/prisma'
+
+export const revalidate = 3600
+
+export default async function ToolStacksSeite() {
+  const stacks = await prisma.toolStack.findMany({
+    where: { published: true },
+    include: {
+      translations: { where: { locale: 'de' } },
+      tags: { include: { tag: true } },
+      _count: { select: { tools: true } },
+    },
+    orderBy: { createdAt: 'asc' },
+  })
+
   return (
     <main>
 
@@ -38,20 +58,21 @@ export default function ToolStacksSeite() {
             Gründer, Creator und kleine Teams entdecken und speichern.
           </p>
 
-          {/* "Im Aufbau" Badge */}
-          <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            backgroundColor: 'var(--color-badge-bg)',
-            border: '1px solid var(--color-border)',
-            padding: '6px 14px',
-            borderRadius: '20px',
-            fontSize: '13px',
-            color: 'var(--color-text-secondary)',
-          }}>
-            Im Aufbau 🛠
-          </span>
+          {stacks.length === 0 && (
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              backgroundColor: 'var(--color-badge-bg)',
+              border: '1px solid var(--color-border)',
+              padding: '6px 14px',
+              borderRadius: '20px',
+              fontSize: '13px',
+              color: 'var(--color-text-secondary)',
+            }}>
+              Im Aufbau 🛠
+            </span>
+          )}
         </div>
 
         {/* Rechte Seite — Info Box */}
@@ -70,7 +91,7 @@ export default function ToolStacksSeite() {
             fontWeight: '700',
             marginBottom: '12px',
           }}>
-            Warum noch nicht live?
+            Kuratierte Stacks
           </h2>
           <p style={{
             fontSize: '14px',
@@ -78,10 +99,10 @@ export default function ToolStacksSeite() {
             lineHeight: '1.6',
             marginBottom: '20px',
           }}>
-            Wir starten bewusst schlank. Tool-Stacks sollen später echte
-            Orientierung bieten, statt nur Tool-Listen zu sein.
+            Jeder Stack ist ein durchdachtes Tool-Set für einen bestimmten
+            Anwendungsfall — keine zufälligen Listen.
           </p>
-          <a href="#" style={{
+          <a href="/kategorien" style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -94,13 +115,13 @@ export default function ToolStacksSeite() {
             fontSize: '14px',
             fontWeight: '600',
           }}>
-            🔔 Benachrichtigen lassen
+            Alle Kategorien ansehen
           </a>
         </div>
 
       </section>
 
-      {/* ─── GEPLANTE STACKS ──────────────────────────────────── */}
+      {/* ─── STACKS ───────────────────────────────────────────── */}
       <section style={{
         padding: '0 24px 60px',
         maxWidth: '1200px',
@@ -114,73 +135,85 @@ export default function ToolStacksSeite() {
           color: 'var(--color-text-primary)',
           marginBottom: '24px',
         }}>
-          Geplante Stacks
+          {stacks.length > 0 ? 'Aktuelle Stacks' : 'Geplante Stacks'}
         </h2>
 
-        {/* 3-spaltiges Raster */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '16px',
-          marginBottom: '48px',
-        }}>
-          {[
-            { icon: '👤', name: 'Stack für Freelancer', tags: 'Buchhaltung · Termine · Organisation · KI' },
-            { icon: '💼', name: 'Stack für Gründer', tags: 'Konto · Buchhaltung · Website · CRM' },
-            { icon: '🎬', name: 'Stack für Creator', tags: 'Design · Video · Social · KI' },
-            { icon: '👥', name: 'Stack für kleine Teams', tags: 'Projekte · Docs · Kommunikation' },
-            { icon: '📊', name: 'Stack für Berater', tags: 'Kalender · CRM · Verträge' },
-            { icon: '</>', name: 'Stack für Entwickler', tags: 'Code · Hosting · Automatisierung' },
-          ].map((stack) => (
-            <div
-              key={stack.name}
-              style={{
-                backgroundColor: 'var(--color-bg-card)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-card)',
-                padding: '24px',
-              }}
-            >
-              {/* Icon */}
-              <div style={{
-                width: '44px',
-                height: '44px',
-                backgroundColor: 'var(--color-badge-bg)',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '20px',
-                marginBottom: '16px',
-              }}>
-                {stack.icon}
-              </div>
+        {stacks.length === 0 ? (
+          <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+            Noch keine Stacks veröffentlicht.
+          </p>
+        ) : (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '16px',
+            marginBottom: '48px',
+          }}>
+            {stacks.map((stack) => {
+              const t = stack.translations[0]
+              const name = t?.name ?? stack.slug
+              const tagLine = stack.tags.length > 0
+                ? stack.tags.map((st) => st.tag.name).join(' · ')
+                : t?.targetAudience ?? ''
 
-              {/* Name */}
-              <p style={{ fontWeight: '700', fontSize: '16px', marginBottom: '8px' }}>
-                {stack.name}
-              </p>
+              return (
+                <a
+                  key={stack.id}
+                  href={`/tool-stacks/${stack.slug}`}
+                  style={{
+                    backgroundColor: 'var(--color-bg-card)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-card)',
+                    padding: '24px',
+                    textDecoration: 'none',
+                    color: 'var(--color-text-primary)',
+                    display: 'block',
+                  }}
+                >
+                  {/* Icon */}
+                  <div style={{
+                    width: '44px',
+                    height: '44px',
+                    backgroundColor: 'var(--color-badge-bg)',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '20px',
+                    marginBottom: '16px',
+                  }}>
+                    ⊕
+                  </div>
 
-              {/* Tags */}
-              <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
-                {stack.tags}
-              </p>
+                  {/* Name */}
+                  <p style={{ fontWeight: '700', fontSize: '16px', marginBottom: '8px' }}>
+                    {name}
+                  </p>
 
-              {/* Badge */}
-              <span style={{
-                display: 'inline-block',
-                backgroundColor: 'var(--color-badge-bg)',
-                border: '1px solid var(--color-border)',
-                padding: '4px 12px',
-                borderRadius: '20px',
-                fontSize: '12px',
-                color: 'var(--color-text-secondary)',
-              }}>
-                Bald verfügbar
-              </span>
-            </div>
-          ))}
-        </div>
+                  {/* Tags / Zielgruppe */}
+                  {tagLine && (
+                    <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
+                      {tagLine}
+                    </p>
+                  )}
+
+                  {/* Tool-Anzahl Badge */}
+                  <span style={{
+                    display: 'inline-block',
+                    backgroundColor: 'var(--color-badge-bg)',
+                    border: '1px solid var(--color-border)',
+                    padding: '4px 12px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    color: 'var(--color-text-secondary)',
+                  }}>
+                    {stack._count.tools} Tools
+                  </span>
+                </a>
+              )
+            })}
+          </div>
+        )}
 
         {/* CTA Box unten */}
         <div style={{
@@ -203,8 +236,8 @@ export default function ToolStacksSeite() {
               Nicht sicher, welche Tools du brauchst?
             </h3>
             <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>
-              Starte bis dahin über die Tool-Suche und Vergleiche.
-              Der Tool-Finder folgt später.
+              Starte über die Tool-Suche und Vergleiche.
+              Der Tool-Finder hilft dir bei der Auswahl.
             </p>
           </div>
           <a href="/kategorien" style={{
@@ -224,5 +257,5 @@ export default function ToolStacksSeite() {
       </section>
 
     </main>
-  );
+  )
 }

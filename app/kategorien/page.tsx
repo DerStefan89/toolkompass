@@ -1,12 +1,38 @@
-// KATEGORIEN-SEITE (app/kategorien/page.tsx)
-// Zeigt alle Tool-Kategorien in einem Raster.
-// URL: /kategorien
+/**
+ * Datei: app/kategorien/page.tsx
+ *
+ * Zweck: Übersicht aller publizierten Kategorien — lädt echte Daten aus Prisma.
+ * Zeigt Tool-Anzahl und die ersten 3 Tool-Namen pro Kategorie.
+ *
+ * Design-Referenz:
+ * - design-refs/4_Alle_Kategorien.png
+ */
 
-export default function KategorienSeite() {
+import { prisma } from '@/lib/prisma'
+
+export const revalidate = 3600
+
+export default async function KategorienSeite() {
+  const categories = await prisma.category.findMany({
+    where: { published: true },
+    include: {
+      translations: { where: { locale: 'de' } },
+      _count: { select: { tools: true } },
+      tools: {
+        where: { tool: { published: true } },
+        include: {
+          tool: { include: { translations: { where: { locale: 'de' } } } },
+        },
+        take: 3,
+      },
+    },
+    orderBy: { sortOrder: 'asc' },
+  })
+
   return (
     <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
 
-      {/* Breadcrumb — Navigationspfad oben */}
+      {/* Breadcrumb */}
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
         <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
         {' › '}
@@ -51,73 +77,73 @@ export default function KategorienSeite() {
       />
 
       {/* Kategorien-Raster */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '16px',
-      }}>
-        {[
-          { icon: '⊞', name: 'Buchhaltung & Rechnungen', beschreibung: 'Rechnungen schreiben, Belege verwalten und E-Rechnung vorbereiten.', tools: 'sevdesk · Lexware Office · FastBill', anzahl: 12 },
-          { icon: '🏛', name: 'Geschäftskonto & Finanzen', beschreibung: 'Geschäftskonten, Karten und Finanzlösungen für dein Business.', tools: 'Qonto · FINOM · N26 Business', anzahl: 13 },
-          { icon: '📊', name: 'Controlling & Ausgabenmanagement', beschreibung: 'Ausgaben im Blick behalten und Finanzen smarter steuern.', tools: 'Pleo · spendesk · Moss', anzahl: 14 },
-          { icon: '⚖️', name: 'Recht, Datenschutz & E-Signatur', beschreibung: 'Verträge erstellen, unterschreiben und rechtlich sicher arbeiten.', tools: 'DocuSign · Yousign · eRecht24', anzahl: 15 },
-          { icon: '✓', name: 'Produktivität & Notizen', beschreibung: 'Notizen, Aufgaben und Ideen effizient organisieren.', tools: 'Notion · Evernote · Todoist', anzahl: 16 },
-          { icon: '📋', name: 'Projektmanagement', beschreibung: 'Projekte planen, Aufgaben verwalten und Teams koordinieren.', tools: 'Trello · ClickUp · Asana', anzahl: 17 },
-          { icon: '📅', name: 'Kalender & Calls', beschreibung: 'Termine planen, Buchungen verwalten und Calls organisieren.', tools: 'Calendly · Cal.com · SavvyCal', anzahl: 18 },
-          { icon: '🎙', name: 'Meetings & Automatisierung', beschreibung: 'Meetings aufzeichnen, transkribieren und Workflows automatisieren.', tools: 'Fireflies · Otter · Zapier', anzahl: 19 },
-          { icon: '🎬', name: 'Screen Recording & Kundenupdates', beschreibung: 'Bildschirmaufnahmen erstellen und Kunden up-to-date halten.', tools: 'Loom · Tella · Scribe', anzahl: 12 },
-          { icon: '✏️', name: 'Design & Video', beschreibung: 'Design, Videoschnitt und Content für Social Media.', tools: 'Canva · Figma · Filmora', anzahl: 13 },
-          { icon: '🖼', name: 'Bildbearbeitung', beschreibung: 'Bilder bearbeiten, optimieren und freistellen.', tools: 'Adobe Photoshop · Pixlr · Remove.bg', anzahl: 14 },
-          { icon: '✦', name: 'KI & Coding', beschreibung: 'KI-Assistenten, Coding-Tools und Entwickler-Workflows.', tools: 'ChatGPT · Cursor · GitHub Copilot', anzahl: 15 },
-          { icon: '🌐', name: 'Website & Hosting', beschreibung: 'Websites erstellen, hosten und skalieren.', tools: 'Webflow · Framer · Hetzner', anzahl: 16 },
-          { icon: '👥', name: 'CRM & Marketing', beschreibung: 'Kunden gewinnen, verwalten und Marketing automatisieren.', tools: 'HubSpot · Pipedrive · Brevo', anzahl: 17 },
-          { icon: '🎵', name: 'Musik, Audio & Voice', beschreibung: 'Musik, Voiceover und Audioproduktionen erstellen.', tools: 'ElevenLabs · Suno · Udio', anzahl: 18 },
-          { icon: '🔧', name: 'No-Code & Automation', beschreibung: 'Prozesse automatisieren und Tools miteinander verbinden.', tools: 'Make · Zapier · Airtable', anzahl: 19 },
-        ].map((kategorie) => (
-          <a
-            key={kategorie.name}
-            href={`/kategorien/${kategorie.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
-            style={{
-              backgroundColor: 'var(--color-bg-card)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-card)',
-              padding: '20px',
-              textDecoration: 'none',
-              color: 'var(--color-text-primary)',
-              display: 'block',
-            }}
-          >
-            {/* Icon */}
-            <div style={{ fontSize: '28px', marginBottom: '12px' }}>
-              {kategorie.icon}
-            </div>
+      {categories.length === 0 ? (
+        <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+          Noch keine Kategorien vorhanden.
+        </p>
+      ) : (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '16px',
+        }}>
+          {categories.map((cat) => {
+            const t = cat.translations[0]
+            if (!t) return null
 
-            {/* Name */}
-            <p style={{ fontWeight: '700', fontSize: '15px', marginBottom: '8px', lineHeight: '1.3' }}>
-              {kategorie.name}
-            </p>
+            const toolNames = cat.tools
+              .map((tc) => tc.tool.translations[0]?.name ?? tc.tool.slug)
+              .join(' · ')
 
-            {/* Beschreibung */}
-            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '12px', lineHeight: '1.5' }}>
-              {kategorie.beschreibung}
-            </p>
+            return (
+              <a
+                key={cat.id}
+                href={`/kategorien/${cat.slug}`}
+                style={{
+                  backgroundColor: 'var(--color-bg-card)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-card)',
+                  padding: '20px',
+                  textDecoration: 'none',
+                  color: 'var(--color-text-primary)',
+                  display: 'block',
+                }}
+              >
+                {/* Icon */}
+                <div style={{ fontSize: '28px', marginBottom: '12px' }}>
+                  {cat.icon ?? '🗂️'}
+                </div>
 
-            {/* Beispiel-Tools */}
-            <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '12px' }}>
-              {kategorie.tools}
-            </p>
+                {/* Name */}
+                <p style={{ fontWeight: '700', fontSize: '15px', marginBottom: '8px', lineHeight: '1.3' }}>
+                  {t.name}
+                </p>
 
-            {/* Anzahl Tools + Pfeil */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-                {kategorie.anzahl} Tools
-              </span>
-              <span style={{ color: 'var(--color-text-secondary)' }}>→</span>
-            </div>
-          </a>
-        ))}
-      </div>
+                {/* Beschreibung */}
+                <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '12px', lineHeight: '1.5' }}>
+                  {t.description}
+                </p>
+
+                {/* Beispiel-Tools */}
+                {toolNames && (
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '12px' }}>
+                    {toolNames}
+                  </p>
+                )}
+
+                {/* Anzahl Tools + Pfeil */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                    {cat._count.tools} Tools
+                  </span>
+                  <span style={{ color: 'var(--color-text-secondary)' }}>→</span>
+                </div>
+              </a>
+            )
+          })}
+        </div>
+      )}
 
     </main>
-  );
+  )
 }
