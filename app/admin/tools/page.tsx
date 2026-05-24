@@ -10,11 +10,12 @@ import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import { formatPreis } from '@/lib/utils/format'
 
 const COLUMNS = [
-  { label: 'Tool',      width: '1fr'   },
-  { label: 'Slug',      width: '120px' },
-  { label: 'Preis ab',  width: '100px' },
-  { label: 'Free Plan', width: '80px'  },
-  { label: 'Status',    width: '100px' },
+  { label: 'Tool',        width: '1fr'   },
+  { label: 'Slug',        width: '120px' },
+  { label: 'Preis ab',    width: '100px' },
+  { label: 'Free Plan',   width: '80px'  },
+  { label: 'Status',      width: '100px' },
+  { label: '',            width: '110px' },
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
@@ -93,6 +94,20 @@ export default async function AdminToolsPage() {
               }}>
                 {tool.published ? 'Veröffentlicht' : 'Entwurf'}
               </span>
+              <a
+                href={`/admin/tools/${tool.id}`}
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--color-text-secondary)',
+                  textDecoration: 'none',
+                  padding: '5px 12px',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-btn)',
+                  display: 'inline-block',
+                }}
+              >
+                Bearbeiten →
+              </a>
             </div>
           )
         })}

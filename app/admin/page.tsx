@@ -14,19 +14,25 @@ export default async function AdminDashboardPage() {
     categoryCount,
     articleCount,
     stackCount,
+    vendorCount,
+    tagCount,
   ] = await Promise.all([
     prisma.tool.count(),
     prisma.tool.count({ where: { published: true } }),
     prisma.category.count(),
     prisma.article.count(),
     prisma.toolStack.count(),
+    prisma.vendor.count(),
+    prisma.tag.count(),
   ])
 
   const stats = [
-    { label: 'Tools gesamt', value: toolCount, sub: `${publishedToolCount} veröffentlicht`, icon: '🔧', href: '/admin/tools' },
-    { label: 'Kategorien', value: categoryCount, sub: 'aktive Kategorien', icon: '⊙', href: '/admin/kategorien' },
-    { label: 'Artikel', value: articleCount, sub: 'Guides & Ratgeber', icon: '✍️', href: '/admin/artikel' },
-    { label: 'Tool-Stacks', value: stackCount, sub: 'kuratierte Stacks', icon: '⊕', href: '/admin/stacks' },
+    { label: 'Tools gesamt',  value: toolCount,    sub: `${publishedToolCount} veröffentlicht`, icon: '🔧', href: '/admin/tools'      },
+    { label: 'Kategorien',    value: categoryCount, sub: 'aktive Kategorien',                    icon: '⊙',  href: '/admin/kategorien' },
+    { label: 'Artikel',       value: articleCount,  sub: 'Guides & Ratgeber',                    icon: '✍️', href: '/admin/artikel'    },
+    { label: 'Tool-Stacks',   value: stackCount,    sub: 'kuratierte Stacks',                    icon: '⊕',  href: '/admin/stacks'     },
+    { label: 'Anbieter',      value: vendorCount,   sub: 'erfasste Vendors',                     icon: '🏢', href: '/admin/vendors'    },
+    { label: 'Tags',          value: tagCount,      sub: 'in allen Gruppen',                     icon: '◎',  href: '/admin/tags'       },
   ]
 
   return (
@@ -50,7 +56,7 @@ export default async function AdminDashboardPage() {
       {/* Stats-Karten */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
+        gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '16px',
         marginBottom: '40px',
       }}>

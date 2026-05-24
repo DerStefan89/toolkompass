@@ -13,6 +13,7 @@ const COLUMNS = [
   { label: 'Slug',   width: '160px' },
   { label: 'Typ',    width: '110px' },
   { label: 'Status', width: '120px' },
+  { label: '',       width: '110px' },
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
@@ -94,6 +95,20 @@ export default async function AdminArtikelPage() {
             }}>
               {article.published ? 'Veröffentlicht' : 'Entwurf'}
             </span>
+            <a
+              href={`/admin/artikel/${article.id}`}
+              style={{
+                fontSize: '13px',
+                color: 'var(--color-text-secondary)',
+                textDecoration: 'none',
+                padding: '5px 12px',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-btn)',
+                display: 'inline-block',
+              }}
+            >
+              Bearbeiten →
+            </a>
           </div>
         ))}
       </AdminTable>
