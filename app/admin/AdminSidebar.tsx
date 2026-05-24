@@ -12,12 +12,13 @@ import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 
 const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: '⊞' },
-  { href: '/admin/tools', label: 'Tools', icon: '🔧' },
-  { href: '/admin/kategorien', label: 'Kategorien', icon: '⊙' },
-  { href: '/admin/artikel', label: 'Artikel', icon: '✍️' },
-  { href: '/admin/stacks', label: 'Tool-Stacks', icon: '⊕' },
-  { href: '/admin/tags', label: 'Tags', icon: '◎' },
+  { href: '/admin',            label: 'Dashboard',  icon: '⊞'  },
+  { href: '/admin/tools',      label: 'Tools',      icon: '🔧' },
+  { href: '/admin/vendors',    label: 'Anbieter',   icon: '🏢' },
+  { href: '/admin/kategorien', label: 'Kategorien', icon: '⊙'  },
+  { href: '/admin/artikel',    label: 'Artikel',    icon: '✍️' },
+  { href: '/admin/stacks',     label: 'Tool-Stacks',icon: '⊕'  },
+  { href: '/admin/tags',       label: 'Tags',       icon: '◎'  },
 ]
 
 export default function AdminSidebar({ user }: { user: User }) {
