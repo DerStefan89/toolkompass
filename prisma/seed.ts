@@ -501,7 +501,48 @@ async function main() {
     })
   }
 
-  console.log('  ✓ 1 Tool-Stack')
+  // ─── TOOL STACK (Vorschau / Starter-Stack) ──────────────────
+  const stackVorschau = await prisma.toolStack.upsert({
+    where: { slug: 'vorschau' },
+    update: { published: true },
+    create: { slug: 'vorschau', published: true },
+  })
+
+  await prisma.toolStackTranslation.upsert({
+    where: { toolStackId_locale: { toolStackId: stackVorschau.id, locale: Locale.de } },
+    update: {
+      name: 'Empfohlener Starter-Stack',
+      description: 'Ein ausgewogener Tool-Stack für den Start als Selbstständiger oder Gründer — von Buchhaltung bis Kundenkommunikation.',
+      targetAudience: 'Gründer & Selbstständige',
+    },
+    create: {
+      toolStackId: stackVorschau.id,
+      locale: Locale.de,
+      name: 'Empfohlener Starter-Stack',
+      description: 'Ein ausgewogener Tool-Stack für den Start als Selbstständiger oder Gründer — von Buchhaltung bis Kundenkommunikation.',
+      targetAudience: 'Gründer & Selbstständige',
+    },
+  })
+
+  const stackVorschauItems = [
+    { slug: 'claude',    sortOrder: 1, note: 'Texte, Ideen & Automatisierung' },
+    { slug: 'sevdesk',   sortOrder: 2, note: 'Rechnungen & Buchhaltung' },
+    { slug: 'notion',    sortOrder: 3, note: 'Notizen & Organisation' },
+    { slug: 'calendly',  sortOrder: 4, note: 'Termine & Kundenbuchungen' },
+    { slug: 'loom',      sortOrder: 5, note: 'Updates & Kundenkommunikation' },
+  ]
+
+  for (const item of stackVorschauItems) {
+    const toolId = createdTools[item.slug]
+    if (!toolId) continue
+    await prisma.toolStackItem.upsert({
+      where: { toolStackId_toolId: { toolStackId: stackVorschau.id, toolId } },
+      update: { sortOrder: item.sortOrder, note: item.note },
+      create: { toolStackId: stackVorschau.id, toolId, sortOrder: item.sortOrder, note: item.note },
+    })
+  }
+
+  console.log('  ✓ 2 Tool-Stacks')
 
   // ─── ARTICLE ─────────────────────────────────────────────────
   const article = await prisma.article.upsert({
