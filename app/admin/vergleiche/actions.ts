@@ -178,3 +178,32 @@ export async function deleteVergleich(id: string): Promise<void> {
   revalidatePath('/vergleichen')
   redirect('/admin/vergleiche')
 }
+
+// Für die Vergleiche-Liste: löscht ohne redirect, gibt Fehlerstatus zurück.
+export async function deleteVergleichById(id: string): Promise<{ error?: string }> {
+  try {
+    await prisma.comparison.delete({ where: { id } })
+  } catch {
+    return { error: 'Löschen fehlgeschlagen.' }
+  }
+  revalidatePath('/admin/vergleiche')
+  revalidatePath('/vergleichen')
+  revalidatePath('/')
+  return {}
+}
+
+// Toggled published true↔false.
+export async function toggleVergleichPublished(id: string): Promise<void> {
+  const item = await prisma.comparison.findUnique({
+    where: { id },
+    select: { published: true },
+  })
+  if (!item) return
+  await prisma.comparison.update({
+    where: { id },
+    data: { published: !item.published },
+  })
+  revalidatePath('/admin/vergleiche')
+  revalidatePath('/vergleichen')
+  revalidatePath('/')
+}

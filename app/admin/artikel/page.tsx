@@ -2,18 +2,21 @@
  * Datei: app/admin/artikel/page.tsx
  *
  * Zweck: Liste aller Artikel (Guides, Top-Listen, Vergleiche) im Admin-Bereich.
- * Zeigt Titel, Slug, Typ und published-Status.
+ * Zeigt Titel, Slug, Typ, klickbaren Published-Toggle und Löschen-Button in der Zeile.
  */
 
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
+import PublishToggle from '@/components/admin/PublishToggle'
+import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
+import { toggleArtikelPublished, deleteArtikelById } from '@/app/admin/artikel/actions'
 
 const COLUMNS = [
-  { label: 'Titel',  width: '1fr'   },
-  { label: 'Slug',   width: '160px' },
-  { label: 'Typ',    width: '110px' },
-  { label: 'Status', width: '120px' },
-  { label: '',       width: '110px' },
+  { label: 'Titel',   width: '1fr'   },
+  { label: 'Slug',    width: '160px' },
+  { label: 'Typ',     width: '110px' },
+  { label: 'Status',  width: '140px' },
+  { label: '',        width: '160px' },
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
@@ -50,6 +53,7 @@ export default async function AdminArtikelPage() {
               fontSize: '14px',
             }}
           >
+            {/* Titel + Untertitel */}
             <div>
               <a
                 href={`/admin/artikel/${article.id}`}
@@ -71,9 +75,13 @@ export default async function AdminArtikelPage() {
                 </p>
               )}
             </div>
+
+            {/* Slug */}
             <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>
               {article.slug}
             </span>
+
+            {/* Typ-Badge */}
             <span style={{
               display: 'inline-block',
               padding: '3px 10px',
@@ -84,31 +92,35 @@ export default async function AdminArtikelPage() {
             }}>
               {typLabel[article.type] ?? article.type}
             </span>
-            <span style={{
-              display: 'inline-block',
-              padding: '3px 10px',
-              borderRadius: '20px',
-              fontSize: '12px',
-              fontWeight: '600',
-              backgroundColor: article.published ? 'var(--color-success-bg)' : 'var(--color-badge-bg)',
-              color: article.published ? 'var(--color-success-text)' : 'var(--color-text-secondary)',
-            }}>
-              {article.published ? 'Veröffentlicht' : 'Entwurf'}
-            </span>
-            <a
-              href={`/admin/artikel/${article.id}`}
-              style={{
-                fontSize: '13px',
-                color: 'var(--color-text-secondary)',
-                textDecoration: 'none',
-                padding: '5px 12px',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-btn)',
-                display: 'inline-block',
-              }}
-            >
-              Bearbeiten →
-            </a>
+
+            {/* Status — klickbarer Toggle */}
+            <PublishToggle
+              published={article.published}
+              action={toggleArtikelPublished.bind(null, article.id)}
+            />
+
+            {/* Aktionen: Bearbeiten + Löschen */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <a
+                href={`/admin/artikel/${article.id}`}
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--color-text-secondary)',
+                  textDecoration: 'none',
+                  padding: '5px 12px',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-btn)',
+                  display: 'inline-block',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Bearbeiten →
+              </a>
+              <InlineDeleteButton
+                action={deleteArtikelById.bind(null, article.id)}
+                confirmMessage={`"${article.title}" wirklich löschen?\nAlle Abschnitte werden ebenfalls entfernt.`}
+              />
+            </div>
           </div>
         ))}
       </AdminTable>

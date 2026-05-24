@@ -199,3 +199,35 @@ export async function deleteArtikel(id: string): Promise<void> {
   revalidatePath('/ratgeber')
   redirect('/admin/artikel')
 }
+
+// Für die Artikel-Liste: löscht ohne redirect, gibt Fehlerstatus zurück.
+export async function deleteArtikelById(id: string): Promise<{ error?: string }> {
+  try {
+    await prisma.article.delete({ where: { id } })
+  } catch {
+    return { error: 'Löschen fehlgeschlagen.' }
+  }
+  revalidatePath('/admin/artikel')
+  revalidatePath('/ratgeber')
+  revalidatePath('/')
+  return {}
+}
+
+// Toggled published true↔false und setzt publishedAt entsprechend.
+export async function toggleArtikelPublished(id: string): Promise<void> {
+  const item = await prisma.article.findUnique({
+    where: { id },
+    select: { published: true },
+  })
+  if (!item) return
+  await prisma.article.update({
+    where: { id },
+    data: {
+      published:   !item.published,
+      publishedAt: !item.published ? new Date() : null,
+    },
+  })
+  revalidatePath('/admin/artikel')
+  revalidatePath('/ratgeber')
+  revalidatePath('/')
+}

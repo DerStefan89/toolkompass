@@ -170,3 +170,32 @@ export async function deleteStack(id: string): Promise<void> {
   revalidatePath('/tool-stacks')
   redirect('/admin/stacks')
 }
+
+// Für die Stacks-Liste: löscht ohne redirect, gibt Fehlerstatus zurück.
+export async function deleteStackById(id: string): Promise<{ error?: string }> {
+  try {
+    await prisma.toolStack.delete({ where: { id } })
+  } catch {
+    return { error: 'Löschen fehlgeschlagen.' }
+  }
+  revalidatePath('/admin/stacks')
+  revalidatePath('/tool-stacks')
+  revalidatePath('/')
+  return {}
+}
+
+// Toggled published true↔false.
+export async function toggleStackPublished(id: string): Promise<void> {
+  const item = await prisma.toolStack.findUnique({
+    where: { id },
+    select: { published: true },
+  })
+  if (!item) return
+  await prisma.toolStack.update({
+    where: { id },
+    data: { published: !item.published },
+  })
+  revalidatePath('/admin/stacks')
+  revalidatePath('/tool-stacks')
+  revalidatePath('/')
+}

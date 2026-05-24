@@ -2,17 +2,22 @@
  * Datei: app/admin/stacks/page.tsx
  *
  * Zweck: Liste aller Tool-Stacks im Admin-Bereich.
- * Zeigt Name, Slug, Tool-Anzahl und published-Status.
+ * Zeigt Name, Slug, Tool-Anzahl, klickbaren Published-Toggle
+ * und Löschen-Button direkt in der Zeile.
  */
 
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
+import PublishToggle from '@/components/admin/PublishToggle'
+import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
+import { toggleStackPublished, deleteStackById } from '@/app/admin/stacks/actions'
 
 const COLUMNS = [
-  { label: 'Stack',  width: '1fr'   },
-  { label: 'Slug',   width: '180px' },
-  { label: 'Tools',  width: '80px'  },
-  { label: 'Status', width: '120px' },
+  { label: 'Stack',   width: '1fr'   },
+  { label: 'Slug',    width: '180px' },
+  { label: 'Tools',   width: '70px'  },
+  { label: 'Status',  width: '140px' },
+  { label: '',        width: '160px' },
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
@@ -50,6 +55,7 @@ export default async function AdminStacksPage() {
                 fontSize: '14px',
               }}
             >
+              {/* Name + Zielgruppe */}
               <div>
                 <a
                   href={`/admin/stacks/${stack.id}`}
@@ -71,21 +77,43 @@ export default async function AdminStacksPage() {
                   </p>
                 )}
               </div>
+
+              {/* Slug */}
               <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>
                 {stack.slug}
               </span>
+
+              {/* Tool-Anzahl */}
               <span style={{ color: 'var(--color-text-primary)' }}>{stack._count.tools}</span>
-              <span style={{
-                display: 'inline-block',
-                padding: '3px 10px',
-                borderRadius: '20px',
-                fontSize: '12px',
-                fontWeight: '600',
-                backgroundColor: stack.published ? 'var(--color-success-bg)' : 'var(--color-badge-bg)',
-                color: stack.published ? 'var(--color-success-text)' : 'var(--color-text-secondary)',
-              }}>
-                {stack.published ? 'Veröffentlicht' : 'Entwurf'}
-              </span>
+
+              {/* Status — klickbarer Toggle */}
+              <PublishToggle
+                published={stack.published}
+                action={toggleStackPublished.bind(null, stack.id)}
+              />
+
+              {/* Aktionen: Bearbeiten + Löschen */}
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <a
+                  href={`/admin/stacks/${stack.id}`}
+                  style={{
+                    fontSize: '13px',
+                    color: 'var(--color-text-secondary)',
+                    textDecoration: 'none',
+                    padding: '5px 12px',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-btn)',
+                    display: 'inline-block',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Bearbeiten →
+                </a>
+                <InlineDeleteButton
+                  action={deleteStackById.bind(null, stack.id)}
+                  confirmMessage={`"${name}" wirklich löschen?\nAlle Tool-Zuordnungen werden ebenfalls entfernt.`}
+                />
+              </div>
             </div>
           )
         })}

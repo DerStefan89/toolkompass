@@ -142,3 +142,16 @@ export async function deleteVendor(id: string): Promise<void> {
   revalidatePath('/admin/vendors')
   redirect('/admin/vendors')
 }
+
+// Für die Vendors-Liste: löscht ohne redirect, gibt Fehlerstatus zurück.
+// Schlägt fehl wenn noch Tools zugeordnet sind (kein Cascade auf Tool.vendorId).
+export async function deleteVendorById(id: string): Promise<{ error?: string }> {
+  try {
+    await prisma.vendor.delete({ where: { id } })
+  } catch {
+    return { error: 'Löschen fehlgeschlagen. Dem Anbieter sind möglicherweise noch Tools zugeordnet.' }
+  }
+  revalidatePath('/admin/vendors')
+  revalidatePath('/')
+  return {}
+}
