@@ -292,9 +292,11 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
             cursor: 'pointer',
             marginBottom: '2px',
           }}>
+            {/* Hidden input überträgt den React-State explizit — Checkbox-DOM-Serialisierung
+                in React 19 / Next.js 16 ist bei controlled inputs nicht zuverlässig */}
+            <input type="hidden" name="hasFreePlan" value={hasFreePlan ? 'on' : ''} />
             <input
               type="checkbox"
-              name="hasFreePlan"
               checked={hasFreePlan}
               onChange={e => setHasFreePlan(e.target.checked)}
               style={{ width: '16px', height: '16px', cursor: 'pointer' }}
@@ -308,9 +310,9 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
       <Section title="Optionen">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', cursor: 'pointer' }}>
+            <input type="hidden" name="isAffiliate" value={isAffiliate ? 'on' : ''} />
             <input
               type="checkbox"
-              name="isAffiliate"
               checked={isAffiliate}
               onChange={e => setIsAffiliate(e.target.checked)}
               style={{ width: '16px', height: '16px', cursor: 'pointer' }}
@@ -319,9 +321,9 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
           </label>
 
           <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', cursor: 'pointer' }}>
+            <input type="hidden" name="published" value={published ? 'on' : ''} />
             <input
               type="checkbox"
-              name="published"
               checked={published}
               onChange={e => setPublished(e.target.checked)}
               style={{ width: '16px', height: '16px', cursor: 'pointer' }}
