@@ -180,3 +180,15 @@ export async function updateArtikel(
   revalidatePath('/ratgeber')
   redirect('/admin/artikel')
 }
+
+// Löscht einen Artikel inkl. aller Sections (onDelete: Cascade).
+export async function deleteArtikel(id: string): Promise<void> {
+  try {
+    await prisma.article.delete({ where: { id } })
+  } catch {
+    throw new Error('Löschen fehlgeschlagen.')
+  }
+  revalidatePath('/admin/artikel')
+  revalidatePath('/ratgeber')
+  redirect('/admin/artikel')
+}

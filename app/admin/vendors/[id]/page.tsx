@@ -15,7 +15,8 @@
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import VendorForm from '@/components/admin/VendorForm'
-import { updateVendor } from '@/app/admin/vendors/actions'
+import DeleteButton from '@/components/admin/DeleteButton'
+import { updateVendor, deleteVendor } from '@/app/admin/vendors/actions'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -43,6 +44,7 @@ export default async function EditVendorPage({ params }: Props) {
   // updateVendor erwartet die Vendor-ID als erstes Argument;
   // .bind() bindet sie vor, damit VendorForm die generische Signatur erhält
   const boundUpdateVendor = updateVendor.bind(null, id)
+  const boundDeleteVendor = deleteVendor.bind(null, id)
 
   return (
     <div>
@@ -85,6 +87,33 @@ export default async function EditVendorPage({ params }: Props) {
         <VendorForm
           action={boundUpdateVendor}
           defaultValues={defaultValues}
+        />
+      </div>
+
+      {/* Gefahrenzone */}
+      <div style={{
+        marginTop: '24px',
+        padding: '20px 24px',
+        border: '1px solid var(--color-error-border)',
+        borderRadius: 'var(--radius-card)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '16px',
+      }}>
+        <div>
+          <p style={{ fontSize: '14px', fontWeight: '600', color: 'var(--color-text-primary)', marginBottom: '2px' }}>
+            Anbieter löschen
+          </p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+            {vendor._count.tools > 0
+              ? `Nicht möglich — ${vendor._count.tools} ${vendor._count.tools === 1 ? 'Tool ist' : 'Tools sind'} noch zugeordnet.`
+              : 'Löscht den Anbieter dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.'}
+          </p>
+        </div>
+        <DeleteButton
+          action={boundDeleteVendor}
+          confirmMessage={`"${vendor.name}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
         />
       </div>
     </div>

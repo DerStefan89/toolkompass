@@ -155,3 +155,16 @@ export async function updateKategorie(
   revalidatePath('/kategorien')
   redirect('/admin/kategorien')
 }
+
+// Löscht eine Kategorie. Tool-Zuordnungen (ToolCategory) werden automatisch
+// mitgelöscht (onDelete: Cascade). Die Tools selbst bleiben erhalten.
+export async function deleteKategorie(id: string): Promise<void> {
+  try {
+    await prisma.category.delete({ where: { id } })
+  } catch {
+    throw new Error('Löschen fehlgeschlagen.')
+  }
+  revalidatePath('/admin/kategorien')
+  revalidatePath('/kategorien')
+  redirect('/admin/kategorien')
+}

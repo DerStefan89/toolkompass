@@ -162,3 +162,15 @@ export async function updateStack(
   revalidatePath('/tool-stacks')
   redirect('/admin/stacks')
 }
+
+// Löscht einen Tool-Stack inkl. aller Übersetzungen und Tool-Zuordnungen (onDelete: Cascade).
+export async function deleteStack(id: string): Promise<void> {
+  try {
+    await prisma.toolStack.delete({ where: { id } })
+  } catch {
+    throw new Error('Löschen fehlgeschlagen.')
+  }
+  revalidatePath('/admin/stacks')
+  revalidatePath('/tool-stacks')
+  redirect('/admin/stacks')
+}

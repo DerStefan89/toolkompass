@@ -214,3 +214,16 @@ export async function updateTool(
   revalidatePath('/')
   redirect('/admin/tools')
 }
+
+// Löscht ein Tool vollständig. Kaskadierendes Löschen (ToolCategory, ToolTag etc.)
+// erfolgt automatisch via onDelete: Cascade im Schema.
+export async function deleteTool(id: string): Promise<void> {
+  try {
+    await prisma.tool.delete({ where: { id } })
+  } catch {
+    throw new Error('Löschen fehlgeschlagen. Das Tool wird möglicherweise noch referenziert.')
+  }
+  revalidatePath('/admin/tools')
+  revalidatePath('/')
+  redirect('/admin/tools')
+}

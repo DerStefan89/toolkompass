@@ -16,7 +16,8 @@
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import ToolForm from '@/components/admin/ToolForm'
-import { updateTool } from '@/app/admin/tools/actions'
+import DeleteButton from '@/components/admin/DeleteButton'
+import { updateTool, deleteTool } from '@/app/admin/tools/actions'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -73,6 +74,7 @@ export default async function EditToolPage({ params }: Props) {
   // Die Tool-ID wird vorab eingebunden, damit ToolForm die generische Signatur
   // (prev, formData) => Promise<ActionState> erhält
   const boundUpdateTool = updateTool.bind(null, id)
+  const boundDeleteTool = deleteTool.bind(null, id)
 
   return (
     <div>
@@ -113,6 +115,31 @@ export default async function EditToolPage({ params }: Props) {
           vendors={vendorOptions}
           categories={categoryOptions}
           defaultValues={defaultValues}
+        />
+      </div>
+
+      {/* Gefahrenzone */}
+      <div style={{
+        marginTop: '24px',
+        padding: '20px 24px',
+        border: '1px solid var(--color-error-border)',
+        borderRadius: 'var(--radius-card)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '16px',
+      }}>
+        <div>
+          <p style={{ fontSize: '14px', fontWeight: '600', color: 'var(--color-text-primary)', marginBottom: '2px' }}>
+            Tool löschen
+          </p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+            Löscht das Tool dauerhaft inkl. aller Zuordnungen. Diese Aktion kann nicht rückgängig gemacht werden.
+          </p>
+        </div>
+        <DeleteButton
+          action={boundDeleteTool}
+          confirmMessage={`"${defaultValues.name}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
         />
       </div>
     </div>

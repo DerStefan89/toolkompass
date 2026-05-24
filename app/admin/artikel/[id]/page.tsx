@@ -8,7 +8,8 @@
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import ArtikelForm from '@/components/admin/ArtikelForm'
-import { updateArtikel } from '../actions'
+import DeleteButton from '@/components/admin/DeleteButton'
+import { updateArtikel, deleteArtikel } from '../actions'
 import type { ArtikelFormDefaults } from '@/components/admin/ArtikelForm'
 
 export default async function EditArtikelPage({ params }: { params: { id: string } }) {
@@ -34,6 +35,7 @@ export default async function EditArtikelPage({ params }: { params: { id: string
   }
 
   const boundUpdate = updateArtikel.bind(null, article.id)
+  const boundDelete = deleteArtikel.bind(null, article.id)
 
   return (
     <div>
@@ -53,6 +55,31 @@ export default async function EditArtikelPage({ params }: { params: { id: string
       </div>
 
       <ArtikelForm action={boundUpdate} defaultValues={defaultValues} />
+
+      {/* Gefahrenzone */}
+      <div style={{
+        marginTop: '24px',
+        padding: '20px 24px',
+        border: '1px solid var(--color-error-border)',
+        borderRadius: 'var(--radius-card)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '16px',
+      }}>
+        <div>
+          <p style={{ fontSize: '14px', fontWeight: '600', color: 'var(--color-text-primary)', marginBottom: '2px' }}>
+            Artikel löschen
+          </p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+            Löscht den Artikel dauerhaft inkl. aller Abschnitte. Diese Aktion kann nicht rückgängig gemacht werden.
+          </p>
+        </div>
+        <DeleteButton
+          action={boundDelete}
+          confirmMessage={`"${article.title}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
+        />
+      </div>
     </div>
   )
 }

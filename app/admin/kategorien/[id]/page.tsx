@@ -16,7 +16,8 @@
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import KategorieForm from '@/components/admin/KategorieForm'
-import { updateKategorie } from '@/app/admin/kategorien/actions'
+import DeleteButton from '@/components/admin/DeleteButton'
+import { updateKategorie, deleteKategorie } from '@/app/admin/kategorien/actions'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -50,6 +51,7 @@ export default async function EditKategoriePage({ params }: Props) {
   // updateKategorie erwartet die Kategorie-ID als erstes Argument;
   // .bind() bindet sie vor, damit ToolForm die generische Signatur erhält
   const boundUpdateKategorie = updateKategorie.bind(null, id)
+  const boundDeleteKategorie = deleteKategorie.bind(null, id)
 
   return (
     <div>
@@ -92,6 +94,31 @@ export default async function EditKategoriePage({ params }: Props) {
         <KategorieForm
           action={boundUpdateKategorie}
           defaultValues={defaultValues}
+        />
+      </div>
+
+      {/* Gefahrenzone */}
+      <div style={{
+        marginTop: '24px',
+        padding: '20px 24px',
+        border: '1px solid var(--color-error-border)',
+        borderRadius: 'var(--radius-card)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '16px',
+      }}>
+        <div>
+          <p style={{ fontSize: '14px', fontWeight: '600', color: 'var(--color-text-primary)', marginBottom: '2px' }}>
+            Kategorie löschen
+          </p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+            Löscht die Kategorie dauerhaft. Tool-Zuordnungen werden entfernt, die Tools selbst bleiben erhalten.
+          </p>
+        </div>
+        <DeleteButton
+          action={boundDeleteKategorie}
+          confirmMessage={`"${defaultValues.name}" wirklich löschen? Tool-Zuordnungen gehen verloren.`}
         />
       </div>
     </div>

@@ -8,7 +8,8 @@
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import StackForm from '@/components/admin/StackForm'
-import { updateStack } from '../actions'
+import DeleteButton from '@/components/admin/DeleteButton'
+import { updateStack, deleteStack } from '../actions'
 import type { StackFormDefaults } from '@/components/admin/StackForm'
 
 export default async function EditStackPage({ params }: { params: { id: string } }) {
@@ -46,6 +47,7 @@ export default async function EditStackPage({ params }: { params: { id: string }
   }))
 
   const boundUpdate = updateStack.bind(null, stack.id)
+  const boundDelete = deleteStack.bind(null, stack.id)
 
   return (
     <div>
@@ -65,6 +67,31 @@ export default async function EditStackPage({ params }: { params: { id: string }
       </div>
 
       <StackForm action={boundUpdate} tools={toolOptions} defaultValues={defaultValues} />
+
+      {/* Gefahrenzone */}
+      <div style={{
+        marginTop: '24px',
+        padding: '20px 24px',
+        border: '1px solid var(--color-error-border)',
+        borderRadius: 'var(--radius-card)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '16px',
+      }}>
+        <div>
+          <p style={{ fontSize: '14px', fontWeight: '600', color: 'var(--color-text-primary)', marginBottom: '2px' }}>
+            Stack löschen
+          </p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+            Löscht den Stack dauerhaft inkl. aller Tool-Zuordnungen. Diese Aktion kann nicht rückgängig gemacht werden.
+          </p>
+        </div>
+        <DeleteButton
+          action={boundDelete}
+          confirmMessage={`"${translation?.name ?? stack.slug}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
+        />
+      </div>
     </div>
   )
 }
