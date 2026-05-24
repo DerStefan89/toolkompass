@@ -8,11 +8,34 @@
  * - design-refs/1_Landing_Page.png
  *
  * Wichtig:
- * Tool-Cards und Kategorien enthalten aktuell Mock-Daten — werden in einer
- * späteren Phase durch Prisma-Abfragen ersetzt (wie Aufgaben-Seiten bereits).
+ * Tool-Cards zeigen die 6 neuesten publizierten Tools aus der DB.
+ * Kategorien-Scroll zeigt alle publizierten Kategorien sortiert nach sortOrder.
+ * Hero-Bereich und Tool-Stack-Box bleiben statisch (keine DB-Abfrage nötig).
  */
 
-export default function Home() {
+import { prisma } from '@/lib/prisma'
+
+export const revalidate = 3600
+
+export default async function Home() {
+  // Promise.all: beide Queries laufen parallel
+  const [tools, categories] = await Promise.all([
+    prisma.tool.findMany({
+      where: { published: true },
+      take: 6,
+      orderBy: { publishedAt: 'desc' },
+      include: { translations: { where: { locale: 'de' } } },
+    }),
+    prisma.category.findMany({
+      where: { published: true },
+      orderBy: { sortOrder: 'asc' },
+      include: {
+        translations: { where: { locale: 'de' } },
+        _count: { select: { tools: true } },
+      },
+    }),
+  ])
+
   return (
     <main>
 
@@ -236,72 +259,79 @@ export default function Home() {
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: '16px',
         }}>
-          {[
-            { kuerzel: 'N', farbe: '#000000', name: 'Notion', kategorie: 'Produktivität', beschreibung: 'Notizen, Wiki und einfache Workflows.', badge: 'Free Plan', preis: 'ab 4,00 €' },
-            { kuerzel: 'S', farbe: 'var(--color-error)', name: 'sevdesk', kategorie: 'Buchhaltung', beschreibung: 'Rechnungen, Belege und E-Rechnung.', badge: 'DSGVO', preis: 'ab 9,90 €' },
-            { kuerzel: 'L', farbe: '#805ad5', name: 'Loom', kategorie: 'Video', beschreibung: 'Screen Recording und Kundenupdates.', badge: 'Free Plan', preis: 'ab 0,00 €' },
-            { kuerzel: 'F', farbe: 'var(--color-error)', name: 'Figma', kategorie: 'Design', beschreibung: 'Design, Prototyping und Zusammenarbeit.', badge: 'Beliebt', preis: 'ab 12,00 €' },
-            { kuerzel: 'C', farbe: '#6b46c1', name: 'ClickUp', kategorie: 'Projektmngmt', beschreibung: 'Aufgaben, Projekte und Teamwork.', badge: 'Team', preis: 'ab 5,00 €' },
-            { kuerzel: 'C', farbe: 'var(--color-success)', name: 'Canva', kategorie: 'Design', beschreibung: 'Social Designs und Vorlagen.', badge: 'Free Plan', preis: 'ab 0,00 €' },
-          ].map((tool) => (
-            <div key={tool.name} style={{
-              backgroundColor: 'var(--color-bg-card)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-card)',
-              padding: '16px',
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '8px',
-                    backgroundColor: tool.farbe,
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: '700',
-                    fontSize: '16px',
-                  }}>
-                    {tool.kuerzel}
-                  </div>
-                  <div>
-                    <p style={{ fontWeight: '600', fontSize: '14px', margin: 0 }}>{tool.name}</p>
-                    <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', margin: 0 }}>{tool.kategorie}</p>
-                  </div>
-                </div>
-                <span style={{ color: 'var(--color-text-secondary)', cursor: 'pointer' }}>♡</span>
-              </div>
-              <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '12px', lineHeight: '1.5' }}>
-                {tool.beschreibung}
-              </p>
-              <span style={{
-                display: 'inline-block',
-                backgroundColor: 'var(--color-badge-bg)',
-                color: 'var(--color-text-secondary)',
-                fontSize: '11px',
-                padding: '3px 10px',
-                borderRadius: '20px',
-                marginBottom: '12px',
+          {tools.map((tool) => {
+            const t = tool.translations[0]
+            const name = t?.name ?? tool.slug
+            const preis = tool.startingPriceMonthly != null
+              ? tool.startingPriceMonthly === 0
+                ? 'Kostenlos'
+                : `ab ${tool.startingPriceMonthly.toFixed(2).replace('.', ',')} €` // Punkt → Komma für deutsches Zahlenformat
+              : '—'
+
+            return (
+              <div key={tool.id} style={{
+                backgroundColor: 'var(--color-bg-card)',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-card)',
+                padding: '16px',
               }}>
-                {tool.badge}
-              </span>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '14px', fontWeight: '600' }}>{tool.preis}</span>
-                <a href={`/tools/${tool.name.toLowerCase()}`} style={{
-                  fontSize: '13px',
-                  color: 'var(--color-text-primary)',
-                  textDecoration: 'none',
-                  border: '1px solid var(--color-border)',
-                  padding: '6px 14px',
-                  borderRadius: 'var(--radius-btn)',
-                }}>
-                  Details
-                </a>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '8px',
+                      backgroundColor: 'var(--color-cta)',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: '700',
+                      fontSize: '16px',
+                    }}>
+                      {name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p style={{ fontWeight: '600', fontSize: '14px', margin: 0 }}>{name}</p>
+                      <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', margin: 0 }}>
+                        {t?.shortDescription?.slice(0, 30) ?? ''}
+                      </p>
+                    </div>
+                  </div>
+                  <span style={{ color: 'var(--color-text-secondary)', cursor: 'pointer' }}>♡</span>
+                </div>
+                <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '12px', lineHeight: '1.5' }}>
+                  {t?.shortDescription ?? ''}
+                </p>
+                {tool.hasFreePlan && (
+                  <span style={{
+                    display: 'inline-block',
+                    backgroundColor: 'var(--color-badge-bg)',
+                    color: 'var(--color-text-secondary)',
+                    fontSize: '11px',
+                    padding: '3px 10px',
+                    borderRadius: '20px',
+                    marginBottom: '12px',
+                  }}>
+                    Free Plan
+                  </span>
+                )}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '14px', fontWeight: '600' }}>{preis}</span>
+                  <a href={`/tools/${tool.slug}`} style={{
+                    fontSize: '13px',
+                    color: 'var(--color-text-primary)',
+                    textDecoration: 'none',
+                    border: '1px solid var(--color-border)',
+                    padding: '6px 14px',
+                    borderRadius: 'var(--radius-btn)',
+                  }}>
+                    Details
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </section>
 
@@ -330,38 +360,32 @@ export default function Home() {
           </a>
         </div>
         <div style={{ display: 'flex', gap: '12px', overflowX: 'auto' }}>
-          {[
-            { icon: '⊞', label: 'Buchhaltung & Rechnungen' },
-            { icon: '🏛', label: 'Geschäftskonto & Finanzen' },
-            { icon: '⊙', label: 'Recht & E-Signatur' },
-            { icon: '✓', label: 'Produktivität & Notizen' },
-            { icon: '◎', label: 'Projektm.' },
-            { icon: '📅', label: 'Kalender & Calls' },
-            { icon: '✏', label: 'Design & Video' },
-            { icon: '✦', label: 'KI & Coding' },
-            { icon: '🌐', label: 'Website & Hosting' },
-            { icon: '👥', label: 'CRM & Marketing' },
-          ].map((kategorie) => (
-            <a key={kategorie.label} href="/kategorien" style={{
-              flexShrink: 0,
-              width: '110px',
-              padding: '16px 12px',
-              backgroundColor: 'var(--color-bg-card)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-card)',
-              textAlign: 'center',
-              textDecoration: 'none',
-              color: 'var(--color-text-primary)',
-              fontSize: '12px',
-              lineHeight: '1.4',
-            }}>
-              <div style={{ fontSize: '24px', marginBottom: '8px' }}>{kategorie.icon}</div>
-              {kategorie.label}
-            </a>
-          ))}
+          {categories.map((cat) => {
+            const t = cat.translations[0]
+            const label = t?.name ?? cat.slug
+
+            return (
+              <a key={cat.id} href={`/kategorien/${cat.slug}`} style={{
+                flexShrink: 0,
+                width: '110px',
+                padding: '16px 12px',
+                backgroundColor: 'var(--color-bg-card)',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-card)',
+                textAlign: 'center',
+                textDecoration: 'none',
+                color: 'var(--color-text-primary)',
+                fontSize: '12px',
+                lineHeight: '1.4',
+              }}>
+                <div style={{ fontSize: '24px', marginBottom: '8px' }}>{cat.icon ?? '🗂️'}</div>
+                {label}
+              </a>
+            )
+          })}
         </div>
       </section>
 
     </main>
-  );
+  )
 }
