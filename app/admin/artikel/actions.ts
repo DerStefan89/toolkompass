@@ -14,13 +14,9 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import type { ActionState } from '@/lib/types/admin'
 
-// ─── Typen ──────────────────────────────────────────────────────────────────
-
-export type ActionState = {
-  error?: string
-  fieldErrors?: Record<string, string>
-}
+export type { ActionState }
 
 export type SectionInput = {
   heading: string

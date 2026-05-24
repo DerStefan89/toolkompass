@@ -14,13 +14,9 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import type { ActionState } from '@/lib/types/admin'
 
-// ─── Typen ──────────────────────────────────────────────────────────────────
-
-export type ActionState = {
-  error?: string                        // Allgemeiner Fehlertext
-  fieldErrors?: Record<string, string>  // Fehler pro Formularfeld
-}
+export type { ActionState }
 
 // Interne Repräsentation der validierten Formulardaten
 type ToolFormData = {
