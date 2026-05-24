@@ -13,6 +13,7 @@
 
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { formatPreis } from '@/lib/utils/format'
 
 export const revalidate = 3600
 
@@ -62,11 +63,6 @@ export default async function VergleichDetailSeite({
   const tB = comparison.toolB.translations[0]
   if (!tA || !tB) notFound()
 
-  const formatPreis = (price: number | null) =>
-    price == null ? '—'
-    : price === 0 ? 'Kostenlos'
-    : `ab ${price.toFixed(2).replace('.', ',')} € / Monat`
-
   const kategorieName = comparison.toolA.categories[0]?.category.translations[0]?.name ?? 'Tools'
 
   const tools = [
@@ -74,7 +70,7 @@ export default async function VergleichDetailSeite({
       name: tA.name,
       kuerzel: tA.name.charAt(0).toUpperCase(),
       farbe: TOOL_FARBEN[0],
-      preis: formatPreis(comparison.toolA.startingPriceMonthly),
+      preis: formatPreis(comparison.toolA.startingPriceMonthly, { prefix: 'ab', suffix: '/ Monat' }),
       beschreibung: tA.shortDescription,
       vorteile: tA.strengths,
       nachteile: tA.weaknesses,
@@ -85,7 +81,7 @@ export default async function VergleichDetailSeite({
       name: tB.name,
       kuerzel: tB.name.charAt(0).toUpperCase(),
       farbe: TOOL_FARBEN[1],
-      preis: formatPreis(comparison.toolB.startingPriceMonthly),
+      preis: formatPreis(comparison.toolB.startingPriceMonthly, { prefix: 'ab', suffix: '/ Monat' }),
       beschreibung: tB.shortDescription,
       vorteile: tB.strengths,
       nachteile: tB.weaknesses,

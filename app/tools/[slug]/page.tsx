@@ -13,6 +13,7 @@
 
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { formatPreis } from '@/lib/utils/format'
 
 export const revalidate = 3600
 
@@ -63,11 +64,7 @@ export default async function ToolDetailSeite({
     .filter(Boolean)
     .join(' · ')
 
-  const preisFormatted = tool.startingPriceMonthly != null
-    ? tool.startingPriceMonthly === 0
-      ? 'Kostenlos'
-      : `${tool.startingPriceMonthly.toFixed(2).replace('.', ',')} €` // Punkt → Komma für deutsches Zahlenformat
-    : '—'
+  const preisFormatted = formatPreis(tool.startingPriceMonthly)
 
   const tabs = ['Überblick', 'Funktionen', 'Preise', 'Vergleich', 'Alternativen', 'FAQ']
 

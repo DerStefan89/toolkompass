@@ -16,6 +16,7 @@
 
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { formatPreis } from '@/lib/utils/format'
 
 export const revalidate = 3600
 
@@ -155,11 +156,7 @@ export default async function KategorieDetailSeite({
                 const tl = tool.translations[0]
                 const name = tl?.name ?? tool.slug
                 const primaryUrl = tool.affiliateLinks[0]?.url ?? '#'
-                const preis = tool.startingPriceMonthly != null
-                  ? tool.startingPriceMonthly === 0
-                    ? 'Kostenlos'
-                    : `ab ${tool.startingPriceMonthly.toFixed(2).replace('.', ',')} €`
-                  : '—'
+                const preis = formatPreis(tool.startingPriceMonthly, { prefix: 'ab' })
 
                 return (
                   <div key={tool.id} style={{

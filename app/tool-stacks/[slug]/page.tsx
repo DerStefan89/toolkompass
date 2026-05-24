@@ -14,6 +14,7 @@
 
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { formatPreis } from '@/lib/utils/format'
 
 export const revalidate = 3600
 
@@ -74,9 +75,7 @@ export default async function ToolStackDetailSeite({
     (sum, item) => sum + (item.tool.startingPriceMonthly ?? 0),
     0,
   )
-  const preisGesamt = gesamtKosten === 0
-    ? 'Kostenlos'
-    : `ab ${gesamtKosten.toFixed(2).replace('.', ',')} €`
+  const preisGesamt = formatPreis(gesamtKosten, { prefix: 'ab' })
 
   const gridTemplateColumns = stack.tools.length <= 5
     ? `repeat(${stack.tools.length}, 1fr)`
@@ -144,11 +143,7 @@ export default async function ToolStackDetailSeite({
           const kuerzel = tt?.name.slice(0, 2).toUpperCase() ?? tool.slug.slice(0, 2).toUpperCase()
           const kategorie = tool.categories[0]?.category.translations[0]?.name ?? '—'
           const badges = tool.tags.map(({ tag }) => tag.name)
-          const preis = tool.startingPriceMonthly != null
-            ? tool.startingPriceMonthly === 0
-              ? 'Kostenlos'
-              : `ab ${tool.startingPriceMonthly.toFixed(2).replace('.', ',')} € / Monat`
-            : '—'
+          const preis = formatPreis(tool.startingPriceMonthly, { prefix: 'ab', suffix: '/ Monat' })
 
           return (
             <div

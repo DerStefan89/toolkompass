@@ -7,6 +7,7 @@
 
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
+import { formatPreis } from '@/lib/utils/format'
 
 const COLUMNS = [
   { label: 'Tool',      width: '1fr'   },
@@ -76,11 +77,7 @@ export default async function AdminToolsPage() {
                 {tool.slug}
               </span>
               <span style={{ color: 'var(--color-text-primary)' }}>
-                {tool.startingPriceMonthly != null
-                  ? tool.startingPriceMonthly === 0
-                    ? 'Kostenlos'
-                    : `${tool.startingPriceMonthly.toFixed(2).replace('.', ',')} €`
-                  : '—'}
+                {formatPreis(tool.startingPriceMonthly)}
               </span>
               <span style={{ fontSize: '13px', color: tool.hasFreePlan ? 'var(--color-success)' : 'var(--color-text-secondary)' }}>
                 {tool.hasFreePlan ? '✓ Ja' : '—'}
