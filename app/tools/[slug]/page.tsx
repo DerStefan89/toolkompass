@@ -1,87 +1,75 @@
-// TOOL-DETAILSEITE (app/tools/[slug]/page.tsx)
-//
-// Zweck: Template für alle Tool-Detailseiten.
-// Später: Inhalte kommen aus der Datenbank (Admin befüllt, published).
-// Jetzt: Alle Inhalte stehen im "toolData" Objekt unten.
-//
-// Prinzip:
-// - toolData = alle Inhalte (Admin befüllt das später)
-// - Layout darunter = zeigt nur an, was in toolData steht
+/**
+ * Datei: app/tools/[slug]/page.tsx
+ *
+ * Zweck: Tool-Detailseite — lädt echte Daten aus Prisma.
+ *
+ * Design-Referenz:
+ * - design-refs/2_Tool_Detailseite.png
+ *
+ * Wichtig:
+ * Layout bleibt unverändert zur Mock-Version.
+ * Nur die Datenquelle wechselt: toolData → Prisma.
+ */
 
-// ─── DATEN ──────────────────────────────────────────────────────
+import { notFound } from 'next/navigation'
+import { prisma } from '@/lib/prisma'
 
-const toolData = {
-  // Basis
-  name: 'Notion',
-  kategorie: 'Produktivität · Wissensmanagement',
-  beschreibung: 'Flexible All-in-One Workspace. Notizen, Wikis, Datenbanken und Projekte an einem Ort. Ideal für Teams und Einzelpersonen.',
-  verifiziert: true,
-  bewertung: 4.8,
-  bewertungenAnzahl: 2100,
-  badges: ['Sehr beliebt', 'Kostenloser Plan verfügbar'],
+export const revalidate = 3600
 
-  // Preis
-  preis: '8,00 €',
-  preisZeitraum: '/ Monat',
-  preisHinweis: 'pro Nutzer, jährlich abgerechnet',
-  kostenlosPlan: true,
-  preisFeatures: ['Unbegrenzte Blöcke', 'Unbegrenzte Dateien', '30 Tage Versionsverlauf', 'Bevorzugter Support'],
-  garantie: '14 Tage Geld-zurück-Garantie',
-  preisNote: 'Kostenloser Plan für individuelle Nutzung. Kein Kreditkarte erforderlich.',
+export async function generateStaticParams() {
+  const tools = await prisma.tool.findMany({
+    where: { published: true },
+    select: { slug: true },
+  })
+  return tools.map((t) => ({ slug: t.slug }))
+}
 
-  // Tabs
-  tabs: ['Überblick', 'Funktionen', 'Preise', 'Vergleich', 'Bewertungen (2.100)', 'Alternativen', 'FAQ'],
+export default async function ToolDetailSeite({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
 
-  // Kurzfazit
-  kurzfazit: 'Notion kombiniert Notizen, Wikis, Datenbanken und Projektmanagement in einem flexiblen Workspace. Ideal für Teams und Einzelpersonen, die Struktur und Klarheit in ihre Arbeit bringen möchten.',
+  const tool = await prisma.tool.findUnique({
+    where: { slug },
+    include: {
+      translations: { where: { locale: 'de' } },
+      vendor: true,
+      categories: {
+        include: {
+          category: {
+            include: { translations: { where: { locale: 'de' } } },
+          },
+        },
+      },
+      affiliateLinks: {
+        where: { isActive: true },
+        orderBy: { isPrimary: 'desc' },
+        take: 1,
+      },
+      tags: { include: { tag: true } },
+    },
+  })
 
-  staerken: [
-    'Sehr flexible Anpassung',
-    'All-in-One Workspace',
-    'Starke Datenbank-Funktionen',
-    'Große Vorlagen-Bibliothek',
-  ],
+  if (!tool || !tool.published) notFound()
 
-  schwaechen: [
-    'Einarbeitung kann Zeit brauchen',
-    'Offline-Funktionen limitiert',
-    'Bei großen Datenbanken kann es langsam werden',
-  ],
+  const t = tool.translations[0]
+  if (!t) notFound()
 
-  // Für wen geeignet?
-  geeignetFuer: [
-    { gruppe: 'Teams & Unternehmen', beschreibung: 'Wissensmanagement, Projektsteuerung und Dokumentation zentral organisieren.' },
-    { gruppe: 'Selbstständige & Freelancer', beschreibung: 'Kundenprojekte, Inhalte und Prozesse übersichtlich verwalten.' },
-    { gruppe: 'Studierende & Lernende', beschreibung: 'Notizen, Aufgaben und Lernmaterial strukturiert zusammenführen.' },
-  ],
+  const primaryUrl = tool.affiliateLinks[0]?.url ?? '#'
+  const categoryNames = tool.categories
+    .map((tc) => tc.category.translations[0]?.name)
+    .filter(Boolean)
+    .join(' · ')
 
-  nichtGeeignetFuer: [
-    'Nutzer, die einfache Tools bevorzugen',
-    'Nutzer, die keine Oberfläche mit vielen Optionen mögen',
-    'Nutzer, die stark auf klassische CRM- oder ERP-Systeme angewiesen sind',
-    'Nutzer, die eine reine To-Do-App wollen',
-  ],
+  const preisFormatted = tool.startingPriceMonthly != null
+    ? tool.startingPriceMonthly === 0
+      ? 'Kostenlos'
+      : `${tool.startingPriceMonthly.toFixed(2).replace('.', ',')} €`
+    : '—'
 
-  // Funktionen
-  funktionen: [
-    { icon: '📄', name: 'Notizen & Dokumente', beschreibung: 'Erstelle und organisiere Inhalte mit leistungsstarkem Editor.' },
-    { icon: '🗃', name: 'Datenbanken', beschreibung: 'Erstelle eigene Datenbanken, Tabellen und Ansichten.' },
-    { icon: '✓', name: 'Aufgaben & Projekte', beschreibung: 'Plane Aufgaben, vergebe und verfolge den Fortschritt.' },
-    { icon: '📚', name: 'Wikis & Wissen', beschreibung: 'Baue Team-Wikis und halte Wissen strukturiert fest.' },
-  ],
-
-  // Preispläne
-  preisplaene: [
-    { name: 'Free', preis: '0 €', fuer: 'Für Einzelpersonen', beliebt: false },
-    { name: 'Plus', preis: '8 €', fuer: '/ Nutzer / Monat · Für kleine Teams', beliebt: true },
-    { name: 'Business', preis: '15 €', fuer: '/ Nutzer / Monat · Für wachsende Teams', beliebt: false },
-  ],
-};
-
-// ─── LAYOUT ─────────────────────────────────────────────────────
-
-export default function ToolDetailSeite() {
-  const d = toolData;
+  const tabs = ['Überblick', 'Funktionen', 'Preise', 'Vergleich', 'Alternativen', 'FAQ']
 
   return (
     <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
@@ -90,9 +78,11 @@ export default function ToolDetailSeite() {
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
         <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
         {' › '}
-        <a href="/kategorien" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Produktivität & Wissen</a>
+        <a href="/kategorien" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
+          {categoryNames || 'Tools'}
+        </a>
         {' › '}
-        {d.name}
+        {t.name}
       </p>
 
       {/* ─── HERO: 3 Spalten ─────────────────────────────────── */}
@@ -100,13 +90,12 @@ export default function ToolDetailSeite() {
 
         {/* Spalte 1: Tool-Info */}
         <div>
-          {/* Logo + Name */}
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '16px' }}>
             <div style={{
               width: '64px',
               height: '64px',
               borderRadius: '12px',
-              backgroundColor: '#000',
+              backgroundColor: 'var(--color-cta)',
               color: 'white',
               display: 'flex',
               alignItems: 'center',
@@ -115,16 +104,16 @@ export default function ToolDetailSeite() {
               fontSize: '28px',
               flexShrink: 0,
             }}>
-              N
+              {t.name.charAt(0).toUpperCase()}
             </div>
             <div>
               <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '32px', fontWeight: '700', marginBottom: '4px' }}>
-                {d.name}
+                {t.name}
               </h1>
               <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
-                {d.kategorie}
+                {categoryNames}
               </p>
-              {d.verifiziert && (
+              {tool.published && (
                 <span style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -143,28 +132,40 @@ export default function ToolDetailSeite() {
           </div>
 
           <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
-            {d.beschreibung}
+            {t.shortDescription}
           </p>
 
-          {/* Bewertung */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <span style={{ color: '#f6ad55', fontSize: '18px' }}>★★★★</span>
-            <span style={{ fontWeight: '700', fontSize: '16px' }}>{d.bewertung}</span>
-            <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>({d.bewertungenAnzahl.toLocaleString()} Bewertungen)</span>
-          </div>
-
           {/* Badges */}
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
-            {d.badges.map((badge) => (
-              <span key={badge} style={{ fontSize: '13px', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                👤 {badge}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '24px' }}>
+            {tool.hasFreePlan && (
+              <span style={{
+                fontSize: '13px',
+                color: 'var(--color-text-secondary)',
+                backgroundColor: 'var(--color-badge-bg)',
+                border: '1px solid var(--color-border)',
+                padding: '3px 10px',
+                borderRadius: '20px',
+              }}>
+                ✓ Free Plan
+              </span>
+            )}
+            {tool.tags.map(({ tag }) => (
+              <span key={tag.id} style={{
+                fontSize: '13px',
+                color: 'var(--color-text-secondary)',
+                backgroundColor: 'var(--color-badge-bg)',
+                border: '1px solid var(--color-border)',
+                padding: '3px 10px',
+                borderRadius: '20px',
+              }}>
+                {tag.name}
               </span>
             ))}
           </div>
 
           {/* Buttons */}
           <div style={{ display: 'flex', gap: '10px' }}>
-            <a href="#" style={{
+            <a href={primaryUrl} target="_blank" rel="noopener noreferrer" style={{
               backgroundColor: 'var(--color-cta)',
               color: 'white',
               padding: '10px 20px',
@@ -175,7 +176,7 @@ export default function ToolDetailSeite() {
             }}>
               Zum Anbieter ↗
             </a>
-            <a href="#" style={{
+            <a href="/vergleichen" style={{
               backgroundColor: 'transparent',
               color: 'var(--color-text-primary)',
               padding: '10px 16px',
@@ -184,18 +185,7 @@ export default function ToolDetailSeite() {
               fontSize: '14px',
               border: '1px solid var(--color-border)',
             }}>
-              Tool entfernen
-            </a>
-            <a href="#" style={{
-              backgroundColor: 'transparent',
-              color: 'var(--color-text-primary)',
-              padding: '10px 16px',
-              borderRadius: 'var(--radius-btn)',
-              textDecoration: 'none',
-              fontSize: '14px',
-              border: '1px solid var(--color-border)',
-            }}>
-              Änderungshistorie
+              Vergleichen
             </a>
           </div>
         </div>
@@ -224,7 +214,7 @@ export default function ToolDetailSeite() {
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
             <span style={{ fontWeight: '700', fontSize: '15px' }}>Plan & Preisdetails</span>
-            {d.kostenlosPlan && (
+            {tool.hasFreePlan && (
               <span style={{
                 backgroundColor: 'var(--color-badge-bg)',
                 border: '1px solid var(--color-border)',
@@ -237,17 +227,19 @@ export default function ToolDetailSeite() {
             )}
           </div>
 
-          <p style={{ fontSize: '32px', fontWeight: '700', marginBottom: '4px' }}>{d.preis}</p>
-          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>{d.preisHinweis}</p>
+          <p style={{ fontSize: '32px', fontWeight: '700', marginBottom: '4px' }}>{preisFormatted}</p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
+            pro Monat (Einstiegspreis)
+          </p>
 
-          {d.preisFeatures.map((feature) => (
+          {t.features.slice(0, 4).map((feature) => (
             <div key={feature} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '13px' }}>
               <span style={{ color: 'var(--color-cta)' }}>✓</span>
               {feature}
             </div>
           ))}
 
-          <a href="#" style={{
+          <a href={primaryUrl} target="_blank" rel="noopener noreferrer" style={{
             display: 'block',
             textAlign: 'center',
             backgroundColor: 'var(--color-cta)',
@@ -262,12 +254,11 @@ export default function ToolDetailSeite() {
           }}>
             Zum Anbieter ↗
           </a>
-          <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', textAlign: 'center' }}>
-            {d.garantie}
-          </p>
-          <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '8px' }}>
-            {d.preisNote}
-          </p>
+          {tool.isAffiliate && (
+            <p style={{ fontSize: '11px', color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '8px' }}>
+              Affiliate-Link · Für dich keine Mehrkosten
+            </p>
+          )}
         </div>
 
       </div>
@@ -279,7 +270,7 @@ export default function ToolDetailSeite() {
         borderBottom: '2px solid var(--color-border)',
         marginBottom: '40px',
       }}>
-        {d.tabs.map((tab, index) => (
+        {tabs.map((tab, index) => (
           <a key={tab} href="#" style={{
             padding: '12px 20px',
             textDecoration: 'none',
@@ -303,23 +294,23 @@ export default function ToolDetailSeite() {
             Kurzfazit
           </h2>
           <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.6', marginBottom: '20px' }}>
-            {d.kurzfazit}
+            {t.longDescription ?? t.shortDescription}
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
               <p style={{ fontWeight: '600', fontSize: '13px', marginBottom: '8px' }}>Stärken</p>
-              {d.staerken.map((s) => (
+              {t.strengths.map((s) => (
                 <div key={s} style={{ display: 'flex', gap: '6px', marginBottom: '6px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-                  <span style={{ color: 'var(--color-cta)' }}>✓</span>{s}
+                  <span style={{ color: 'var(--color-cta)', flexShrink: 0 }}>✓</span>{s}
                 </div>
               ))}
             </div>
             <div>
               <p style={{ fontWeight: '600', fontSize: '13px', marginBottom: '8px', color: '#e53e3e' }}>Schwächen</p>
-              {d.schwaechen.map((s) => (
+              {t.weaknesses.map((s) => (
                 <div key={s} style={{ display: 'flex', gap: '6px', marginBottom: '6px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-                  <span style={{ color: '#e53e3e' }}>✗</span>{s}
+                  <span style={{ color: '#e53e3e', flexShrink: 0 }}>✗</span>{s}
                 </div>
               ))}
             </div>
@@ -331,10 +322,10 @@ export default function ToolDetailSeite() {
           <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '20px', fontWeight: '700', marginBottom: '16px' }}>
             Für wen geeignet?
           </h2>
-          {d.geeignetFuer.map((g) => (
-            <div key={g.gruppe} style={{ marginBottom: '16px' }}>
-              <p style={{ fontWeight: '600', fontSize: '14px', marginBottom: '4px' }}>{g.gruppe}</p>
-              <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.5' }}>{g.beschreibung}</p>
+          {t.bestFor.map((gruppe) => (
+            <div key={gruppe} style={{ marginBottom: '12px', display: 'flex', gap: '8px', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+              <span style={{ color: 'var(--color-cta)', flexShrink: 0 }}>✓</span>
+              <span style={{ fontWeight: '500', color: 'var(--color-text-primary)' }}>{gruppe}</span>
             </div>
           ))}
         </div>
@@ -344,95 +335,67 @@ export default function ToolDetailSeite() {
           <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '20px', fontWeight: '700', marginBottom: '16px' }}>
             Für wen eher nicht geeignet?
           </h2>
-          {d.nichtGeeignetFuer.map((n) => (
+          {t.notIdealFor.map((n) => (
             <div key={n} style={{ display: 'flex', gap: '8px', marginBottom: '12px', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
-              <span>✗</span>{n}
+              <span style={{ flexShrink: 0 }}>✗</span>{n}
             </div>
           ))}
         </div>
 
       </div>
 
-      {/* ─── FUNKTIONEN + PREISE ─────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', marginBottom: '48px' }}>
-
-        {/* Funktionen */}
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '20px', fontWeight: '700' }}>Funktionen</h2>
-            <a href="#" style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Alle Funktionen ansehen →</a>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            {d.funktionen.map((f) => (
-              <div key={f.name} style={{
-                backgroundColor: 'var(--color-bg-card)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-card)',
-                padding: '16px',
-              }}>
-                <div style={{ fontSize: '24px', marginBottom: '8px' }}>{f.icon}</div>
-                <p style={{ fontWeight: '600', fontSize: '13px', marginBottom: '4px' }}>{f.name}</p>
-                <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', lineHeight: '1.4' }}>{f.beschreibung}</p>
-              </div>
-            ))}
-          </div>
+      {/* ─── FUNKTIONEN ──────────────────────────────────────── */}
+      <div style={{ marginBottom: '48px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '20px', fontWeight: '700' }}>Funktionen</h2>
         </div>
-
-        {/* Preise */}
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '20px', fontWeight: '700' }}>Preise</h2>
-            <a href="#" style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Alle Preispläne ansehen →</a>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-            {d.preisplaene.map((plan) => (
-              <div key={plan.name} style={{
-                backgroundColor: 'var(--color-bg-card)',
-                border: plan.beliebt ? '2px solid var(--color-cta)' : '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-card)',
-                padding: '16px',
-                textAlign: 'center',
-                position: 'relative',
-              }}>
-                {plan.beliebt && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '-10px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    backgroundColor: 'var(--color-cta)',
-                    color: 'white',
-                    fontSize: '10px',
-                    padding: '2px 10px',
-                    borderRadius: '20px',
-                    fontWeight: '600',
-                  }}>
-                    Beliebt
-                  </span>
-                )}
-                <p style={{ fontWeight: '700', fontSize: '16px', marginBottom: '4px' }}>{plan.name}</p>
-                <p style={{ fontWeight: '700', fontSize: '24px', marginBottom: '4px' }}>{plan.preis}</p>
-                <p style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>{plan.fuer}</p>
-                <a href="#" style={{
-                  display: 'block',
-                  backgroundColor: plan.beliebt ? 'var(--color-cta)' : 'transparent',
-                  color: plan.beliebt ? 'white' : 'var(--color-text-primary)',
-                  border: plan.beliebt ? 'none' : '1px solid var(--color-border)',
-                  padding: '8px',
-                  borderRadius: 'var(--radius-btn)',
-                  textDecoration: 'none',
-                  fontSize: '13px',
-                  fontWeight: '600',
-                }}>
-                  Zum Plan
-                </a>
-              </div>
-            ))}
-          </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+          {t.features.map((feature) => (
+            <div key={feature} style={{
+              backgroundColor: 'var(--color-bg-card)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-card)',
+              padding: '16px',
+            }}>
+              <div style={{ fontSize: '24px', marginBottom: '8px' }}>✓</div>
+              <p style={{ fontWeight: '600', fontSize: '13px', color: 'var(--color-text-primary)', lineHeight: '1.4' }}>
+                {feature}
+              </p>
+            </div>
+          ))}
         </div>
+      </div>
 
+      {/* ─── PREISE ──────────────────────────────────────────── */}
+      <div style={{
+        backgroundColor: 'var(--color-bg-card)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-card)',
+        padding: '24px',
+        marginBottom: '48px',
+      }}>
+        <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '20px', fontWeight: '700', marginBottom: '8px' }}>
+          Preise
+        </h2>
+        <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
+          Einstieg ab {preisFormatted} / Monat.
+          {tool.hasFreePlan ? ' Kostenloser Plan verfügbar.' : ''}
+          {' '}Aktuelle Preise und Tarife direkt beim Anbieter prüfen.
+        </p>
+        <a href={primaryUrl} target="_blank" rel="noopener noreferrer" style={{
+          display: 'inline-block',
+          backgroundColor: 'var(--color-cta)',
+          color: 'white',
+          padding: '10px 20px',
+          borderRadius: 'var(--radius-btn)',
+          textDecoration: 'none',
+          fontSize: '14px',
+          fontWeight: '600',
+        }}>
+          Alle Preispläne ansehen ↗
+        </a>
       </div>
 
     </main>
-  );
+  )
 }
