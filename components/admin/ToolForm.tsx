@@ -144,10 +144,14 @@ function inputStyle(hasError: boolean): React.CSSProperties {
 export default function ToolForm({ action, vendors, categories, defaultValues }: ToolFormProps) {
   const [state, formAction, isPending] = useActionState(action, {})
 
-  // Kontrollierter Zustand für Felder mit Live-Abhängigkeiten
+  // Kontrollierter Zustand — alle müssen kontrolliert sein, damit sie bei
+  // Validierungsfehlern nicht auf defaultChecked/defaultValue zurückspringen
   const [name, setName] = useState(defaultValues?.name ?? '')
   const [slug, setSlug] = useState(defaultValues?.slug ?? '')
   const [shortDesc, setShortDesc] = useState(defaultValues?.shortDescription ?? '')
+  const [published, setPublished] = useState(defaultValues?.published ?? false)
+  const [hasFreePlan, setHasFreePlan] = useState(defaultValues?.hasFreePlan ?? false)
+  const [isAffiliate, setIsAffiliate] = useState(defaultValues?.isAffiliate ?? false)
 
   // Im Bearbeitungsmodus: Slug ist bereits gesetzt → nicht mehr auto-überschreiben
   const [slugIsManual, setSlugIsManual] = useState(!!defaultValues)
@@ -283,7 +287,8 @@ export default function ToolForm({ action, vendors, categories, defaultValues }:
             <input
               type="checkbox"
               name="hasFreePlan"
-              defaultChecked={defaultValues?.hasFreePlan ?? false}
+              checked={hasFreePlan}
+              onChange={e => setHasFreePlan(e.target.checked)}
               style={{ width: '16px', height: '16px', cursor: 'pointer' }}
             />
             Hat einen kostenlosen Plan (Free Tier / Freemium)
@@ -298,7 +303,8 @@ export default function ToolForm({ action, vendors, categories, defaultValues }:
             <input
               type="checkbox"
               name="isAffiliate"
-              defaultChecked={defaultValues?.isAffiliate ?? false}
+              checked={isAffiliate}
+              onChange={e => setIsAffiliate(e.target.checked)}
               style={{ width: '16px', height: '16px', cursor: 'pointer' }}
             />
             Affiliate-Link vorhanden (Provisionspartner)
@@ -308,7 +314,8 @@ export default function ToolForm({ action, vendors, categories, defaultValues }:
             <input
               type="checkbox"
               name="published"
-              defaultChecked={defaultValues?.published ?? false}
+              checked={published}
+              onChange={e => setPublished(e.target.checked)}
               style={{ width: '16px', height: '16px', cursor: 'pointer' }}
             />
             Veröffentlicht (sichtbar auf der Plattform)

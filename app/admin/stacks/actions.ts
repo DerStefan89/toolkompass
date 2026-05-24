@@ -1,0 +1,164 @@
+/**
+ * Datei: app/admin/stacks/actions.ts
+ *
+ * Zweck: Server Actions für Tool-Stack-Formulare (Erstellen und Bearbeiten).
+ * Ein Stack besteht aus einer deutschen Übersetzung (Name, Beschreibung, Zielgruppe)
+ * und einer geordneten Liste von Tool-IDs.
+ *
+ * Wird aufgerufen von:
+ * - app/admin/stacks/neu/page.tsx  (createStack)
+ * - app/admin/stacks/[id]/page.tsx (updateStack.bind(null, id))
+ */
+
+'use server'
+
+import { prisma } from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+
+// ─── Typen ──────────────────────────────────────────────────────────────────
+
+export type ActionState = {
+  error?: string
+  fieldErrors?: Record<string, string>
+}
+
+type StackFormData = {
+  name: string
+  slug: string
+  description: string | null
+  targetAudience: string
+  published: boolean
+  toolIds: string[]
+}
+
+// ─── Hilfsfunktionen ────────────────────────────────────────────────────────
+
+function parseStackForm(formData: FormData): {
+  data: StackFormData
+  errors: Record<string, string> | null
+} {
+  const str = (key: string) => ((formData.get(key) as string) ?? '').trim()
+
+  const name           = str('name')
+  const slug           = str('slug')
+  const description    = str('description') || null
+  const targetAudience = str('targetAudience')
+  const published      = formData.get('published') === 'on'
+  const toolIds        = formData.getAll('toolIds') as string[]
+
+  const errors: Record<string, string> = {}
+  if (!name) errors.name = 'Name ist erforderlich.'
+  if (!slug) {
+    errors.slug = 'Slug ist erforderlich.'
+  } else if (!/^[a-z0-9-]+$/.test(slug)) {
+    errors.slug = 'Nur Kleinbuchstaben, Zahlen und Bindestriche erlaubt.'
+  }
+  if (!targetAudience) errors.targetAudience = 'Zielgruppe ist erforderlich.'
+
+  return {
+    data: { name, slug, description, targetAudience, published, toolIds },
+    errors: Object.keys(errors).length > 0 ? errors : null,
+  }
+}
+
+// ─── Server Actions ──────────────────────────────────────────────────────────
+
+export async function createStack(
+  _prev: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const { data, errors } = parseStackForm(formData)
+  if (errors) return { fieldErrors: errors }
+
+  const duplicate = await prisma.toolStack.findUnique({
+    where: { slug: data.slug },
+    select: { id: true },
+  })
+  if (duplicate) return { fieldErrors: { slug: 'Dieser Slug ist bereits vergeben.' } }
+
+  try {
+    await prisma.toolStack.create({
+      data: {
+        slug:      data.slug,
+        published: data.published,
+        translations: {
+          create: {
+            locale:         'de',
+            name:           data.name,
+            description:    data.description,
+            targetAudience: data.targetAudience,
+          },
+        },
+        tools: {
+          create: data.toolIds.map((toolId, i) => ({
+            toolId,
+            sortOrder: i,
+          })),
+        },
+      },
+    })
+  } catch {
+    return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
+  }
+
+  revalidatePath('/admin/stacks')
+  revalidatePath('/tool-stacks')
+  redirect('/admin/stacks')
+}
+
+export async function updateStack(
+  id: string,
+  _prev: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const { data, errors } = parseStackForm(formData)
+  if (errors) return { fieldErrors: errors }
+
+  const duplicate = await prisma.toolStack.findFirst({
+    where: { slug: data.slug, NOT: { id } },
+    select: { id: true },
+  })
+  if (duplicate) return { fieldErrors: { slug: 'Dieser Slug ist bereits vergeben.' } }
+
+  try {
+    await prisma.toolStack.update({
+      where: { id },
+      data: {
+        slug:      data.slug,
+        published: data.published,
+        translations: {
+          upsert: {
+            where: { toolStackId_locale: { toolStackId: id, locale: 'de' } },
+            create: {
+              locale:         'de',
+              name:           data.name,
+              description:    data.description,
+              targetAudience: data.targetAudience,
+            },
+            update: {
+              name:           data.name,
+              description:    data.description,
+              targetAudience: data.targetAudience,
+            },
+          },
+        },
+        // Tool-Zuordnungen atomisch ersetzen
+        tools: {
+          deleteMany: {},
+          create: data.toolIds.map((toolId, i) => ({
+            toolId,
+            sortOrder: i,
+          })),
+        },
+      },
+    })
+  } catch {
+    return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
+  }
+
+  revalidatePath('/admin/stacks')
+  revalidatePath(`/tool-stacks/${data.slug}`)
+  revalidatePath('/tool-stacks')
+  redirect('/admin/stacks')
+}

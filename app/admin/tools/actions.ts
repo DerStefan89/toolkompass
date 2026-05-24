@@ -174,6 +174,12 @@ export async function updateTool(
   })
   if (duplicate) return { fieldErrors: { slug: 'Dieser Slug ist bereits vergeben.' } }
 
+  // publishedAt nur setzen wenn noch nicht vorhanden — nicht bei jedem Edit überschreiben
+  const existing = await prisma.tool.findUnique({
+    where: { id },
+    select: { publishedAt: true },
+  })
+
   try {
     await prisma.tool.update({
       where: { id },
@@ -183,6 +189,7 @@ export async function updateTool(
         hasFreePlan: data.hasFreePlan,
         isAffiliate: data.isAffiliate,
         published: data.published,
+        publishedAt: data.published ? (existing?.publishedAt ?? new Date()) : null,
         vendor: { connect: { id: data.vendorId } },
         translations: {
           upsert: {
