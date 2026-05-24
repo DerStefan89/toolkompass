@@ -1,9 +1,71 @@
-// KATEGORIE-DETAILSEITE (app/kategorien/[slug]/page.tsx)
-// Zeigt alle Tools einer Kategorie mit Empfehlungen und Filtern.
-// URL: /kategorien/buchhaltung-rechnungen, /kategorien/design-video etc.
-// [slug] = der variable Teil der URL — wechselt je nach Kategorie
+/**
+ * Datei: app/kategorien/[slug]/page.tsx
+ *
+ * Zweck: Kategorie-Detailseite — lädt echte Daten aus Prisma.
+ * Zeigt alle publizierten Tools der Kategorie als Tool-Cards.
+ *
+ * Design-Referenz:
+ * - design-refs/4_Alle_Kategorien.png
+ *
+ * Wichtig:
+ * Layout bleibt unverändert zur Mock-Version.
+ * Die Empfehlungsbox (Mock: Buchhaltungs-spezifisch) wird durch
+ * echte Tool-Cards ersetzt, da kein strukturiertes Empfehlungsmodell
+ * in der DB existiert.
+ */
 
-export default function KategorieDetailSeite() {
+import { notFound } from 'next/navigation'
+import { prisma } from '@/lib/prisma'
+
+export const revalidate = 3600
+
+export async function generateStaticParams() {
+  const categories = await prisma.category.findMany({
+    where: { published: true },
+    select: { slug: true },
+  })
+  return categories.map((c) => ({ slug: c.slug }))
+}
+
+export default async function KategorieDetailSeite({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+
+  const category = await prisma.category.findUnique({
+    where: { slug },
+    include: {
+      translations: { where: { locale: 'de' } },
+      tools: {
+        where: { tool: { published: true } },
+        include: {
+          tool: {
+            include: {
+              translations: { where: { locale: 'de' } },
+              tags: { include: { tag: true } },
+              affiliateLinks: {
+                where: { isActive: true },
+                orderBy: { isPrimary: 'desc' },
+                take: 1,
+              },
+            },
+          },
+        },
+      },
+      tags: { include: { tag: true } },
+    },
+  })
+
+  if (!category || !category.published) notFound()
+
+  const t = category.translations[0]
+  if (!t) notFound()
+
+  const tools = category.tools.map((tc) => tc.tool)
+  const sidebarTags = category.tags.map((ct) => ct.tag.name)
+
   return (
     <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
 
@@ -13,10 +75,10 @@ export default function KategorieDetailSeite() {
         {' › '}
         <a href="/kategorien" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Kategorien</a>
         {' › '}
-        Buchhaltung & Rechnungen
+        {t.name}
       </p>
 
-      {/* Hero — Titel links, Bild rechts */}
+      {/* Hero */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -33,20 +95,16 @@ export default function KategorieDetailSeite() {
             lineHeight: '1.2',
             marginBottom: '16px',
           }}>
-            Beste Buchhaltungssoftware für Selbstständige
+            {t.name}
           </h1>
           <p style={{
             fontSize: '16px',
             color: 'var(--color-text-secondary)',
             lineHeight: '1.6',
           }}>
-            Vergleiche Buchhaltungstools für Selbstständige, Freelancer und kleine Teams
-            in Deutschland – mit Fokus auf E-Rechnung, DATEV, Belegerfassung, Preise
-            und einfache Bedienung.
+            {t.description}
           </p>
         </div>
-
-        {/* Platzhalter für Bild */}
         <div style={{
           width: '280px',
           height: '180px',
@@ -58,230 +116,167 @@ export default function KategorieDetailSeite() {
           justifyContent: 'center',
           fontSize: '48px',
         }}>
-          🗂️
+          {category.icon ?? '🗂️'}
         </div>
       </div>
 
-      {/* Filter Pills */}
-      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
-        {['Solo', 'Team', 'Preis', 'Free Plan', 'DSGVO', 'E-Rechnung', 'DATEV', 'Bewertung', 'Anwendungsfall'].map((filter, index) => (
-          <a key={filter} href="#" style={{
-            padding: '6px 16px',
-            borderRadius: '20px',
-            border: '1px solid var(--color-border)',
-            backgroundColor: index === 0 ? 'var(--color-cta)' : 'var(--color-bg-card)',
-            color: index === 0 ? 'white' : 'var(--color-text-primary)',
-            textDecoration: 'none',
-            fontSize: '13px',
-            fontWeight: index === 0 ? '600' : '400',
-          }}>
-            {filter}
-          </a>
-        ))}
-      </div>
-
-      {/* Hauptbereich — zwei Spalten */}
+      {/* Hauptbereich */}
       <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
 
-        {/* LINKE SEITE — Hauptinhalt */}
+        {/* Linke Seite */}
         <div style={{ flex: 1 }}>
-
-          {/* Empfehlungsbox */}
-          <div style={{
-            backgroundColor: 'var(--color-bg-card)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-card)',
-            padding: '24px',
-            marginBottom: '32px',
-          }}>
-            <h2 style={{
-              fontFamily: 'var(--font-playfair)',
-              fontSize: '20px',
-              fontWeight: '700',
-              marginBottom: '20px',
-              color: 'var(--color-text-primary)',
-            }}>
-              Unsere Empfehlung kurz gesagt
-            </h2>
-
-            {/* 5 Empfehlungs-Karten */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px' }}>
-              {[
-                { zweck: 'Für Solo-Freelancer', tool: 'sevdesk', beschreibung: 'Einfach starten, schnell Rechnungen schreiben.' },
-                { zweck: 'Für Selbstständige & kleine KMU', tool: 'Lexware Office', beschreibung: 'Klassisch, zuverlässig und sehr umfassend.' },
-                { zweck: 'Für einfache Rechnungen', tool: 'FastBill', beschreibung: 'Übersichtlich und schnell eingerichtet.' },
-                { zweck: 'Für günstigen Einstieg', tool: 'Accountable oder Papierkram', beschreibung: 'Günstig starten und Kosten sparen.' },
-                { zweck: 'Für Steuerberater-Zusammenarbeit', tool: 'Lexware Office oder sevdesk', beschreibung: 'Beste Zusammenarbeit mit dem Steuerbüro.' },
-              ].map((emp) => (
-                <div key={emp.zweck} style={{
-                  backgroundColor: 'var(--color-bg)',
-                  borderRadius: 'var(--radius-card)',
-                  padding: '14px',
-                }}>
-                  <p style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginBottom: '6px' }}>{emp.zweck}</p>
-                  <p style={{ fontSize: '13px', fontWeight: '700', color: 'var(--color-cta)', marginBottom: '6px' }}>{emp.tool}</p>
-                  <p style={{ fontSize: '11px', color: 'var(--color-text-secondary)', lineHeight: '1.4' }}>{emp.beschreibung}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Top-Empfehlungen Titel */}
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: '16px',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <h2 style={{
-                fontFamily: 'var(--font-playfair)',
-                fontSize: '20px',
-                fontWeight: '700',
-                color: 'var(--color-text-primary)',
-              }}>
-                Top-Empfehlungen
-              </h2>
-              <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-                Aktualisiert: Mai 2025
-              </span>
-            </div>
-            <a href="#" style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
-              Alle Tools ansehen →
-            </a>
+            <h2 style={{
+              fontFamily: 'var(--font-playfair)',
+              fontSize: '20px',
+              fontWeight: '700',
+              color: 'var(--color-text-primary)',
+            }}>
+              Top-Empfehlungen
+            </h2>
+            <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+              {tools.length} Tools
+            </span>
           </div>
 
-          {/* Tool-Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-            {[
-              { k: 'S', farbe: '#e53e3e', name: 'sevdesk', beschreibung: 'Einfacher Einstieg für Solo-Selbstständige.', badges: ['Beliebt', 'E-Rechnung'], preis: 'ab 9,90 €' },
-              { k: 'L', farbe: '#38a169', name: 'Lexware Office', beschreibung: 'Klassisch, zuverlässig und sehr umfassend.', badges: ['Beliebt', 'DATEV'], preis: 'ab 8,90 €' },
-              { k: 'F', farbe: '#e53e3e', name: 'FastBill', beschreibung: 'Schnell eingerichtet für kleine Unternehmen.', badges: ['E-Rechnung', 'DATEV'], preis: 'ab 10,00 €' },
-              { k: 'W', farbe: '#3182ce', name: 'WISO MeinBüro', beschreibung: 'Komplettlösung für Selbstständige & KMU.', badges: ['DATEV'], preis: 'ab 14,90 €' },
-              { k: 'a', farbe: '#805ad5', name: 'Accountable', beschreibung: 'Moderne Buchhaltung für Selbstständige.', badges: ['E-Rechnung'], preis: 'ab 8,00 €' },
-              { k: 'p', farbe: '#d69e2e', name: 'Papierkram', beschreibung: 'Minimalistisch. Günstig. Für einfache Zwecke.', badges: [], preis: 'ab 4,90 €' },
-            ].map((tool) => (
-              <div key={tool.name} style={{
-                backgroundColor: 'var(--color-bg-card)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-card)',
-                padding: '16px',
-              }}>
-                {/* Logo + Herz */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                  <div style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '8px',
-                    backgroundColor: tool.farbe,
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: '700',
-                    fontSize: '18px',
+          {tools.length === 0 ? (
+            <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', padding: '24px 0' }}>
+              Noch keine Tools in dieser Kategorie.
+            </p>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+              {tools.map((tool) => {
+                const tl = tool.translations[0]
+                const name = tl?.name ?? tool.slug
+                const primaryUrl = tool.affiliateLinks[0]?.url ?? '#'
+                const preis = tool.startingPriceMonthly != null
+                  ? tool.startingPriceMonthly === 0
+                    ? 'Kostenlos'
+                    : `ab ${tool.startingPriceMonthly.toFixed(2).replace('.', ',')} €`
+                  : '—'
+
+                return (
+                  <div key={tool.id} style={{
+                    backgroundColor: 'var(--color-bg-card)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-card)',
+                    padding: '16px',
                   }}>
-                    {tool.k}
-                  </div>
-                  <span style={{ color: 'var(--color-text-secondary)', cursor: 'pointer' }}>♡</span>
-                </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                      <div style={{
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '8px',
+                        backgroundColor: 'var(--color-cta)',
+                        color: 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: '700',
+                        fontSize: '18px',
+                      }}>
+                        {name.charAt(0).toUpperCase()}
+                      </div>
+                    </div>
 
-                <p style={{ fontWeight: '700', fontSize: '15px', marginBottom: '4px' }}>{tool.name}</p>
-                <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '10px', lineHeight: '1.5' }}>
-                  {tool.beschreibung}
-                </p>
+                    <p style={{ fontWeight: '700', fontSize: '15px', marginBottom: '4px' }}>{name}</p>
+                    <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '10px', lineHeight: '1.5' }}>
+                      {tl?.shortDescription}
+                    </p>
 
-                {/* Badges */}
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' }}>
-                  {tool.badges.map((badge) => (
-                    <span key={badge} style={{
-                      backgroundColor: 'var(--color-badge-bg)',
-                      color: 'var(--color-text-secondary)',
-                      fontSize: '11px',
-                      padding: '2px 8px',
-                      borderRadius: '20px',
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                      {tool.hasFreePlan && (
+                        <span style={{
+                          backgroundColor: 'var(--color-badge-bg)',
+                          color: 'var(--color-text-secondary)',
+                          fontSize: '11px',
+                          padding: '2px 8px',
+                          borderRadius: '20px',
+                        }}>
+                          Free Plan
+                        </span>
+                      )}
+                      {tool.tags.slice(0, 2).map(({ tag }) => (
+                        <span key={tag.id} style={{
+                          backgroundColor: 'var(--color-badge-bg)',
+                          color: 'var(--color-text-secondary)',
+                          fontSize: '11px',
+                          padding: '2px 8px',
+                          borderRadius: '20px',
+                        }}>
+                          {tag.name}
+                        </span>
+                      ))}
+                    </div>
+
+                    <p style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text-secondary)', marginBottom: '12px' }}>
+                      {preis} / Monat
+                    </p>
+
+                    <a href={`/tools/${tool.slug}`} style={{
+                      display: 'block',
+                      textAlign: 'center',
+                      backgroundColor: 'var(--color-cta)',
+                      color: 'white',
+                      padding: '8px',
+                      borderRadius: 'var(--radius-btn)',
+                      textDecoration: 'none',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      marginBottom: '8px',
                     }}>
-                      {badge}
-                    </span>
-                  ))}
-                </div>
-
-                <p style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text-secondary)', marginBottom: '12px' }}>
-                  {tool.preis} / Monat
-                </p>
-
-                <p style={{ fontSize: '11px', color: 'var(--color-cta)', marginBottom: '12px' }}>
-                  Bewertungen im Aufbau
-                </p>
-
-                {/* Buttons */}
-                <a href={`/tools/${tool.name.toLowerCase().replace(/ /g, '-')}`} style={{
-                  display: 'block',
-                  textAlign: 'center',
-                  backgroundColor: 'var(--color-cta)',
-                  color: 'white',
-                  padding: '8px',
-                  borderRadius: 'var(--radius-btn)',
-                  textDecoration: 'none',
-                  fontSize: '13px',
-                  fontWeight: '600',
-                  marginBottom: '8px',
-                }}>
-                  Details ansehen
-                </a>
-                <a href="#" style={{
-                  display: 'block',
-                  textAlign: 'center',
-                  color: 'var(--color-text-secondary)',
-                  fontSize: '12px',
-                  textDecoration: 'none',
-                }}>
-                  Zum Anbieter →
-                </a>
-              </div>
-            ))}
-          </div>
-
+                      Details ansehen
+                    </a>
+                    <a href={primaryUrl} target="_blank" rel="noopener noreferrer" style={{
+                      display: 'block',
+                      textAlign: 'center',
+                      color: 'var(--color-text-secondary)',
+                      fontSize: '12px',
+                      textDecoration: 'none',
+                    }}>
+                      Zum Anbieter →
+                    </a>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
 
-        {/* RECHTE SIDEBAR */}
+        {/* Rechte Sidebar */}
         <div style={{ width: '220px', flexShrink: 0 }}>
 
-          {/* Worauf achten? */}
-          <div style={{
-            backgroundColor: 'var(--color-bg-card)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-card)',
-            padding: '20px',
-            marginBottom: '16px',
-          }}>
-            <h3 style={{ fontWeight: '700', fontSize: '15px', marginBottom: '16px' }}>
-              Worauf achten?
-            </h3>
-            {['E-Rechnung', 'DATEV Export', 'Belegerfassung', 'UStVA', 'GoBD', 'Bankanbindung', 'Steuerberaterzugang'].map((punkt) => (
-              <div key={punkt} style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginBottom: '10px',
-                fontSize: '13px',
-              }}>
-                <span style={{ color: 'var(--color-cta)' }}>✓</span>
-                {punkt}
-              </div>
-            ))}
-            <a href="#" style={{
-              fontSize: '13px',
-              color: 'var(--color-text-secondary)',
-              textDecoration: 'none',
-              display: 'block',
-              marginTop: '8px',
+          {sidebarTags.length > 0 && (
+            <div style={{
+              backgroundColor: 'var(--color-bg-card)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-card)',
+              padding: '20px',
+              marginBottom: '16px',
             }}>
-              Mehr erfahren →
-            </a>
-          </div>
+              <h3 style={{ fontWeight: '700', fontSize: '15px', marginBottom: '16px' }}>
+                Worauf achten?
+              </h3>
+              {sidebarTags.map((tag) => (
+                <div key={tag} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '10px',
+                  fontSize: '13px',
+                }}>
+                  <span style={{ color: 'var(--color-cta)' }}>✓</span>
+                  {tag}
+                </div>
+              ))}
+            </div>
+          )}
 
-          {/* Nicht sicher? Box */}
           <div style={{
             backgroundColor: 'var(--color-bg-card)',
             border: '1px solid var(--color-border)',
@@ -292,7 +287,7 @@ export default function KategorieDetailSeite() {
               Nicht sicher?
             </h3>
             <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px', lineHeight: '1.5' }}>
-              Finde in 2 Minuten das passende Buchhaltungstool.
+              Finde in 2 Minuten das passende Tool.
             </p>
             <a href="/tool-finder" style={{
               display: 'block',
@@ -314,5 +309,5 @@ export default function KategorieDetailSeite() {
       </div>
 
     </main>
-  );
+  )
 }
