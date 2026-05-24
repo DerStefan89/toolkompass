@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx kill-port *)",
+      "Bash(curl -s -o /dev/null -w \"port 3000 status: %{http_code}\" http://localhost:3000)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/kategorien)",
+      "Bash(curl -s -o /dev/null -w \" %{http_code}\" http://localhost:3000/tool-stacks)",
+      "Bash(curl -s -o /dev/null -w \" %{http_code}\" http://localhost:3000/vergleichen)",
+      "Bash(taskkill /PID 3580 /F)"
+    ]
+  }
+}

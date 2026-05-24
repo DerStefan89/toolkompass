@@ -10,7 +10,7 @@ import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import PublishToggle from '@/components/admin/PublishToggle'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
-import { toggleKategoriePublished, deleteKategorieById } from '@/app/admin/kategorien/actions'
+import { toggleKategoriePublished, deleteKategorie } from '@/app/admin/kategorien/actions'
 
 const COLUMNS = [
   { label: 'Kategorie', width: '1fr'   },
@@ -114,7 +114,7 @@ export default async function AdminKategorienPage() {
                   Bearbeiten →
                 </a>
                 <InlineDeleteButton
-                  action={deleteKategorieById.bind(null, cat.id)}
+                  action={deleteKategorie.bind(null, cat.id)}
                   confirmMessage={`"${name}" wirklich löschen?\nAlle Tool-Zuordnungen werden ebenfalls entfernt.`}
                 />
               </div>

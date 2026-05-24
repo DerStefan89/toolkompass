@@ -169,6 +169,7 @@ export default async function EditToolPage({ params }: Props) {
         <DeleteButton
           action={boundDeleteTool}
           confirmMessage={`"${defaultValues.name}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
+          redirectTo="/admin/tools"
         />
       </div>
     </div>

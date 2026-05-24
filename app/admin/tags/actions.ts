@@ -147,12 +147,13 @@ export async function updateTagGroup(
 }
 
 // Löscht eine Tag-Gruppe inkl. aller zugehörigen Tags (onDelete: Cascade).
-export async function deleteTagGroup(id: string): Promise<void> {
+// Navigation nach Erfolg liegt beim Aufrufer (kein redirect hier).
+export async function deleteTagGroup(id: string): Promise<{ error?: string }> {
   try {
     await prisma.tagGroup.delete({ where: { id } })
   } catch {
-    throw new Error('Löschen fehlgeschlagen.')
+    return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/tags')
-  redirect('/admin/tags')
+  return {}
 }

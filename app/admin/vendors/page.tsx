@@ -12,7 +12,7 @@
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
-import { deleteVendorById } from '@/app/admin/vendors/actions'
+import { deleteVendor } from '@/app/admin/vendors/actions'
 
 const COLUMNS = [
   { label: 'Anbieter', width: '1fr'   },
@@ -126,7 +126,7 @@ export default async function AdminVendorsPage() {
                 Bearbeiten →
               </a>
               <InlineDeleteButton
-                action={deleteVendorById.bind(null, vendor.id)}
+                action={deleteVendor.bind(null, vendor.id)}
                 confirmMessage={`"${vendor.name}" wirklich löschen?\nNur möglich wenn keine Tools zugeordnet sind.`}
               />
             </div>

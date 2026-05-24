@@ -9,7 +9,7 @@ import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import PublishToggle from '@/components/admin/PublishToggle'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
-import { toggleArtikelPublished, deleteArtikelById } from '@/app/admin/artikel/actions'
+import { toggleArtikelPublished, deleteArtikel } from '@/app/admin/artikel/actions'
 
 const COLUMNS = [
   { label: 'Titel',   width: '1fr'   },
@@ -117,7 +117,7 @@ export default async function AdminArtikelPage() {
                 Bearbeiten →
               </a>
               <InlineDeleteButton
-                action={deleteArtikelById.bind(null, article.id)}
+                action={deleteArtikel.bind(null, article.id)}
                 confirmMessage={`"${article.title}" wirklich löschen?\nAlle Abschnitte werden ebenfalls entfernt.`}
               />
             </div>

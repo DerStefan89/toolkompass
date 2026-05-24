@@ -168,19 +168,8 @@ export async function updateVergleich(
 }
 
 // Löscht einen Vergleich inkl. aller ComparisonRows (onDelete: Cascade).
-export async function deleteVergleich(id: string): Promise<void> {
-  try {
-    await prisma.comparison.delete({ where: { id } })
-  } catch {
-    throw new Error('Löschen fehlgeschlagen.')
-  }
-  revalidatePath('/admin/vergleiche')
-  revalidatePath('/vergleichen')
-  redirect('/admin/vergleiche')
-}
-
-// Für die Vergleiche-Liste: löscht ohne redirect, gibt Fehlerstatus zurück.
-export async function deleteVergleichById(id: string): Promise<{ error?: string }> {
+// Navigation nach Erfolg liegt beim Aufrufer (kein redirect hier).
+export async function deleteVergleich(id: string): Promise<{ error?: string }> {
   try {
     await prisma.comparison.delete({ where: { id } })
   } catch {

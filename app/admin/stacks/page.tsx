@@ -10,7 +10,7 @@ import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import PublishToggle from '@/components/admin/PublishToggle'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
-import { toggleStackPublished, deleteStackById } from '@/app/admin/stacks/actions'
+import { toggleStackPublished, deleteStack } from '@/app/admin/stacks/actions'
 
 const COLUMNS = [
   { label: 'Stack',   width: '1fr'   },
@@ -110,7 +110,7 @@ export default async function AdminStacksPage() {
                   Bearbeiten →
                 </a>
                 <InlineDeleteButton
-                  action={deleteStackById.bind(null, stack.id)}
+                  action={deleteStack.bind(null, stack.id)}
                   confirmMessage={`"${name}" wirklich löschen?\nAlle Tool-Zuordnungen werden ebenfalls entfernt.`}
                 />
               </div>

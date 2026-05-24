@@ -10,7 +10,7 @@ import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import PublishToggle from '@/components/admin/PublishToggle'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
-import { toggleVergleichPublished, deleteVergleichById } from '@/app/admin/vergleiche/actions'
+import { toggleVergleichPublished, deleteVergleich } from '@/app/admin/vergleiche/actions'
 
 const COLUMNS = [
   { label: 'Tool A',  width: '1fr'   },
@@ -106,7 +106,7 @@ export default async function AdminVergleichePage() {
                   Bearbeiten →
                 </a>
                 <InlineDeleteButton
-                  action={deleteVergleichById.bind(null, v.id)}
+                  action={deleteVergleich.bind(null, v.id)}
                   confirmMessage={`Vergleich "${nameA} vs. ${nameB}" wirklich löschen?\nAlle Vergleichszeilen werden ebenfalls entfernt.`}
                 />
               </div>

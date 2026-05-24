@@ -119,6 +119,7 @@ export default async function EditKategoriePage({ params }: Props) {
         <DeleteButton
           action={boundDeleteKategorie}
           confirmMessage={`"${defaultValues.name}" wirklich löschen? Tool-Zuordnungen gehen verloren.`}
+          redirectTo="/admin/kategorien"
         />
       </div>
     </div>

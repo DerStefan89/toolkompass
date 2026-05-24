@@ -133,19 +133,8 @@ export async function updateVendor(
 
 // Löscht einen Vendor. Schlägt fehl wenn noch Tools zugeordnet sind
 // (kein onDelete: Cascade auf Tool.vendorId — bewusste Entscheidung).
-export async function deleteVendor(id: string): Promise<void> {
-  try {
-    await prisma.vendor.delete({ where: { id } })
-  } catch {
-    throw new Error('Löschen fehlgeschlagen. Dem Anbieter sind möglicherweise noch Tools zugeordnet.')
-  }
-  revalidatePath('/admin/vendors')
-  redirect('/admin/vendors')
-}
-
-// Für die Vendors-Liste: löscht ohne redirect, gibt Fehlerstatus zurück.
-// Schlägt fehl wenn noch Tools zugeordnet sind (kein Cascade auf Tool.vendorId).
-export async function deleteVendorById(id: string): Promise<{ error?: string }> {
+// Navigation nach Erfolg liegt beim Aufrufer (kein redirect hier).
+export async function deleteVendor(id: string): Promise<{ error?: string }> {
   try {
     await prisma.vendor.delete({ where: { id } })
   } catch {

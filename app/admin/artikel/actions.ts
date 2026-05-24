@@ -189,19 +189,8 @@ export async function updateArtikel(
 }
 
 // Löscht einen Artikel inkl. aller Sections (onDelete: Cascade).
-export async function deleteArtikel(id: string): Promise<void> {
-  try {
-    await prisma.article.delete({ where: { id } })
-  } catch {
-    throw new Error('Löschen fehlgeschlagen.')
-  }
-  revalidatePath('/admin/artikel')
-  revalidatePath('/ratgeber')
-  redirect('/admin/artikel')
-}
-
-// Für die Artikel-Liste: löscht ohne redirect, gibt Fehlerstatus zurück.
-export async function deleteArtikelById(id: string): Promise<{ error?: string }> {
+// Navigation nach Erfolg liegt beim Aufrufer (kein redirect hier).
+export async function deleteArtikel(id: string): Promise<{ error?: string }> {
   try {
     await prisma.article.delete({ where: { id } })
   } catch {

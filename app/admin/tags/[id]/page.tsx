@@ -74,6 +74,7 @@ export default async function EditTagGroupPage({ params }: { params: Promise<{ i
         <DeleteButton
           action={boundDelete}
           confirmMessage={`Tag-Gruppe "${group.name}" und alle ${group.tags.length} Tags wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
+          redirectTo="/admin/tags"
         />
       </div>
     </div>

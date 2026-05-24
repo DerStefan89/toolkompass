@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"/ → %{http_code}\\\\n\" http://localhost:3000)",
+      "Bash(curl -s -o /dev/null -w \"/kategorien → %{http_code}\\\\n\" http://localhost:3000/kategorien)",
+      "Bash(curl -s -o /dev/null -w \"/tool-stacks → %{http_code}\\\\n\" http://localhost:3000/tool-stacks)",
+      "Bash(curl -s -o /dev/null -w \"/vergleichen → %{http_code}\\\\n\" http://localhost:3000/vergleichen)",
+      "Bash(curl -s -o /dev/null -w \"/ratgeber → %{http_code}\\\\n\" http://localhost:3000/ratgeber)",
+      "Bash(cmd /c \"taskkill /PID 3580 /F\")",
+      "Bash(cmd /c \"netstat -ano | findstr :3001 | findstr LISTENING\")",
+      "Bash(cmd /c \"netstat -ano | findstr \\\\\":300\\\\\" | findstr LISTENING\")",
+      "Bash(npx next *)",
+      "Bash(mkdir -p \"c:/Users/stefa/OneDrive/Desktop/Javascript.course/toolkompass/app/admin/kategorien/neu\" && mkdir -p \"c:/Users/stefa/OneDrive/Desktop/Javascript.course/toolkompass/app/admin/kategorien/[id]\")",
+      "Bash(git commit -m ' *)",
+      "Bash(npx tsx *)",
+      "Bash(cat)",
+      "Bash(git commit *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\stefa\\OneDrive\\Desktop\\Javascript.course\\toolkompass\\app\\admin\\kategorien"
+    ]
+  }
+}

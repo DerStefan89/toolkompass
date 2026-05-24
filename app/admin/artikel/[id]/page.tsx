@@ -94,6 +94,7 @@ export default async function EditArtikelPage({ params }: { params: Promise<{ id
         <DeleteButton
           action={boundDelete}
           confirmMessage={`"${article.title}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
+          redirectTo="/admin/artikel"
         />
       </div>
     </div>

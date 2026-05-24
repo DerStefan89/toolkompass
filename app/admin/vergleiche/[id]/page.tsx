@@ -129,6 +129,7 @@ export default async function EditVergleichPage({ params }: Props) {
         <DeleteButton
           action={boundDelete}
           confirmMessage={`"${nameA} vs. ${nameB}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
+          redirectTo="/admin/vergleiche"
         />
       </div>
     </div>

@@ -2,8 +2,8 @@
  * Datei: components/admin/DeleteButton.tsx
  *
  * Zweck: Wiederverwendbarer Löschen-Button für alle Admin-Bearbeitungsseiten.
- * Zeigt einen window.confirm-Dialog vor dem Absenden und ruft dann die
- * übergebene Server Action direkt auf (per useTransition).
+ * Zeigt einen window.confirm-Dialog, ruft die Action auf und navigiert
+ * nach Erfolg zur redirectTo-URL (kein redirect in der Server Action selbst).
  *
  * Wichtig:
  * - Die action muss eine gebundene Server Action sein (z. B. deleteTool.bind(null, id)).
@@ -15,20 +15,22 @@
 import { useTransition } from 'react'
 
 type DeleteButtonProps = {
-  action: () => Promise<void>
+  action: () => Promise<{ error?: string }>
   confirmMessage: string
+  redirectTo: string
 }
 
-export default function DeleteButton({ action, confirmMessage }: DeleteButtonProps) {
+export default function DeleteButton({ action, confirmMessage, redirectTo }: DeleteButtonProps) {
   const [isPending, startTransition] = useTransition()
 
   function handleClick() {
     if (!window.confirm(confirmMessage)) return
     startTransition(async () => {
-      try {
-        await action()
-      } catch {
-        alert('Fehler beim Löschen. Bitte versuche es erneut.')
+      const result = await action()
+      if (result?.error) {
+        alert(result.error)
+      } else {
+        window.location.href = redirectTo
       }
     })
   }

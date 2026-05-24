@@ -114,6 +114,7 @@ export default async function EditVendorPage({ params }: Props) {
         <DeleteButton
           action={boundDeleteVendor}
           confirmMessage={`"${vendor.name}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
+          redirectTo="/admin/vendors"
         />
       </div>
     </div>

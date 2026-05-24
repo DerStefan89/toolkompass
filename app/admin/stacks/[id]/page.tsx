@@ -92,6 +92,7 @@ export default async function EditStackPage({ params }: { params: Promise<{ id: 
         <DeleteButton
           action={boundDelete}
           confirmMessage={`"${translation?.name ?? stack.slug}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
+          redirectTo="/admin/stacks"
         />
       </div>
     </div>
