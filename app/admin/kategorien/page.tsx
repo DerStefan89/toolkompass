@@ -14,6 +14,7 @@ const COLUMNS = [
   { label: 'Icon',      width: '60px'  },
   { label: 'Tools',     width: '80px'  },
   { label: 'Status',    width: '120px' },
+  { label: '',          width: '100px' },
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
@@ -88,6 +89,19 @@ export default async function AdminKategorienPage() {
               }}>
                 {cat.published ? 'Veröffentlicht' : 'Entwurf'}
               </span>
+
+              {/* Expliziter Bearbeiten-Link als letzte Spalte */}
+              <a
+                href={`/admin/kategorien/${cat.id}`}
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--color-cta)',
+                  textDecoration: 'none',
+                  fontWeight: '500',
+                }}
+              >
+                Bearbeiten →
+              </a>
             </div>
           )
         })}
