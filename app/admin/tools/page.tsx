@@ -2,20 +2,22 @@
  * Datei: app/admin/tools/page.tsx
  *
  * Zweck: Liste aller Tools im Admin-Bereich.
- * Zeigt published/unpublished Status, Preis und Free-Plan-Kennzeichnung.
+ * Zeigt Published-Toggle (klickbar) und Löschen-Button direkt in der Zeile.
  */
 
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
+import PublishToggle from '@/components/admin/PublishToggle'
+import DeleteToolButton from '@/components/admin/DeleteToolButton'
 import { formatPreis } from '@/lib/utils/format'
 
 const COLUMNS = [
-  { label: 'Tool',        width: '1fr'   },
-  { label: 'Slug',        width: '120px' },
-  { label: 'Preis ab',    width: '100px' },
-  { label: 'Free Plan',   width: '80px'  },
-  { label: 'Status',      width: '100px' },
-  { label: '',            width: '110px' },
+  { label: 'Tool',      width: '1fr'   },
+  { label: 'Slug',      width: '140px' },
+  { label: 'Preis ab',  width: '100px' },
+  { label: 'Free Plan', width: '80px'  },
+  { label: 'Status',    width: '140px' },
+  { label: '',          width: '160px' },
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
@@ -23,7 +25,6 @@ export default async function AdminToolsPage() {
   const tools = await prisma.tool.findMany({
     include: {
       translations: { where: { locale: 'de' } },
-      categories: true,
     },
     orderBy: { createdAt: 'desc' },
   })
@@ -53,6 +54,7 @@ export default async function AdminToolsPage() {
                 fontSize: '14px',
               }}
             >
+              {/* Tool-Name + Kurzbeschreibung */}
               <div>
                 <a
                   href={`/admin/tools/${tool.id}`}
@@ -68,46 +70,50 @@ export default async function AdminToolsPage() {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
-                    maxWidth: '320px',
+                    maxWidth: '300px',
                   }}>
                     {translation.shortDescription}
                   </p>
                 )}
               </div>
+
+              {/* Slug */}
               <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>
                 {tool.slug}
               </span>
+
+              {/* Preis */}
               <span style={{ color: 'var(--color-text-primary)' }}>
                 {formatPreis(tool.startingPriceMonthly)}
               </span>
+
+              {/* Free Plan */}
               <span style={{ fontSize: '13px', color: tool.hasFreePlan ? 'var(--color-success)' : 'var(--color-text-secondary)' }}>
                 {tool.hasFreePlan ? '✓ Ja' : '—'}
               </span>
-              <span style={{
-                display: 'inline-block',
-                padding: '3px 10px',
-                borderRadius: '20px',
-                fontSize: '12px',
-                fontWeight: '600',
-                backgroundColor: tool.published ? 'var(--color-success-bg)' : 'var(--color-badge-bg)',
-                color: tool.published ? 'var(--color-success-text)' : 'var(--color-text-secondary)',
-              }}>
-                {tool.published ? 'Veröffentlicht' : 'Entwurf'}
-              </span>
-              <a
-                href={`/admin/tools/${tool.id}`}
-                style={{
-                  fontSize: '13px',
-                  color: 'var(--color-text-secondary)',
-                  textDecoration: 'none',
-                  padding: '5px 12px',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-btn)',
-                  display: 'inline-block',
-                }}
-              >
-                Bearbeiten →
-              </a>
+
+              {/* Status — klickbarer Toggle */}
+              <PublishToggle toolId={tool.id} published={tool.published} />
+
+              {/* Aktionen: Bearbeiten + Löschen */}
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <a
+                  href={`/admin/tools/${tool.id}`}
+                  style={{
+                    fontSize: '13px',
+                    color: 'var(--color-text-secondary)',
+                    textDecoration: 'none',
+                    padding: '5px 12px',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-btn)',
+                    display: 'inline-block',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Bearbeiten →
+                </a>
+                <DeleteToolButton toolId={tool.id} toolName={name} />
+              </div>
             </div>
           )
         })}

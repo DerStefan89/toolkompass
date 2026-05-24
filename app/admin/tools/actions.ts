@@ -238,3 +238,35 @@ export async function deleteTool(id: string): Promise<void> {
   revalidatePath('/')
   redirect('/admin/tools')
 }
+
+// Für die Tool-Liste: löscht ohne redirect, gibt Fehlerstatus zurück.
+export async function deleteToolById(id: string): Promise<{ error?: string }> {
+  try {
+    await prisma.tool.delete({ where: { id } })
+  } catch {
+    return { error: 'Löschen fehlgeschlagen.' }
+  }
+  revalidatePath('/admin/tools')
+  revalidatePath('/')
+  return {}
+}
+
+// Toggled published true↔false und setzt publishedAt entsprechend.
+export async function togglePublished(id: string): Promise<void> {
+  const tool = await prisma.tool.findUnique({
+    where: { id },
+    select: { published: true },
+  })
+  if (!tool) return
+
+  await prisma.tool.update({
+    where: { id },
+    data: {
+      published: !tool.published,
+      publishedAt: !tool.published ? new Date() : null,
+    },
+  })
+
+  revalidatePath('/admin/tools')
+  revalidatePath('/')
+}
