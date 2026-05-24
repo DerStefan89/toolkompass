@@ -131,8 +131,8 @@ export default async function AdminStacksPage() {
                   borderRadius: '20px',
                   fontSize: '12px',
                   fontWeight: '600',
-                  backgroundColor: stack.published ? '#c6f6d5' : 'var(--color-badge-bg)',
-                  color: stack.published ? '#276749' : 'var(--color-text-secondary)',
+                  backgroundColor: stack.published ? 'var(--color-success-bg)' : 'var(--color-badge-bg)',
+                  color: stack.published ? 'var(--color-success-text)' : 'var(--color-text-secondary)',
                 }}>
                   {stack.published ? 'Veröffentlicht' : 'Entwurf'}
                 </span>

@@ -346,7 +346,7 @@ export default async function VergleichDetailSeite({
                 <p style={{ fontWeight: '600', fontSize: '12px', marginBottom: '8px' }}>Nachteile</p>
                 {tool.nachteile.map((n) => (
                   <div key={n} style={{ display: 'flex', gap: '6px', marginBottom: '6px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-                    <span style={{ color: '#e53e3e' }}>✗</span>{n}
+                    <span style={{ color: 'var(--color-error)' }}>✗</span>{n}
                   </div>
                 ))}
               </div>

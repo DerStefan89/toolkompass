@@ -156,7 +156,7 @@ export default async function AdminToolsPage() {
                 {/* Free Plan */}
                 <span style={{
                   fontSize: '13px',
-                  color: tool.hasFreePlan ? '#38a169' : 'var(--color-text-secondary)',
+                  color: tool.hasFreePlan ? 'var(--color-success)' : 'var(--color-text-secondary)',
                 }}>
                   {tool.hasFreePlan ? '✓ Ja' : '—'}
                 </span>
@@ -168,8 +168,8 @@ export default async function AdminToolsPage() {
                   borderRadius: '20px',
                   fontSize: '12px',
                   fontWeight: '600',
-                  backgroundColor: tool.published ? '#c6f6d5' : 'var(--color-badge-bg)',
-                  color: tool.published ? '#276749' : 'var(--color-text-secondary)',
+                  backgroundColor: tool.published ? 'var(--color-success-bg)' : 'var(--color-badge-bg)',
+                  color: tool.published ? 'var(--color-success-text)' : 'var(--color-text-secondary)',
                 }}>
                   {tool.published ? 'Veröffentlicht' : 'Entwurf'}
                 </span>

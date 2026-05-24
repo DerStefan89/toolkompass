@@ -16,6 +16,18 @@
   --color-text-secondary: #666666; /* Grau — Untertexte */
   --color-border: #e0dbd0;      /* Helles Beige — Linien und Rahmen */
   --color-badge-bg: #f0ece2;    /* Sehr helles Beige — Badge-Hintergrund */
+
+  /* Semantische Status-Farben */
+  --color-success: #38a169;         /* Grün — Free Plan, positive Werte */
+  --color-success-bg: #c6f6d5;      /* Hellgrün — Hintergrund "Veröffentlicht"-Badge */
+  --color-success-text: #276749;    /* Dunkelgrün — Text auf success-bg */
+  --color-error: #e53e3e;           /* Rot — Schwächen, Fehler, Warnung */
+  --color-error-bg: #fff5f5;        /* Sehr helles Rot — Fehlermeldungs-Hintergrund */
+  --color-error-border: #fed7d7;    /* Helles Rot — Fehlermeldungs-Rahmen */
+  --color-warning: #d97706;         /* Amber — Warnhinweise */
+  --color-warning-bg: #fef9c3;      /* Hellgelb — "Bald verfügbar"-Badge-Hintergrund */
+  --color-warning-text: #854d0e;    /* Braun — Text auf warning-bg */
+
   --radius-card: 8px;           /* Wie rund die Ecken von Cards sind */
   --radius-btn: 6px;            /* Wie rund die Ecken von Buttons sind */
   --shadow-card: 0 1px 4px rgba(0,0,0,0.06); /* Dezenter Schatten */

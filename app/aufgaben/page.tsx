@@ -57,7 +57,7 @@ const aufgabeData = {
     },
     {
       kuerzel: 'H',
-      farbe: '#e53e3e',
+      farbe: 'var(--color-error)',
       name: 'HubSpot CRM',
       kategorie: 'CRM & Marketing',
       beschreibung: 'Kunden verwalten, Deals tracken und Marketing automatisieren. Starkes Free-Angebot für den Einstieg.',

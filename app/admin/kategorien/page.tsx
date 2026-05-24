@@ -133,8 +133,8 @@ export default async function AdminKategorienPage() {
                   borderRadius: '20px',
                   fontSize: '12px',
                   fontWeight: '600',
-                  backgroundColor: cat.published ? '#c6f6d5' : 'var(--color-badge-bg)',
-                  color: cat.published ? '#276749' : 'var(--color-text-secondary)',
+                  backgroundColor: cat.published ? 'var(--color-success-bg)' : 'var(--color-badge-bg)',
+                  color: cat.published ? 'var(--color-success-text)' : 'var(--color-text-secondary)',
                 }}>
                   {cat.published ? 'Veröffentlicht' : 'Entwurf'}
                 </span>

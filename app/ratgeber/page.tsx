@@ -129,11 +129,11 @@ export default function RatgeberSeite() {
         {/* Tool-Logos */}
         <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
           {[
-            { k: 'S', farbe: '#e53e3e', name: 'sevdesk' },
+            { k: 'S', farbe: 'var(--color-error)', name: 'sevdesk' },
             { k: 'N', farbe: '#000000', name: 'Notion' },
             { k: 'C', farbe: '#38b2ac', name: 'Calendly' },
             { k: 'L', farbe: '#805ad5', name: 'Loom' },
-            { k: 'C', farbe: '#38a169', name: 'ChatGPT' },
+            { k: 'C', farbe: 'var(--color-success)', name: 'ChatGPT' },
           ].map((tool) => (
             <div key={tool.name} style={{ textAlign: 'center' }}>
               <div style={{
@@ -245,8 +245,8 @@ export default function RatgeberSeite() {
           }}>
             <span style={{
               display: 'inline-block',
-              backgroundColor: '#fef9c3',
-              color: '#854d0e',
+              backgroundColor: 'var(--color-warning-bg)',
+              color: 'var(--color-warning-text)',
               fontSize: '11px',
               padding: '3px 10px',
               borderRadius: '20px',

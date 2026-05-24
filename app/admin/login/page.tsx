@@ -138,12 +138,12 @@ export default function AdminLoginPage() {
           {error && (
             <p style={{
               fontSize: '13px',
-              color: '#e53e3e',
+              color: 'var(--color-error)',
               marginBottom: '16px',
               padding: '10px 12px',
-              backgroundColor: '#fff5f5',
+              backgroundColor: 'var(--color-error-bg)',
               borderRadius: 'var(--radius-btn)',
-              border: '1px solid #fed7d7',
+              border: '1px solid var(--color-error-border)',
             }}>
               {error}
             </p>

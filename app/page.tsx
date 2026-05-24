@@ -136,8 +136,8 @@ export default function Home() {
               Vorschau: Dein Tool-Stack
             </span>
             <span style={{
-              backgroundColor: '#fef9c3',
-              color: '#854d0e',
+              backgroundColor: 'var(--color-warning-bg)',
+              color: 'var(--color-warning-text)',
               fontSize: '11px',
               padding: '2px 8px',
               borderRadius: '20px',
@@ -227,11 +227,11 @@ export default function Home() {
         }}>
           {[
             { kuerzel: 'N', farbe: '#000000', name: 'Notion', kategorie: 'Produktivität', beschreibung: 'Notizen, Wiki und einfache Workflows.', badge: 'Free Plan', preis: 'ab 4,00 €' },
-            { kuerzel: 'S', farbe: '#e53e3e', name: 'sevdesk', kategorie: 'Buchhaltung', beschreibung: 'Rechnungen, Belege und E-Rechnung.', badge: 'DSGVO', preis: 'ab 9,90 €' },
+            { kuerzel: 'S', farbe: 'var(--color-error)', name: 'sevdesk', kategorie: 'Buchhaltung', beschreibung: 'Rechnungen, Belege und E-Rechnung.', badge: 'DSGVO', preis: 'ab 9,90 €' },
             { kuerzel: 'L', farbe: '#805ad5', name: 'Loom', kategorie: 'Video', beschreibung: 'Screen Recording und Kundenupdates.', badge: 'Free Plan', preis: 'ab 0,00 €' },
-            { kuerzel: 'F', farbe: '#e53e3e', name: 'Figma', kategorie: 'Design', beschreibung: 'Design, Prototyping und Zusammenarbeit.', badge: 'Beliebt', preis: 'ab 12,00 €' },
+            { kuerzel: 'F', farbe: 'var(--color-error)', name: 'Figma', kategorie: 'Design', beschreibung: 'Design, Prototyping und Zusammenarbeit.', badge: 'Beliebt', preis: 'ab 12,00 €' },
             { kuerzel: 'C', farbe: '#6b46c1', name: 'ClickUp', kategorie: 'Projektmngmt', beschreibung: 'Aufgaben, Projekte und Teamwork.', badge: 'Team', preis: 'ab 5,00 €' },
-            { kuerzel: 'C', farbe: '#38a169', name: 'Canva', kategorie: 'Design', beschreibung: 'Social Designs und Vorlagen.', badge: 'Free Plan', preis: 'ab 0,00 €' },
+            { kuerzel: 'C', farbe: 'var(--color-success)', name: 'Canva', kategorie: 'Design', beschreibung: 'Social Designs und Vorlagen.', badge: 'Free Plan', preis: 'ab 0,00 €' },
           ].map((tool) => (
             <div key={tool.name} style={{
               backgroundColor: 'var(--color-bg-card)',

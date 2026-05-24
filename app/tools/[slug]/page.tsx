@@ -307,10 +307,10 @@ export default async function ToolDetailSeite({
               ))}
             </div>
             <div>
-              <p style={{ fontWeight: '600', fontSize: '13px', marginBottom: '8px', color: '#e53e3e' }}>Schwächen</p>
+              <p style={{ fontWeight: '600', fontSize: '13px', marginBottom: '8px', color: 'var(--color-error)' }}>Schwächen</p>
               {t.weaknesses.map((s) => (
                 <div key={s} style={{ display: 'flex', gap: '6px', marginBottom: '6px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-                  <span style={{ color: '#e53e3e', flexShrink: 0 }}>✗</span>{s}
+                  <span style={{ color: 'var(--color-error)', flexShrink: 0 }}>✗</span>{s}
                 </div>
               ))}
             </div>

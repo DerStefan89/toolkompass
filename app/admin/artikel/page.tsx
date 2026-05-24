@@ -139,8 +139,8 @@ export default async function AdminArtikelPage() {
                 borderRadius: '20px',
                 fontSize: '12px',
                 fontWeight: '600',
-                backgroundColor: article.published ? '#c6f6d5' : 'var(--color-badge-bg)',
-                color: article.published ? '#276749' : 'var(--color-text-secondary)',
+                backgroundColor: article.published ? 'var(--color-success-bg)' : 'var(--color-badge-bg)',
+                color: article.published ? 'var(--color-success-text)' : 'var(--color-text-secondary)',
               }}>
                 {article.published ? 'Veröffentlicht' : 'Entwurf'}
               </span>
