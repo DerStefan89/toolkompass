@@ -26,12 +26,13 @@ type Props = {
 export default async function EditToolPage({ params }: Props) {
   const { id } = await params
 
-  const [tool, vendors, categories] = await Promise.all([
+  const [tool, vendors, categories, tagGroups] = await Promise.all([
     prisma.tool.findUnique({
       where: { id },
       include: {
         translations: { where: { locale: 'de' } },
         categories: true,
+        tags: true,
       },
     }),
     prisma.vendor.findMany({
@@ -39,6 +40,10 @@ export default async function EditToolPage({ params }: Props) {
     }),
     prisma.category.findMany({
       include: { translations: { where: { locale: 'de' } } },
+      orderBy: { sortOrder: 'asc' },
+    }),
+    prisma.tagGroup.findMany({
+      include: { tags: { orderBy: { sortOrder: 'asc' } } },
       orderBy: { sortOrder: 'asc' },
     }),
   ])
@@ -58,6 +63,7 @@ export default async function EditToolPage({ params }: Props) {
     isAffiliate: tool.isAffiliate,
     published: tool.published,
     categoryIds: tool.categories.map(c => c.categoryId),
+    tagIds:      tool.tags.map(t => t.tagId),
     features: translation?.features ?? [],
     strengths: translation?.strengths ?? [],
     weaknesses: translation?.weaknesses ?? [],
@@ -69,6 +75,11 @@ export default async function EditToolPage({ params }: Props) {
   const categoryOptions = categories.map(cat => ({
     id: cat.id,
     name: cat.translations[0]?.name ?? cat.slug,
+  }))
+  const tagGroupOptions = tagGroups.map(g => ({
+    id:   g.id,
+    name: g.name,
+    tags: g.tags.map(t => ({ id: t.id, name: t.name })),
   }))
 
   // Die Tool-ID wird vorab eingebunden, damit ToolForm die generische Signatur
@@ -114,6 +125,7 @@ export default async function EditToolPage({ params }: Props) {
           action={boundUpdateTool}
           vendors={vendorOptions}
           categories={categoryOptions}
+          tagGroups={tagGroupOptions}
           defaultValues={defaultValues}
         />
       </div>

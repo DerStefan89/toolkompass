@@ -13,14 +13,27 @@ import { updateArtikel, deleteArtikel } from '../actions'
 import type { ArtikelFormDefaults } from '@/components/admin/ArtikelForm'
 
 export default async function EditArtikelPage({ params }: { params: { id: string } }) {
-  const article = await prisma.article.findUnique({
-    where: { id: params.id },
-    include: {
-      sections: { orderBy: { sortOrder: 'asc' } },
-    },
-  })
+  const [article, tagGroups] = await Promise.all([
+    prisma.article.findUnique({
+      where: { id: params.id },
+      include: {
+        sections: { orderBy: { sortOrder: 'asc' } },
+        tags:     true,
+      },
+    }),
+    prisma.tagGroup.findMany({
+      include: { tags: { orderBy: { sortOrder: 'asc' } } },
+      orderBy: { sortOrder: 'asc' },
+    }),
+  ])
 
   if (!article) notFound()
+
+  const tagGroupOptions = tagGroups.map(g => ({
+    id:   g.id,
+    name: g.name,
+    tags: g.tags.map(t => ({ id: t.id, name: t.name })),
+  }))
 
   const defaultValues: ArtikelFormDefaults = {
     title:     article.title,
@@ -32,6 +45,7 @@ export default async function EditArtikelPage({ params }: { params: { id: string
       heading: s.heading ?? '',
       content: s.content,
     })),
+    tagIds: article.tags.map(t => t.tagId),
   }
 
   const boundUpdate = updateArtikel.bind(null, article.id)
@@ -54,7 +68,7 @@ export default async function EditArtikelPage({ params }: { params: { id: string
         </p>
       </div>
 
-      <ArtikelForm action={boundUpdate} defaultValues={defaultValues} />
+      <ArtikelForm action={boundUpdate} tagGroups={tagGroupOptions} defaultValues={defaultValues} />
 
       {/* Gefahrenzone */}
       <div style={{

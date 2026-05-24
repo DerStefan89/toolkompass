@@ -17,6 +17,12 @@ import type { ActionState, SectionInput } from '@/app/admin/artikel/actions'
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
+export type TagGroupOption = {
+  id: string
+  name: string
+  tags: { id: string; name: string }[]
+}
+
 export type ArtikelFormDefaults = {
   title: string
   slug: string
@@ -24,10 +30,12 @@ export type ArtikelFormDefaults = {
   type: 'guide' | 'top_list' | 'comparison' | 'tutorial'
   published: boolean
   sections: SectionInput[]
+  tagIds: string[]
 }
 
 type ArtikelFormProps = {
   action: (prev: ActionState, formData: FormData) => Promise<ActionState>
+  tagGroups?: TagGroupOption[]
   defaultValues?: ArtikelFormDefaults
 }
 
@@ -112,7 +120,7 @@ function inputStyle(hasError: boolean): React.CSSProperties {
 
 // ─── Hauptkomponente ─────────────────────────────────────────────────────────
 
-export default function ArtikelForm({ action, defaultValues }: ArtikelFormProps) {
+export default function ArtikelForm({ action, tagGroups = [], defaultValues }: ArtikelFormProps) {
   const [state, formAction, isPending] = useActionState(action, {})
 
   const [title, setTitle] = useState(defaultValues?.title ?? '')
@@ -327,6 +335,55 @@ export default function ArtikelForm({ action, defaultValues }: ArtikelFormProps)
           + Abschnitt hinzufügen
         </button>
       </Section>
+
+      {/* ── Tags ── */}
+      {tagGroups.length > 0 && (
+        <Section title="Tags">
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '-8px' }}>
+            Optional. Mehrere Tags aus verschiedenen Gruppen können gewählt werden.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {tagGroups.map(group => (
+              <div key={group.id}>
+                <p style={{
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  color: 'var(--color-text-secondary)',
+                  marginBottom: '8px',
+                }}>
+                  {group.name}
+                </p>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                  gap: '6px',
+                }}>
+                  {group.tags.map(tag => (
+                    <label key={tag.id} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                    }}>
+                      <input
+                        type="checkbox"
+                        name="tagIds"
+                        value={tag.id}
+                        defaultChecked={defaultValues?.tagIds.includes(tag.id) ?? false}
+                        style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                      />
+                      {tag.name}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
 
       {/* ── Submit ── */}
       <div style={{

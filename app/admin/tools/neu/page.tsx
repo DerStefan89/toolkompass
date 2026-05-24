@@ -13,12 +13,16 @@ import ToolForm from '@/components/admin/ToolForm'
 import { createTool } from '@/app/admin/tools/actions'
 
 export default async function NewToolPage() {
-  const [vendors, categories] = await Promise.all([
+  const [vendors, categories, tagGroups] = await Promise.all([
     prisma.vendor.findMany({
       orderBy: { name: 'asc' },
     }),
     prisma.category.findMany({
       include: { translations: { where: { locale: 'de' } } },
+      orderBy: { sortOrder: 'asc' },
+    }),
+    prisma.tagGroup.findMany({
+      include: { tags: { orderBy: { sortOrder: 'asc' } } },
       orderBy: { sortOrder: 'asc' },
     }),
   ])
@@ -27,6 +31,11 @@ export default async function NewToolPage() {
   const categoryOptions = categories.map(cat => ({
     id: cat.id,
     name: cat.translations[0]?.name ?? cat.slug,
+  }))
+  const tagGroupOptions = tagGroups.map(g => ({
+    id:   g.id,
+    name: g.name,
+    tags: g.tags.map(t => ({ id: t.id, name: t.name })),
   }))
 
   return (
@@ -59,6 +68,7 @@ export default async function NewToolPage() {
           action={createTool}
           vendors={vendorOptions}
           categories={categoryOptions}
+          tagGroups={tagGroupOptions}
         />
       </div>
     </div>

@@ -34,6 +34,7 @@ type ToolFormData = {
   isAffiliate: boolean
   published: boolean
   categoryIds: string[]
+  tagIds: string[]
   features: string[]
   strengths: string[]
   weaknesses: string[]
@@ -68,6 +69,7 @@ function parseToolForm(formData: FormData): {
   const isAffiliate = formData.get('isAffiliate') === 'on'
   const published = formData.get('published') === 'on'
   const categoryIds = formData.getAll('categoryIds') as string[]
+  const tagIds      = formData.getAll('tagIds') as string[]
 
   const errors: Record<string, string> = {}
   if (!name) errors.name = 'Name ist erforderlich.'
@@ -89,7 +91,7 @@ function parseToolForm(formData: FormData): {
   return {
     data: {
       name, slug, vendorId, shortDescription, longDescription,
-      startingPriceMonthly, hasFreePlan, isAffiliate, published, categoryIds,
+      startingPriceMonthly, hasFreePlan, isAffiliate, published, categoryIds, tagIds,
       features: parseLines(formData.get('features')),
       strengths: parseLines(formData.get('strengths')),
       weaknesses: parseLines(formData.get('weaknesses')),
@@ -146,6 +148,10 @@ export async function createTool(
         categories: {
           create: data.categoryIds.map(categoryId => ({ categoryId })),
         },
+        // Tags optional — kein Fehler wenn keine gewählt
+        tags: {
+          create: data.tagIds.map(tagId => ({ tagId })),
+        },
       },
     })
   } catch {
@@ -198,10 +204,15 @@ export async function updateTool(
             update: buildTranslation(data),
           },
         },
-        // Kategoriezuordnungen werden atomisch ersetzt
+        // Kategoriezuordnungen atomisch ersetzen
         categories: {
           deleteMany: {},
           create: data.categoryIds.map(categoryId => ({ categoryId })),
+        },
+        // Tag-Zuordnungen atomisch ersetzen (optional — leere Liste ist gültig)
+        tags: {
+          deleteMany: {},
+          create: data.tagIds.map(tagId => ({ tagId })),
         },
       },
     })

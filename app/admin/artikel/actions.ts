@@ -34,6 +34,7 @@ type ArtikelFormData = {
   type: 'guide' | 'top_list' | 'comparison' | 'tutorial'
   published: boolean
   sections: SectionInput[]
+  tagIds: string[]
 }
 
 // ─── Hilfsfunktionen ────────────────────────────────────────────────────────
@@ -50,6 +51,7 @@ function parseArtikelForm(formData: FormData): {
   const subtitle  = str('subtitle')
   const type      = str('type') as ArtikelFormData['type']
   const published = formData.get('published') === 'on'
+  const tagIds    = formData.getAll('tagIds') as string[]
 
   // Sections kommen als JSON-String aus dem Hidden-Field
   let sections: SectionInput[] = []
@@ -80,7 +82,7 @@ function parseArtikelForm(formData: FormData): {
   }
 
   return {
-    data: { title, slug, subtitle, type, published, sections: filledSections },
+    data: { title, slug, subtitle, type, published, sections: filledSections, tagIds },
     errors: Object.keys(errors).length > 0 ? errors : null,
   }
 }
@@ -117,6 +119,10 @@ export async function createArtikel(
             content:   s.content.trim(),
             sortOrder: i,
           })),
+        },
+        // Tags optional — kein Fehler wenn keine gewählt
+        tags: {
+          create: data.tagIds.map(tagId => ({ tagId })),
         },
       },
     })
@@ -168,6 +174,11 @@ export async function updateArtikel(
             content:   s.content.trim(),
             sortOrder: i,
           })),
+        },
+        // Tag-Zuordnungen atomisch ersetzen (optional — leere Liste ist gültig)
+        tags: {
+          deleteMany: {},
+          create: data.tagIds.map(tagId => ({ tagId })),
         },
       },
     })

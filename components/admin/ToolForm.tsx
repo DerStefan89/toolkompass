@@ -34,6 +34,12 @@ export type CategoryOption = {
   name: string
 }
 
+export type TagGroupOption = {
+  id: string
+  name: string
+  tags: { id: string; name: string }[]
+}
+
 export type ToolFormDefaults = {
   name: string
   slug: string
@@ -45,6 +51,7 @@ export type ToolFormDefaults = {
   isAffiliate: boolean
   published: boolean
   categoryIds: string[]
+  tagIds: string[]
   features: string[]
   strengths: string[]
   weaknesses: string[]
@@ -56,6 +63,7 @@ type ToolFormProps = {
   action: (prev: ActionState, formData: FormData) => Promise<ActionState>
   vendors: VendorOption[]
   categories: CategoryOption[]
+  tagGroups?: TagGroupOption[]
   defaultValues?: ToolFormDefaults
 }
 
@@ -141,7 +149,7 @@ function inputStyle(hasError: boolean): React.CSSProperties {
 
 // ─── Hauptkomponente ─────────────────────────────────────────────────────────
 
-export default function ToolForm({ action, vendors, categories, defaultValues }: ToolFormProps) {
+export default function ToolForm({ action, vendors, categories, tagGroups = [], defaultValues }: ToolFormProps) {
   const [state, formAction, isPending] = useActionState(action, {})
 
   // Kontrollierter Zustand — alle müssen kontrolliert sein, damit sie bei
@@ -415,6 +423,55 @@ export default function ToolForm({ action, vendors, categories, defaultValues }:
           </Field>
         </div>
       </Section>
+
+      {/* ── Tags ── */}
+      {tagGroups.length > 0 && (
+        <Section title="Tags">
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '-8px' }}>
+            Optional. Mehrere Tags aus verschiedenen Gruppen können gewählt werden.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {tagGroups.map(group => (
+              <div key={group.id}>
+                <p style={{
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  color: 'var(--color-text-secondary)',
+                  marginBottom: '8px',
+                }}>
+                  {group.name}
+                </p>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                  gap: '6px',
+                }}>
+                  {group.tags.map(tag => (
+                    <label key={tag.id} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                    }}>
+                      <input
+                        type="checkbox"
+                        name="tagIds"
+                        value={tag.id}
+                        defaultChecked={defaultValues?.tagIds.includes(tag.id) ?? false}
+                        style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                      />
+                      {tag.name}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
 
       {/* ── Submit-Bereich ── */}
       <div style={{

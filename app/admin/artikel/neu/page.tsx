@@ -5,10 +5,22 @@
  * Delegiert alle Logik an ArtikelForm + createArtikel Server Action.
  */
 
+import { prisma } from '@/lib/prisma'
 import ArtikelForm from '@/components/admin/ArtikelForm'
 import { createArtikel } from '../actions'
 
-export default function NeuArtikelPage() {
+export default async function NeuArtikelPage() {
+  const tagGroups = await prisma.tagGroup.findMany({
+    include: { tags: { orderBy: { sortOrder: 'asc' } } },
+    orderBy: { sortOrder: 'asc' },
+  })
+
+  const tagGroupOptions = tagGroups.map(g => ({
+    id:   g.id,
+    name: g.name,
+    tags: g.tags.map(t => ({ id: t.id, name: t.name })),
+  }))
+
   return (
     <div>
       <div style={{ marginBottom: '32px' }}>
@@ -26,7 +38,7 @@ export default function NeuArtikelPage() {
         </p>
       </div>
 
-      <ArtikelForm action={createArtikel} />
+      <ArtikelForm action={createArtikel} tagGroups={tagGroupOptions} />
     </div>
   )
 }
