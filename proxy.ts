@@ -1,15 +1,18 @@
 /**
- * Datei: middleware.ts
+ * Datei: proxy.ts
  *
  * Zweck: Schützt alle /admin-Routen.
  * Nicht eingeloggte Nutzer werden auf /admin/login weitergeleitet.
  * Eingeloggte Nutzer auf /admin/login werden auf /admin weitergeleitet.
+ *
+ * Hinweis: Diese Datei heißt proxy.ts (vormals middleware.ts).
+ * Next.js 16 hat die "middleware"-Konvention zugunsten von "proxy" abgelöst.
  */
 
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
