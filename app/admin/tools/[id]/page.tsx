@@ -17,6 +17,8 @@ import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import ToolForm from '@/components/admin/ToolForm'
 import DeleteButton from '@/components/admin/DeleteButton'
+import AffiliateLinkManager from '@/components/admin/AffiliateLinkManager'
+import type { AffiliateLinkData } from '@/components/admin/AffiliateLinkManager'
 import { updateTool, deleteTool } from '@/app/admin/tools/actions'
 
 type Props = {
@@ -33,6 +35,7 @@ export default async function EditToolPage({ params }: Props) {
         translations: { where: { locale: 'de' } },
         categories: true,
         tags: true,
+        affiliateLinks: { orderBy: { createdAt: 'asc' } },
       },
     }),
     prisma.vendor.findMany({
@@ -82,6 +85,15 @@ export default async function EditToolPage({ params }: Props) {
     tags: g.tags.map(t => ({ id: t.id, name: t.name })),
   }))
 
+  const affiliateLinks: AffiliateLinkData[] = tool.affiliateLinks.map(l => ({
+    id:           l.id,
+    label:        l.label,
+    url:          l.url,
+    trackingSlug: l.trackingSlug,
+    isActive:     l.isActive,
+    isPrimary:    l.isPrimary,
+  }))
+
   // Die Tool-ID wird vorab eingebunden, damit ToolForm die generische Signatur
   // (prev, formData) => Promise<ActionState> erhält
   const boundUpdateTool = updateTool.bind(null, id)
@@ -129,6 +141,8 @@ export default async function EditToolPage({ params }: Props) {
           defaultValues={defaultValues}
         />
       </div>
+
+      <AffiliateLinkManager toolId={id} toolSlug={tool.slug} links={affiliateLinks} />
 
       {/* Gefahrenzone */}
       <div style={{
