@@ -166,6 +166,38 @@ Jede wichtige Datei beginnt mit:
 
 ---
 
+## 🤖 Agent-Rollen — automatisch anwenden
+
+Beim Start einer Aufgabe die passende Agent-Datei lesen und deren Regeln einhalten.
+Mehrere Rollen können gleichzeitig aktiv sein (z. B. Builder + Guardian bei UI-Arbeit).
+
+| Aufgabentyp                              | Agent-Datei lesen                    |
+|------------------------------------------|--------------------------------------|
+| UI-Komponente oder Seite bauen           | `agents/frontend-builder.md`         |
+| Code nach dem Bauen prüfen              | `agents/frontend-reviewer.md`        |
+| Design-Treue gegen Screenshot prüfen    | `agents/design-guardian.md`          |
+| Neue Iteration planen / Scope klären    | `agents/orchestrator.md`             |
+| Tests definieren oder schreiben         | `agents/qa.md`                       |
+| Datenmodell oder Architektur entwerfen  | `agents/backend-architect.md`        |
+
+### Pflicht-Reviews nach jeder UI-Aufgabe
+
+Nach dem Erstellen oder Ändern von UI-Komponenten und Seiten **immer** kurz prüfen:
+
+**Frontend Reviewer** (`agents/frontend-reviewer.md`):
+- [ ] Kein `any` in TypeScript
+- [ ] `<button>` für Aktionen, `<a>` für Navigation
+- [ ] Empty State vorhanden
+- [ ] Layout bricht bei langen Texten nicht
+
+**Design Guardian** (`agents/design-guardian.md`):
+- [ ] Farben stimmen mit Design Tokens überein
+- [ ] Hintergrund Creme (`#f5f0e8`), nicht Weiß
+- [ ] Nur `#1e3a2a` als CTA-Farbe
+- [ ] Abstände und Typografie konsistent mit Screenshots
+
+---
+
 ## 🔄 Entscheidungsregel bei Unsicherheit
 
 1. Design-Screenshot respektieren
