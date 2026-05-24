@@ -168,3 +168,34 @@ export async function deleteKategorie(id: string): Promise<void> {
   revalidatePath('/kategorien')
   redirect('/admin/kategorien')
 }
+
+// Für die Kategorien-Liste: löscht ohne redirect, gibt Fehlerstatus zurück.
+export async function deleteKategorieById(id: string): Promise<{ error?: string }> {
+  try {
+    await prisma.category.delete({ where: { id } })
+  } catch {
+    return { error: 'Löschen fehlgeschlagen.' }
+  }
+  revalidatePath('/admin/kategorien')
+  revalidatePath('/kategorien')
+  revalidatePath('/')
+  return {}
+}
+
+// Toggled published true↔false.
+export async function toggleKategoriePublished(id: string): Promise<void> {
+  const cat = await prisma.category.findUnique({
+    where: { id },
+    select: { published: true },
+  })
+  if (!cat) return
+
+  await prisma.category.update({
+    where: { id },
+    data: { published: !cat.published },
+  })
+
+  revalidatePath('/admin/kategorien')
+  revalidatePath('/kategorien')
+  revalidatePath('/')
+}

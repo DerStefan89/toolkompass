@@ -2,19 +2,23 @@
  * Datei: app/admin/kategorien/page.tsx
  *
  * Zweck: Liste aller Kategorien im Admin-Bereich.
- * Zeigt Name, Slug, Icon, Tool-Anzahl und published-Status.
+ * Zeigt Name, Slug, Icon, Tool-Anzahl, klickbaren Published-Toggle
+ * und Löschen-Button direkt in der Zeile.
  */
 
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
+import PublishToggle from '@/components/admin/PublishToggle'
+import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
+import { toggleKategoriePublished, deleteKategorieById } from '@/app/admin/kategorien/actions'
 
 const COLUMNS = [
   { label: 'Kategorie', width: '1fr'   },
-  { label: 'Slug',      width: '160px' },
+  { label: 'Slug',      width: '180px' },
   { label: 'Icon',      width: '60px'  },
-  { label: 'Tools',     width: '80px'  },
-  { label: 'Status',    width: '120px' },
-  { label: '',          width: '100px' },
+  { label: 'Tools',     width: '70px'  },
+  { label: 'Status',    width: '140px' },
+  { label: '',          width: '160px' },
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
@@ -52,6 +56,7 @@ export default async function AdminKategorienPage() {
                 fontSize: '14px',
               }}
             >
+              {/* Name + Beschreibung */}
               <div>
                 <a
                   href={`/admin/kategorien/${cat.id}`}
@@ -67,41 +72,52 @@ export default async function AdminKategorienPage() {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
-                    maxWidth: '320px',
+                    maxWidth: '300px',
                   }}>
                     {t.description}
                   </p>
                 )}
               </div>
+
+              {/* Slug */}
               <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>
                 {cat.slug}
               </span>
-              <span style={{ fontSize: '20px' }}>{cat.icon ?? '—'}</span>
-              <span style={{ color: 'var(--color-text-primary)' }}>{cat._count.tools}</span>
-              <span style={{
-                display: 'inline-block',
-                padding: '3px 10px',
-                borderRadius: '20px',
-                fontSize: '12px',
-                fontWeight: '600',
-                backgroundColor: cat.published ? 'var(--color-success-bg)' : 'var(--color-badge-bg)',
-                color: cat.published ? 'var(--color-success-text)' : 'var(--color-text-secondary)',
-              }}>
-                {cat.published ? 'Veröffentlicht' : 'Entwurf'}
-              </span>
 
-              {/* Expliziter Bearbeiten-Link als letzte Spalte */}
-              <a
-                href={`/admin/kategorien/${cat.id}`}
-                style={{
-                  fontSize: '13px',
-                  color: 'var(--color-cta)',
-                  textDecoration: 'none',
-                  fontWeight: '500',
-                }}
-              >
-                Bearbeiten →
-              </a>
+              {/* Icon */}
+              <span style={{ fontSize: '20px' }}>{cat.icon ?? '—'}</span>
+
+              {/* Tool-Anzahl */}
+              <span style={{ color: 'var(--color-text-primary)' }}>{cat._count.tools}</span>
+
+              {/* Status — klickbarer Toggle */}
+              <PublishToggle
+                published={cat.published}
+                action={toggleKategoriePublished.bind(null, cat.id)}
+              />
+
+              {/* Aktionen: Bearbeiten + Löschen */}
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <a
+                  href={`/admin/kategorien/${cat.id}`}
+                  style={{
+                    fontSize: '13px',
+                    color: 'var(--color-text-secondary)',
+                    textDecoration: 'none',
+                    padding: '5px 12px',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-btn)',
+                    display: 'inline-block',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Bearbeiten →
+                </a>
+                <InlineDeleteButton
+                  action={deleteKategorieById.bind(null, cat.id)}
+                  confirmMessage={`"${name}" wirklich löschen?\nAlle Tool-Zuordnungen werden ebenfalls entfernt.`}
+                />
+              </div>
             </div>
           )
         })}

@@ -1,30 +1,35 @@
 /**
  * Datei: components/admin/PublishToggle.tsx
  *
- * Zweck: Klickbarer Published-Status-Badge in der Admin-Tool-Liste.
- * Toggled published true↔false via Server Action, ohne Seitenreload.
+ * Zweck: Wiederverwendbarer klickbarer Published-Status-Badge für alle
+ *        Admin-Listenseiten. Die Toggle-Action wird von außen übergeben,
+ *        damit diese Komponente nicht von einer spezifischen Entity abhängt.
+ *
+ * Verwendung:
+ *   <PublishToggle
+ *     published={tool.published}
+ *     action={togglePublished.bind(null, tool.id)}
+ *   />
+ *
+ * Die action muss eine Server Action sein, die per .bind() an eine ID gebunden
+ * ist, sodass sie keine weiteren Argumente erwartet.
  */
 
 'use client'
 
 import { useTransition } from 'react'
-import { togglePublished } from '@/app/admin/tools/actions'
 
 type Props = {
-  toolId: string
   published: boolean
+  action: () => Promise<void>
 }
 
-export default function PublishToggle({ toolId, published }: Props) {
+export default function PublishToggle({ published, action }: Props) {
   const [isPending, startTransition] = useTransition()
 
   function handleClick() {
-    startTransition(() => {
-      togglePublished(toolId)
-    })
+    startTransition(() => { action() })
   }
-
-  const label = isPending ? '…' : published ? 'Veröffentlicht' : 'Entwurf'
 
   return (
     <button
@@ -53,7 +58,7 @@ export default function PublishToggle({ toolId, published }: Props) {
         opacity: isPending ? 0.6 : 1,
       }}
     >
-      {label}
+      {isPending ? '…' : published ? 'Veröffentlicht' : 'Entwurf'}
     </button>
   )
 }

@@ -8,7 +8,8 @@
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import PublishToggle from '@/components/admin/PublishToggle'
-import DeleteToolButton from '@/components/admin/DeleteToolButton'
+import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
+import { togglePublished, deleteToolById } from '@/app/admin/tools/actions'
 import { formatPreis } from '@/lib/utils/format'
 
 const COLUMNS = [
@@ -93,7 +94,10 @@ export default async function AdminToolsPage() {
               </span>
 
               {/* Status — klickbarer Toggle */}
-              <PublishToggle toolId={tool.id} published={tool.published} />
+              <PublishToggle
+                published={tool.published}
+                action={togglePublished.bind(null, tool.id)}
+              />
 
               {/* Aktionen: Bearbeiten + Löschen */}
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -112,7 +116,10 @@ export default async function AdminToolsPage() {
                 >
                   Bearbeiten →
                 </a>
-                <DeleteToolButton toolId={tool.id} toolName={name} />
+                <InlineDeleteButton
+                  action={deleteToolById.bind(null, tool.id)}
+                  confirmMessage={`"${name}" wirklich löschen?\nDiese Aktion kann nicht rückgängig gemacht werden.`}
+                />
               </div>
             </div>
           )
