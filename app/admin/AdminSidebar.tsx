@@ -17,6 +17,7 @@ const navItems = [
   { href: '/admin/vendors',    label: 'Anbieter',   icon: '🏢' },
   { href: '/admin/kategorien', label: 'Kategorien', icon: '⊙'  },
   { href: '/admin/artikel',    label: 'Artikel',    icon: '✍️' },
+  { href: '/admin/vergleiche', label: 'Vergleiche', icon: '⇄'  },
   { href: '/admin/stacks',     label: 'Tool-Stacks',icon: '⊕'  },
   { href: '/admin/tags',       label: 'Tags',       icon: '◎'  },
 ]
