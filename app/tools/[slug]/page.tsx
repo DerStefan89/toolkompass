@@ -58,7 +58,11 @@ export default async function ToolDetailSeite({
   const t = tool.translations[0]
   if (!t) notFound()
 
-  const primaryUrl = tool.affiliateLinks[0]?.url ?? '#'
+  const primaryLink = tool.affiliateLinks[0]
+  // Tracking-URL wenn Affiliate-Link vorhanden, sonst Vendor-Website als Fallback
+  const primaryUrl = primaryLink
+    ? `/api/track/${primaryLink.id}`
+    : (tool.vendor.website ?? '#')
   const categoryNames = tool.categories
     .map((tc) => tc.category.translations[0]?.name)
     .filter(Boolean)
@@ -161,7 +165,7 @@ export default async function ToolDetailSeite({
           </div>
 
           {/* Buttons */}
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
             <a href={primaryUrl} target="_blank" rel="noopener noreferrer" style={{
               backgroundColor: 'var(--color-cta)',
               color: 'white',
@@ -184,6 +188,18 @@ export default async function ToolDetailSeite({
             }}>
               Vergleichen
             </a>
+            {tool.isAffiliate && (
+              <span style={{
+                fontSize: '11px',
+                color: 'var(--color-text-secondary)',
+                backgroundColor: 'var(--color-badge-bg)',
+                border: '1px solid var(--color-border)',
+                padding: '3px 10px',
+                borderRadius: '20px',
+              }}>
+                Partnerlink
+              </span>
+            )}
           </div>
         </div>
 
