@@ -19,7 +19,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import type { ActionState } from '@/app/admin/vendors/actions'
+import type { ActionState } from '@/lib/types/admin'
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 

@@ -16,7 +16,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import type { ActionState } from '@/app/admin/vergleiche/actions'
+import type { ActionState } from '@/lib/types/admin'
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 

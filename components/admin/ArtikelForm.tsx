@@ -13,7 +13,8 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import type { ActionState, SectionInput } from '@/app/admin/artikel/actions'
+import type { ActionState } from '@/lib/types/admin'
+import type { SectionInput } from '@/app/admin/artikel/actions'
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 

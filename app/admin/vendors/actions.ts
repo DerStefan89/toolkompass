@@ -16,7 +16,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
 
-export type { ActionState }
+
 
 // Interne Repräsentation der validierten Formulardaten
 type VendorFormData = {
