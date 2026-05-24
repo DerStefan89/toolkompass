@@ -12,10 +12,12 @@ import DeleteButton from '@/components/admin/DeleteButton'
 import { updateArtikel, deleteArtikel } from '../actions'
 import type { ArtikelFormDefaults } from '@/components/admin/ArtikelForm'
 
-export default async function EditArtikelPage({ params }: { params: { id: string } }) {
+export default async function EditArtikelPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
   const [article, tagGroups] = await Promise.all([
     prisma.article.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         sections: { orderBy: { sortOrder: 'asc' } },
         tags:     true,

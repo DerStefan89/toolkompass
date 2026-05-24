@@ -96,16 +96,21 @@ export default async function ToolDetailSeite({
               width: '64px',
               height: '64px',
               borderRadius: '12px',
-              backgroundColor: 'var(--color-cta)',
-              color: 'white',
+              backgroundColor: tool.logoUrl ? 'transparent' : 'var(--color-cta)',
+              border: tool.logoUrl ? '1px solid var(--color-border)' : 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontWeight: '700',
-              fontSize: '28px',
+              overflow: 'hidden',
               flexShrink: 0,
             }}>
-              {t.name.charAt(0).toUpperCase()}
+              {tool.logoUrl ? (
+                <img src={tool.logoUrl} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              ) : (
+                <span style={{ color: 'white', fontWeight: '700', fontSize: '28px' }}>
+                  {t.name.charAt(0).toUpperCase()}
+                </span>
+              )}
             </div>
             <div>
               <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '32px', fontWeight: '700', marginBottom: '4px' }}>

@@ -12,9 +12,11 @@ import DeleteButton from '@/components/admin/DeleteButton'
 import { updateTagGroup, deleteTagGroup } from '../actions'
 import type { TagGroupFormDefaults } from '@/components/admin/TagGroupForm'
 
-export default async function EditTagGroupPage({ params }: { params: { id: string } }) {
+export default async function EditTagGroupPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
   const group = await prisma.tagGroup.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: { tags: { orderBy: { sortOrder: 'asc' } } },
   })
 

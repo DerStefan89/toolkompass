@@ -170,15 +170,20 @@ export default async function KategorieDetailSeite({
                         width: '44px',
                         height: '44px',
                         borderRadius: '8px',
-                        backgroundColor: 'var(--color-cta)',
-                        color: 'white',
+                        backgroundColor: tool.logoUrl ? 'transparent' : 'var(--color-cta)',
+                        border: tool.logoUrl ? '1px solid var(--color-border)' : 'none',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontWeight: '700',
-                        fontSize: '18px',
+                        overflow: 'hidden',
                       }}>
-                        {name.charAt(0).toUpperCase()}
+                        {tool.logoUrl ? (
+                          <img src={tool.logoUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        ) : (
+                          <span style={{ color: 'white', fontWeight: '700', fontSize: '18px' }}>
+                            {name.charAt(0).toUpperCase()}
+                          </span>
+                        )}
                       </div>
                     </div>
 

@@ -12,10 +12,12 @@ import DeleteButton from '@/components/admin/DeleteButton'
 import { updateStack, deleteStack } from '../actions'
 import type { StackFormDefaults } from '@/components/admin/StackForm'
 
-export default async function EditStackPage({ params }: { params: { id: string } }) {
+export default async function EditStackPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
   const [stack, allTools] = await Promise.all([
     prisma.toolStack.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         translations: { where: { locale: 'de' } },
         tools: { orderBy: { sortOrder: 'asc' } },

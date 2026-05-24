@@ -278,15 +278,20 @@ export default async function Home() {
                       width: '36px',
                       height: '36px',
                       borderRadius: '8px',
-                      backgroundColor: 'var(--color-cta)',
-                      color: 'white',
+                      backgroundColor: tool.logoUrl ? 'transparent' : 'var(--color-cta)',
+                      border: tool.logoUrl ? '1px solid var(--color-border)' : 'none',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontWeight: '700',
-                      fontSize: '16px',
+                      overflow: 'hidden',
                     }}>
-                      {name.charAt(0).toUpperCase()}
+                      {tool.logoUrl ? (
+                        <img src={tool.logoUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                      ) : (
+                        <span style={{ color: 'white', fontWeight: '700', fontSize: '16px' }}>
+                          {name.charAt(0).toUpperCase()}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <p style={{ fontWeight: '600', fontSize: '14px', margin: 0 }}>{name}</p>
