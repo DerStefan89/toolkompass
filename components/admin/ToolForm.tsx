@@ -425,53 +425,62 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
       </Section>
 
       {/* ── Tags ── */}
-      {tagGroups.length > 0 && (
-        <Section title="Tags">
-          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '-8px' }}>
-            Optional. Mehrere Tags aus verschiedenen Gruppen können gewählt werden.
+      <Section title="Tags">
+        {tagGroups.length === 0 ? (
+          <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+            Keine Tag-Gruppen vorhanden.{' '}
+            <a href="/admin/tags" style={{ color: 'var(--color-cta)', textDecoration: 'none' }}>
+              Tags anlegen →
+            </a>
           </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {tagGroups.map(group => (
-              <div key={group.id}>
-                <p style={{
-                  fontSize: '12px',
-                  fontWeight: '600',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  color: 'var(--color-text-secondary)',
-                  marginBottom: '8px',
-                }}>
-                  {group.name}
-                </p>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-                  gap: '6px',
-                }}>
-                  {group.tags.map(tag => (
-                    <label key={tag.id} style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                    }}>
-                      <input
-                        type="checkbox"
-                        name="tagIds"
-                        value={tag.id}
-                        defaultChecked={defaultValues?.tagIds.includes(tag.id) ?? false}
-                        style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                      />
-                      {tag.name}
-                    </label>
-                  ))}
+        ) : (
+          <>
+            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '-8px' }}>
+              Optional. Mehrere Tags aus verschiedenen Gruppen können gewählt werden.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {tagGroups.map(group => (
+                <div key={group.id}>
+                  <p style={{
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                    color: 'var(--color-text-secondary)',
+                    marginBottom: '8px',
+                  }}>
+                    {group.name}
+                  </p>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                    gap: '6px',
+                  }}>
+                    {group.tags.map(tag => (
+                      <label key={tag.id} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                      }}>
+                        <input
+                          type="checkbox"
+                          name="tagIds"
+                          value={tag.id}
+                          defaultChecked={defaultValues?.tagIds.includes(tag.id) ?? false}
+                          style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                        />
+                        {tag.name}
+                      </label>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
+              ))}
+            </div>
+          </>
+        )}
+      </Section>
 
       {/* ── Submit-Bereich ── */}
       <div style={{

@@ -21,12 +21,68 @@ const prisma = new PrismaClient({ adapter })
 async function main() {
   console.log('Starte Seed...')
 
-  // ─── VENDOR (Fallback) ───────────────────────────────────────
-  const vendor = await prisma.vendor.upsert({
-    where: { slug: 'unbekannt' },
-    update: {},
-    create: { name: 'Unbekannt', slug: 'unbekannt' },
-  })
+  // ─── VENDORS ─────────────────────────────────────────────────
+  const vendorDefs = [
+    { slug: 'unbekannt',      name: 'Unbekannt',             website: null },
+    { slug: 'notion-labs',    name: 'Notion Labs, Inc.',     website: 'https://www.notion.so' },
+    { slug: 'sevdesk',        name: 'sevdesk GmbH',          website: 'https://sevdesk.de' },
+    { slug: 'haufe-lexware',  name: 'Haufe Group',           website: 'https://www.lexware.de' },
+    { slug: 'fastbill',       name: 'FastBill GmbH',         website: 'https://www.fastbill.com' },
+    { slug: 'buhl-data',      name: 'Buhl Data GmbH',        website: 'https://www.meinbuero.de' },
+    { slug: 'accountable',    name: 'Accountable SA',        website: 'https://www.accountable.eu' },
+    { slug: 'papierkram',     name: 'Papierkram GmbH',       website: 'https://www.papierkram.de' },
+    { slug: 'atlassian',      name: 'Atlassian (Loom)',      website: 'https://www.loom.com' },
+    { slug: 'figma-inc',      name: 'Figma, Inc.',           website: 'https://www.figma.com' },
+    { slug: 'clickup',        name: 'ClickUp Technologies',  website: 'https://clickup.com' },
+    { slug: 'canva',          name: 'Canva Pty Ltd',         website: 'https://www.canva.com' },
+    { slug: 'anthropic',      name: 'Anthropic',             website: 'https://www.anthropic.com' },
+    { slug: 'vivid-money',    name: 'Vivid Money GmbH',      website: 'https://vivid.money' },
+    { slug: 'bytedance',      name: 'ByteDance (CapCut)',    website: 'https://www.capcut.com' },
+    { slug: 'buffer-inc',     name: 'Buffer Inc.',           website: 'https://buffer.com' },
+    { slug: 'calendly-llc',   name: 'Calendly LLC',          website: 'https://calendly.com' },
+    { slug: 'appsumotidycal', name: 'AppSumo (TidyCal)',     website: 'https://tidycal.com' },
+    { slug: 'openai',         name: 'OpenAI',                website: 'https://openai.com' },
+    { slug: 'hubspot-inc',    name: 'HubSpot, Inc.',         website: 'https://www.hubspot.com' },
+    { slug: 'zapier-inc',     name: 'Zapier Inc.',           website: 'https://zapier.com' },
+  ]
+
+  // Map von Vendor-Slug → DB-ID
+  const vendorMap: Record<string, string> = {}
+  for (const def of vendorDefs) {
+    const v = await prisma.vendor.upsert({
+      where: { slug: def.slug },
+      update: { name: def.name, website: def.website },
+      create: { name: def.name, slug: def.slug, website: def.website },
+    })
+    vendorMap[def.slug] = v.id
+  }
+
+  // Welches Tool gehört zu welchem Vendor-Slug
+  const toolVendorMap: Record<string, string> = {
+    'notion':        'notion-labs',
+    'sevdesk':       'sevdesk',
+    'lexware-office':'haufe-lexware',
+    'lexoffice':     'haufe-lexware',
+    'fastbill':      'fastbill',
+    'wiso-meinburo': 'buhl-data',
+    'accountable':   'accountable',
+    'papierkram':    'papierkram',
+    'loom':          'atlassian',
+    'figma':         'figma-inc',
+    'clickup':       'clickup',
+    'canva':         'canva',
+    'claude':        'anthropic',
+    'vivid':         'vivid-money',
+    'capcut':        'bytedance',
+    'buffer':        'buffer-inc',
+    'calendly':      'calendly-llc',
+    'tidycal':       'appsumotidycal',
+    'chatgpt':       'openai',
+    'hubspot-crm':   'hubspot-inc',
+    'zapier':        'zapier-inc',
+  }
+
+  console.log(`  ✓ ${vendorDefs.length} Vendors`)
 
   // ─── TOOLS ───────────────────────────────────────────────────
   type ToolSeed = {
@@ -375,6 +431,9 @@ async function main() {
   const createdTools: Record<string, string> = {}
 
   for (const t of toolsData) {
+    const vendorSlug = toolVendorMap[t.slug] ?? 'unbekannt'
+    const vendorId   = vendorMap[vendorSlug] ?? vendorMap['unbekannt']!
+
     const tool = await prisma.tool.upsert({
       where: { slug: t.slug },
       update: {
@@ -383,6 +442,7 @@ async function main() {
         targetAudiences: t.targetAudiences,
         published: true,
         publishedAt: new Date(),
+        vendorId,
       },
       create: {
         slug: t.slug,
@@ -391,7 +451,7 @@ async function main() {
         targetAudiences: t.targetAudiences,
         published: true,
         publishedAt: new Date(),
-        vendorId: vendor.id,
+        vendorId,
       },
     })
     createdTools[t.slug] = tool.id
@@ -432,6 +492,7 @@ async function main() {
     { slug: 'crm-marketing', icon: '👥', sortOrder: 14, name: 'CRM & Marketing', description: 'Kunden gewinnen, verwalten und Marketing automatisieren.', tools: ['hubspot-crm'] },
     { slug: 'musik-audio-voice', icon: '🎵', sortOrder: 15, name: 'Musik, Audio & Voice', description: 'Musik, Voiceover und Audioproduktionen erstellen.', tools: [] },
     { slug: 'nocode-automation', icon: '🔧', sortOrder: 16, name: 'No-Code & Automation', description: 'Prozesse automatisieren und Tools miteinander verbinden.', tools: ['zapier'] },
+    { slug: 'social-media', icon: '📱', sortOrder: 17, name: 'Social Media', description: 'Social-Media-Inhalte planen, erstellen und veröffentlichen.', tools: ['buffer'] },
   ]
 
   for (const c of categoriesData) {
@@ -459,6 +520,64 @@ async function main() {
   }
 
   console.log(`  ✓ ${categoriesData.length} Kategorien`)
+
+  // ─── TAG-GRUPPEN & TAGS ──────────────────────────────────────
+  const tagGroupDefs = [
+    {
+      slug: 'region-compliance',
+      name: 'Region & Compliance',
+      sortOrder: 1,
+      tags: [
+        { slug: 'dsgvo-konform',         name: 'DSGVO-konform',         sortOrder: 1 },
+        { slug: 'deutsches-unternehmen', name: 'Deutsches Unternehmen', sortOrder: 2 },
+        { slug: 'datev-kompatibel',      name: 'DATEV-kompatibel',      sortOrder: 3 },
+        { slug: 'e-rechnung',            name: 'E-Rechnung',            sortOrder: 4 },
+      ],
+    },
+    {
+      slug: 'plattform',
+      name: 'Plattform',
+      sortOrder: 2,
+      tags: [
+        { slug: 'web-app',           name: 'Web-App',           sortOrder: 1 },
+        { slug: 'mobile-app',        name: 'Mobile App',        sortOrder: 2 },
+        { slug: 'desktop-app',       name: 'Desktop-App',       sortOrder: 3 },
+        { slug: 'browser-extension', name: 'Browser-Extension', sortOrder: 4 },
+      ],
+    },
+    {
+      slug: 'preismodell',
+      name: 'Preismodell',
+      sortOrder: 3,
+      tags: [
+        { slug: 'free-plan-tag',  name: 'Free Plan',    sortOrder: 1 },
+        { slug: 'open-source',    name: 'Open Source',  sortOrder: 2 },
+        { slug: 'einmalkauf-tag', name: 'Einmalkauf',   sortOrder: 3 },
+      ],
+    },
+  ]
+
+  for (const groupDef of tagGroupDefs) {
+    const group = await prisma.tagGroup.upsert({
+      where: { slug: groupDef.slug },
+      update: { name: groupDef.name, sortOrder: groupDef.sortOrder },
+      create: { slug: groupDef.slug, name: groupDef.name, sortOrder: groupDef.sortOrder },
+    })
+    for (const tagDef of groupDef.tags) {
+      await prisma.tag.upsert({
+        where: { slug: tagDef.slug },
+        update: { name: tagDef.name, sortOrder: tagDef.sortOrder },
+        create: {
+          slug: tagDef.slug,
+          name: tagDef.name,
+          sortOrder: tagDef.sortOrder,
+          tagGroupId: group.id,
+        },
+      })
+    }
+  }
+
+  console.log(`  ✓ ${tagGroupDefs.length} Tag-Gruppen`)
 
   // ─── TOOL STACK (Selbstständige) ─────────────────────────────
   const stack = await prisma.toolStack.upsert({
