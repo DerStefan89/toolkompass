@@ -16,6 +16,7 @@ import "./globals.css";
 
 // Unser Header — die Datei die wir gerade gebaut haben
 import PublicHeader from '@/components/layout/PublicHeader';
+import PublicFooter from '@/components/layout/PublicFooter';
 
 
 // ============================================
@@ -71,6 +72,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* Hier erscheint der Inhalt der jeweiligen Seite */}
         {children}
+
+        <PublicFooter />
 
       </body>
     </html>
