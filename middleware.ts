@@ -20,6 +20,11 @@ export async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll()
         },
+        // Supabase SSR erfordert dieses Doppel-Set-Pattern:
+        // 1. Cookies auf den Request schreiben, damit getUser() die frische Session sieht.
+        // 2. supabaseResponse neu erstellen und Cookies dort ebenfalls setzen,
+        //    damit der Browser das aktualisierte Session-Cookie erhält.
+        // Ohne das zweite Set würde die Session nach kurzer Zeit automatisch ablaufen.
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)

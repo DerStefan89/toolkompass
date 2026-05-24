@@ -43,6 +43,7 @@ enum PageViewEntityType {
   comparison
 }
 
+// MVP-gesperrt — erst aktivieren wenn Cashback-System produktiv geht
 enum CashbackStatus {
   pending
   confirmed
@@ -520,7 +521,8 @@ model Payout {
 }
 
 // ============================================================
-// 9. RATING
+// 9. RATING — MVP-gesperrt, später aktivieren
+// Voraussetzung: User-Auth ist aktiv und isApproved-Moderation ist gebaut
 // ============================================================
 
 model Rating {

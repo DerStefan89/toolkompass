@@ -1,5 +1,16 @@
-// STARTSEITE (app/page.tsx)
-// Aufbau: Hero (2 Spalten) → Aufgaben-Pills → Tool-Cards → Kategorien
+/**
+ * Datei: app/page.tsx
+ *
+ * Zweck: Startseite von ToolKompass.
+ * Aufbau: Hero (2 Spalten) → Aufgaben-Pills → Tool-Cards → Kategorien-Scroll
+ *
+ * Design-Referenz:
+ * - design-refs/1_Landing_Page.png
+ *
+ * Wichtig:
+ * Tool-Cards und Kategorien enthalten aktuell Mock-Daten — werden in einer
+ * späteren Phase durch Prisma-Abfragen ersetzt (wie Aufgaben-Seiten bereits).
+ */
 
 export default function Home() {
   return (

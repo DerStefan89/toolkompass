@@ -13,6 +13,7 @@ import { prisma } from '@/lib/prisma'
 export const revalidate = 3600
 
 export default async function VergleichenSeite() {
+  // Promise.all: beide Queries laufen parallel — spart eine sequenzielle Wartezeit
   const [comparisons, featured] = await Promise.all([
     prisma.comparison.findMany({
       where: { published: true },

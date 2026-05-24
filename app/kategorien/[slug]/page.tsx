@@ -32,6 +32,7 @@ export default async function KategorieDetailSeite({
 }: {
   params: Promise<{ slug: string }>
 }) {
+  // Next.js 15: params ist ein Promise — muss explizit awaited werden (Breaking Change vs. Next.js 14)
   const { slug } = await params
 
   const category = await prisma.category.findUnique({

@@ -66,7 +66,7 @@ export default async function ToolDetailSeite({
   const preisFormatted = tool.startingPriceMonthly != null
     ? tool.startingPriceMonthly === 0
       ? 'Kostenlos'
-      : `${tool.startingPriceMonthly.toFixed(2).replace('.', ',')} €`
+      : `${tool.startingPriceMonthly.toFixed(2).replace('.', ',')} €` // Punkt → Komma für deutsches Zahlenformat
     : '—'
 
   const tabs = ['Überblick', 'Funktionen', 'Preise', 'Vergleich', 'Alternativen', 'FAQ']
