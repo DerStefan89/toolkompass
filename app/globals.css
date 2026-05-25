@@ -45,22 +45,19 @@
 
 /* ─── Kategorie-Karten Hover ─────────────────────────────── */
 .category-card {
-  box-shadow: var(--shadow-card);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
-
-.category-card * {
-  transition: color 0.2s ease;
-}
-
 .category-card:hover {
   background-color: var(--color-cta) !important;
-  box-shadow: 0 6px 20px rgba(30, 58, 42, 0.25);
-  border-color: var(--color-cta) !important;
+  color: white !important;
 }
-
-.category-card:hover,
-.category-card:hover * {
+.category-card:hover svg {
+  color: white !important;
+  stroke: white !important;
+}
+.category-card:hover p,
+.category-card:hover span {
   color: white !important;
 }
 
