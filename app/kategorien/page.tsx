@@ -10,6 +10,7 @@
 
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
+import IconRenderer from '@/components/ui/IconRenderer'
 
 export const revalidate = 3600
 
@@ -120,8 +121,8 @@ export default async function KategorienSeite() {
                 }}
               >
                 {/* Icon */}
-                <div style={{ fontSize: '28px', marginBottom: '12px' }}>
-                  {cat.icon ?? '🗂️'}
+                <div style={{ marginBottom: '12px', color: 'var(--color-cta)' }}>
+                  <IconRenderer icon={cat.icon} size={28} />
                 </div>
 
                 {/* Name */}

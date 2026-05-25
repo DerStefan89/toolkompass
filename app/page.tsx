@@ -16,6 +16,7 @@
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
+import IconRenderer from '@/components/ui/IconRenderer'
 
 export const revalidate = 3600
 
@@ -140,7 +141,7 @@ export default async function Home() {
               { icon: '📅', label: 'Termine buchen' },
               { icon: '🎙', label: 'KI Tools einbinden' },
               { icon: '🎬', label: 'Videos erstellen' },
-              { icon: '✍️', label: 'Unternehmenssteuerung' },
+              { icon: '✍️', label: 'Social Media Kampagnen' },
               { icon: '💼', label: 'Sales Funnel aufbauen' },
               { icon: '📊', label: 'Präsentation erstellen' },
             ].map((aufgabe) => (
@@ -390,7 +391,7 @@ export default async function Home() {
                 fontSize: '12px',
                 lineHeight: '1.4',
               }}>
-                <div style={{ fontSize: '24px', marginBottom: '8px' }}>{cat.icon ?? '🗂️'}</div>
+                <div style={{ marginBottom: '8px', color: 'var(--color-cta)' }}><IconRenderer icon={cat.icon} size={24} /></div>
                 {label}
               </a>
             )
