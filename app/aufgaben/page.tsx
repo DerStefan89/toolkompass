@@ -8,7 +8,7 @@ const aufgabeData = {
   name: 'Unternehmen verwalten',
   beschreibung: 'Von Buchhaltung bis CRM — diese Tools helfen dir, dein Business strukturiert zu führen, Kunden zu managen und Prozesse zu automatisieren.',
   zielgruppe: 'Solo & Teams',
-  aktualisiertAm: 'Mai 2025',
+  aktualisiertAm: 'Mai 2026',
 
   tools: [
     {

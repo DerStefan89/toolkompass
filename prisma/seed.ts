@@ -667,7 +667,7 @@ async function main() {
   const article = await prisma.article.upsert({
     where: { slug: 'beste-tools-freelancer-2025' },
     update: {
-      title: 'Die besten Tools für Freelancer 2025',
+      title: 'Die besten Tools für Freelancer 2026',
       subtitle: 'Ein kompletter Guide für Buchhaltung, Projektmanagement, Termine, KI und Kundenorganisation.',
       type: ArticleType.top_list,
       published: true,
@@ -676,7 +676,7 @@ async function main() {
     create: {
       slug: 'beste-tools-freelancer-2025',
       locale: Locale.de,
-      title: 'Die besten Tools für Freelancer 2025',
+      title: 'Die besten Tools für Freelancer 2026',
       subtitle: 'Ein kompletter Guide für Buchhaltung, Projektmanagement, Termine, KI und Kundenorganisation.',
       type: ArticleType.top_list,
       published: true,
