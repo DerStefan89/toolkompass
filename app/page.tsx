@@ -378,7 +378,7 @@ export default async function Home() {
             const label = t?.name ?? cat.slug
 
             return (
-              <a key={cat.id} href={`/kategorien/${cat.slug}`} style={{
+              <a key={cat.id} href={`/kategorien/${cat.slug}`} className="category-card" style={{
                 flexShrink: 0,
                 minWidth: '140px',
                 padding: '16px 14px',
@@ -391,7 +391,7 @@ export default async function Home() {
                 fontSize: '12px',
                 lineHeight: '1.5',
               }}>
-                <div style={{ marginBottom: '8px', color: 'var(--color-cta)', display: 'flex', justifyContent: 'center' }}>
+                <div className="category-card-icon" style={{ marginBottom: '8px', color: 'var(--color-cta)', display: 'flex', justifyContent: 'center' }}>
                   <IconRenderer icon={cat.icon} size={28} />
                 </div>
                 {label}

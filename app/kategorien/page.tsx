@@ -110,6 +110,7 @@ export default async function KategorienSeite() {
               <a
                 key={cat.id}
                 href={`/kategorien/${cat.slug}`}
+                className="category-card"
                 style={{
                   backgroundColor: 'var(--color-bg-card)',
                   border: '1px solid var(--color-border)',
@@ -121,7 +122,7 @@ export default async function KategorienSeite() {
                 }}
               >
                 {/* Icon */}
-                <div style={{ marginBottom: '12px', color: 'var(--color-cta)' }}>
+                <div className="category-card-icon" style={{ marginBottom: '12px', color: 'var(--color-cta)' }}>
                   <IconRenderer icon={cat.icon} size={28} />
                 </div>
 
