@@ -380,8 +380,8 @@ export default async function Home() {
             return (
               <a key={cat.id} href={`/kategorien/${cat.slug}`} style={{
                 flexShrink: 0,
-                width: '110px',
-                padding: '16px 12px',
+                minWidth: '140px',
+                padding: '16px 14px',
                 backgroundColor: 'var(--color-bg-card)',
                 border: '1px solid var(--color-border)',
                 borderRadius: 'var(--radius-card)',
@@ -389,9 +389,11 @@ export default async function Home() {
                 textDecoration: 'none',
                 color: 'var(--color-text-primary)',
                 fontSize: '12px',
-                lineHeight: '1.4',
+                lineHeight: '1.5',
               }}>
-                <div style={{ marginBottom: '8px', color: 'var(--color-cta)' }}><IconRenderer icon={cat.icon} size={24} /></div>
+                <div style={{ marginBottom: '8px', color: 'var(--color-cta)', display: 'flex', justifyContent: 'center' }}>
+                  <IconRenderer icon={cat.icon} size={28} />
+                </div>
                 {label}
               </a>
             )
