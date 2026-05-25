@@ -118,6 +118,7 @@ model Tool {
   id                   String    @id @default(cuid())
   slug                 String    @unique
   logoUrl              String?
+  screenshotUrl        String?
   startingPriceMonthly Float?
   hasFreePlan          Boolean   @default(false)
   isAffiliate          Boolean   @default(false)
