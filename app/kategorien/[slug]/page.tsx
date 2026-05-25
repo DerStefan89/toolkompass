@@ -18,6 +18,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
+import IconRenderer from '@/components/ui/IconRenderer'
 
 export const revalidate = 3600
 
@@ -135,9 +136,9 @@ export default async function KategorieDetailSeite({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '48px',
+          color: 'var(--color-cta)',
         }}>
-          {category.icon ?? '🗂️'}
+          <IconRenderer icon={category.icon} size={64} />
         </div>
       </div>
 

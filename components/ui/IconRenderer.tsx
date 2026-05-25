@@ -30,7 +30,8 @@ export default function IconRenderer({ icon, size = 24, color }: Props) {
   if (icon) {
     const key = toPascalCase(icon)
     const IconComponent = (Icons as Record<string, unknown>)[key]
-    if (typeof IconComponent === 'function') {
+    // lucide-react v0.3+ exports forwardRef objects, not plain functions
+    if (IconComponent != null) {
       const Ic = IconComponent as React.ComponentType<LucideProps>
       return <Ic {...iconProps} />
     }
