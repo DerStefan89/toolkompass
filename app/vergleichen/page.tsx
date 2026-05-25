@@ -8,9 +8,19 @@
  * - design-refs/3_Vergleichsseite.png
  */
 
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 
 export const revalidate = 3600
+
+export const metadata: Metadata = {
+  title: 'Tool-Vergleiche — ToolKompass',
+  description: 'Vergleiche die besten Business-Tools direkt nebeneinander und finde die passende Lösung für dein Team.',
+  openGraph: {
+    title: 'Tool-Vergleiche — ToolKompass',
+    description: 'Vergleiche die besten Business-Tools direkt nebeneinander und finde die passende Lösung für dein Team.',
+  },
+}
 
 export default async function VergleichenSeite() {
   // Promise.all: beide Queries laufen parallel — spart eine sequenzielle Wartezeit

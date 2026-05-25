@@ -8,9 +8,19 @@
  * - design-refs/5_Tool_Stacks.png
  */
 
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 
 export const revalidate = 3600
+
+export const metadata: Metadata = {
+  title: 'Tool-Stacks — ToolKompass',
+  description: 'Entdecke bewährte Tool-Kombinationen für Freelancer, Agenturen und kleine Teams.',
+  openGraph: {
+    title: 'Tool-Stacks — ToolKompass',
+    description: 'Entdecke bewährte Tool-Kombinationen für Freelancer, Agenturen und kleine Teams.',
+  },
+}
 
 export default async function ToolStacksSeite() {
   const stacks = await prisma.toolStack.findMany({

@@ -45,6 +45,7 @@ const inter = Inter({
 // ============================================
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://toolkompass.de'),
   title: "ToolKompass — Digitale Business-Tools entdecken & vergleichen",
   description: "ToolKompass hilft Gründern...",
 };

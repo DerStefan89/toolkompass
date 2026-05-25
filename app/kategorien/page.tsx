@@ -8,9 +8,19 @@
  * - design-refs/4_Alle_Kategorien.png
  */
 
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 
 export const revalidate = 3600
+
+export const metadata: Metadata = {
+  title: 'Alle Kategorien — ToolKompass',
+  description: 'Entdecke digitale Business-Tools nach Kategorie: Buchhaltung, CRM, Projektmanagement und mehr.',
+  openGraph: {
+    title: 'Alle Kategorien — ToolKompass',
+    description: 'Entdecke digitale Business-Tools nach Kategorie: Buchhaltung, CRM, Projektmanagement und mehr.',
+  },
+}
 
 export default async function KategorienSeite() {
   const categories = await prisma.category.findMany({
