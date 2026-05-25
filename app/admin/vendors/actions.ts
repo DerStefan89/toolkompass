@@ -16,6 +16,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
 import { createClient } from '@/lib/supabase/server'
+import { parseStr } from '@/lib/utils/form'
 
 
 
@@ -35,12 +36,10 @@ function parseVendorForm(formData: FormData): {
   data: VendorFormData
   errors: Record<string, string> | null
 } {
-  const str = (key: string) => ((formData.get(key) as string) ?? '').trim()
-
-  const name        = str('name')
-  const slug        = str('slug')
-  const website     = str('website') || null
-  const description = str('description') || null
+  const name        = parseStr(formData, 'name')
+  const slug        = parseStr(formData, 'slug')
+  const website     = parseStr(formData, 'website') || null
+  const description = parseStr(formData, 'description') || null
 
   const errors: Record<string, string> = {}
 

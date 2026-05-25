@@ -18,6 +18,7 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { toSlug, parseStr } from '@/lib/utils/form'
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -25,16 +26,6 @@ export type AffiliateLinkActionState = {
   error?: string
   fieldErrors?: Record<string, string>
   success?: boolean
-}
-
-// ─── Hilfsfunktionen ────────────────────────────────────────────────────────
-
-function toSlug(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
 }
 
 // ─── Server Actions ──────────────────────────────────────────────────────────
@@ -50,11 +41,9 @@ export async function createAffiliateLink(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Nicht autorisiert.' }
 
-  const str = (k: string) => ((formData.get(k) as string) ?? '').trim()
-
-  const label        = str('label')
-  const url          = str('url')
-  const trackingSlug = str('trackingSlug') || toSlug(`${toolId.slice(0, 6)}-${label}`)
+  const label        = parseStr(formData, 'label')
+  const url          = parseStr(formData, 'url')
+  const trackingSlug = parseStr(formData, 'trackingSlug') || toSlug(`${toolId.slice(0, 6)}-${label}`)
   const isPrimary    = formData.get('isPrimary') === 'on'
 
   const errors: Record<string, string> = {}

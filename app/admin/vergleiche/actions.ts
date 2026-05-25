@@ -22,6 +22,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
 import { createClient } from '@/lib/supabase/server'
+import { parseStr } from '@/lib/utils/form'
 
 
 
@@ -40,12 +41,10 @@ function parseVergleichForm(formData: FormData): {
   data: VergleichFormData
   errors: Record<string, string> | null
 } {
-  const str = (key: string) => ((formData.get(key) as string) ?? '').trim()
-
-  const toolAId   = str('toolAId')
-  const toolBId   = str('toolBId')
-  const slug      = str('slug')
-  const verdict   = str('verdict')
+  const toolAId   = parseStr(formData, 'toolAId')
+  const toolBId   = parseStr(formData, 'toolBId')
+  const slug      = parseStr(formData, 'slug')
+  const verdict   = parseStr(formData, 'verdict')
   const published = formData.get('published') === 'on'
 
   // Rows werden als parallele Arrays übertragen — gleicher Index = gleiche Zeile

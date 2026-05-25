@@ -16,6 +16,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
 import { createClient } from '@/lib/supabase/server'
+import { parseStr } from '@/lib/utils/form'
 
 
 
@@ -37,13 +38,11 @@ function parseKategorieForm(formData: FormData): {
   data: KategorieFormData
   errors: Record<string, string> | null
 } {
-  const str = (key: string) => ((formData.get(key) as string) ?? '').trim()
-
-  const name        = str('name')
-  const slug        = str('slug')
-  const description = str('description')
-  const icon        = str('icon') || null
-  const sortOrderRaw = str('sortOrder')
+  const name        = parseStr(formData, 'name')
+  const slug        = parseStr(formData, 'slug')
+  const description = parseStr(formData, 'description')
+  const icon        = parseStr(formData, 'icon') || null
+  const sortOrderRaw = parseStr(formData, 'sortOrder')
   const sortOrder   = sortOrderRaw !== '' ? parseInt(sortOrderRaw, 10) : 0
   const published   = formData.get('published') === 'on'
 

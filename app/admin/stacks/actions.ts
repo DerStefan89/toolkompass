@@ -17,6 +17,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
 import { createClient } from '@/lib/supabase/server'
+import { parseStr } from '@/lib/utils/form'
 
 
 
@@ -35,12 +36,10 @@ function parseStackForm(formData: FormData): {
   data: StackFormData
   errors: Record<string, string> | null
 } {
-  const str = (key: string) => ((formData.get(key) as string) ?? '').trim()
-
-  const name           = str('name')
-  const slug           = str('slug')
-  const description    = str('description') || null
-  const targetAudience = str('targetAudience')
+  const name           = parseStr(formData, 'name')
+  const slug           = parseStr(formData, 'slug')
+  const description    = parseStr(formData, 'description') || null
+  const targetAudience = parseStr(formData, 'targetAudience')
   const published      = formData.get('published') === 'on'
   const toolIds        = formData.getAll('toolIds') as string[]
 

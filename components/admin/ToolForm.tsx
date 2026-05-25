@@ -21,6 +21,7 @@
 
 import { useActionState, useState } from 'react'
 import type { ActionState } from '@/lib/types/admin'
+import { toSlug } from '@/lib/utils/form'
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -65,17 +66,6 @@ type ToolFormProps = {
   categories: CategoryOption[]
   tagGroups?: TagGroupOption[]
   defaultValues?: ToolFormDefaults
-}
-
-// ─── Hilfsfunktionen ────────────────────────────────────────────────────────
-
-// Wandelt einen beliebigen String in einen URL-sicheren Slug um
-function toSlug(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
 }
 
 // ─── Unterkomponenten ────────────────────────────────────────────────────────

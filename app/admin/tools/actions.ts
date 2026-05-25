@@ -16,6 +16,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
 import { createClient } from '@/lib/supabase/server'
+import { parseStr, parseLines } from '@/lib/utils/form'
 
 
 
@@ -41,26 +42,18 @@ type ToolFormData = {
 
 // ─── Hilfsfunktionen ────────────────────────────────────────────────────────
 
-// Wandelt einen Textarea-Wert (ein Eintrag pro Zeile) in ein bereinigtes Array um
-function parseLines(raw: FormDataEntryValue | null): string[] {
-  if (!raw || typeof raw !== 'string') return []
-  return raw.split('\n').map(s => s.trim()).filter(Boolean)
-}
-
 // Extrahiert alle Tool-Felder aus FormData und validiert sie.
 // Gibt entweder gültige Daten oder ein Fehler-Objekt zurück.
 function parseToolForm(formData: FormData): {
   data: ToolFormData
   errors: Record<string, string> | null
 } {
-  const str = (key: string) => ((formData.get(key) as string) ?? '').trim()
-
-  const name = str('name')
-  const slug = str('slug')
-  const vendorId = str('vendorId')
-  const shortDescription = str('shortDescription')
-  const longDescription = str('longDescription') || null
-  const priceRaw = str('startingPriceMonthly')
+  const name = parseStr(formData, 'name')
+  const slug = parseStr(formData, 'slug')
+  const vendorId = parseStr(formData, 'vendorId')
+  const shortDescription = parseStr(formData, 'shortDescription')
+  const longDescription = parseStr(formData, 'longDescription') || null
+  const priceRaw = parseStr(formData, 'startingPriceMonthly')
   const startingPriceMonthly = priceRaw !== '' ? parseFloat(priceRaw) : null
   const hasFreePlan = formData.get('hasFreePlan') === 'on'
   const isAffiliate = formData.get('isAffiliate') === 'on'
@@ -89,11 +82,11 @@ function parseToolForm(formData: FormData): {
     data: {
       name, slug, vendorId, shortDescription, longDescription,
       startingPriceMonthly, hasFreePlan, isAffiliate, published, categoryIds, tagIds,
-      features: parseLines(formData.get('features')),
-      strengths: parseLines(formData.get('strengths')),
-      weaknesses: parseLines(formData.get('weaknesses')),
-      bestFor: parseLines(formData.get('bestFor')),
-      notIdealFor: parseLines(formData.get('notIdealFor')),
+      features: parseLines(formData, 'features'),
+      strengths: parseLines(formData, 'strengths'),
+      weaknesses: parseLines(formData, 'weaknesses'),
+      bestFor: parseLines(formData, 'bestFor'),
+      notIdealFor: parseLines(formData, 'notIdealFor'),
     },
     errors: Object.keys(errors).length > 0 ? errors : null,
   }

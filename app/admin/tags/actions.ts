@@ -17,6 +17,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
 import { createClient } from '@/lib/supabase/server'
+import { toSlug, parseStr, parseLines } from '@/lib/utils/form'
 
 
 
@@ -30,27 +31,16 @@ type TagGroupFormData = {
 
 // ─── Hilfsfunktionen ────────────────────────────────────────────────────────
 
-function toSlug(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-}
-
 function parseTagGroupForm(formData: FormData): {
   data: TagGroupFormData
   errors: Record<string, string> | null
 } {
-  const str = (key: string) => ((formData.get(key) as string) ?? '').trim()
-
-  const name        = str('name')
-  const slug        = str('slug')
-  const description = str('description') || null
-  const sortOrderRaw = str('sortOrder')
+  const name        = parseStr(formData, 'name')
+  const slug        = parseStr(formData, 'slug')
+  const description = parseStr(formData, 'description') || null
+  const sortOrderRaw = parseStr(formData, 'sortOrder')
   const sortOrder   = sortOrderRaw !== '' ? parseInt(sortOrderRaw, 10) : 0
-  const tagsRaw     = (formData.get('tags') as string) ?? ''
-  const tagNames    = tagsRaw.split('\n').map(s => s.trim()).filter(Boolean)
+  const tagNames    = parseLines(formData, 'tags')
 
   const errors: Record<string, string> = {}
   if (!name) errors.name = 'Name ist erforderlich.'

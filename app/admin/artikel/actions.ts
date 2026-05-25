@@ -16,6 +16,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
 import { createClient } from '@/lib/supabase/server'
+import { parseStr } from '@/lib/utils/form'
 
 
 
@@ -41,19 +42,17 @@ function parseArtikelForm(formData: FormData): {
   data: ArtikelFormData
   errors: Record<string, string> | null
 } {
-  const str = (key: string) => ((formData.get(key) as string) ?? '').trim()
-
-  const title     = str('title')
-  const slug      = str('slug')
-  const subtitle  = str('subtitle')
-  const type      = str('type') as ArtikelFormData['type']
+  const title     = parseStr(formData, 'title')
+  const slug      = parseStr(formData, 'slug')
+  const subtitle  = parseStr(formData, 'subtitle')
+  const type      = parseStr(formData, 'type') as ArtikelFormData['type']
   const published = formData.get('published') === 'on'
   const tagIds    = formData.getAll('tagIds') as string[]
 
   // Sections kommen als JSON-String aus dem Hidden-Field
   let sections: SectionInput[] = []
   try {
-    const raw = str('sections_json')
+    const raw = parseStr(formData, 'sections_json')
     if (raw) sections = JSON.parse(raw)
   } catch {
     // Bei ungültigem JSON: leere Sections, Validierung schlägt unten an
