@@ -13,6 +13,7 @@ export default async function AdminTagsPage() {
       tags: { orderBy: { sortOrder: 'asc' } },
     },
     orderBy: { sortOrder: 'asc' },
+    take: 100,
   })
 
   const totalTags = tagGroups.reduce((sum, g) => sum + g.tags.length, 0)
@@ -138,6 +139,11 @@ export default async function AdminTagsPage() {
           ))
         )}
       </div>
+      {tagGroups.length === 100 && (
+        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
+          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
+        </p>
+      )}
     </div>
   )
 }

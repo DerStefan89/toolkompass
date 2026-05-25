@@ -28,6 +28,7 @@ export default async function AdminToolsPage() {
       translations: { where: { locale: 'de' } },
     },
     orderBy: { createdAt: 'desc' },
+    take: 100,
   })
 
   return (
@@ -125,6 +126,11 @@ export default async function AdminToolsPage() {
           )
         })}
       </AdminTable>
+      {tools.length === 100 && (
+        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
+          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
+        </p>
+      )}
     </div>
   )
 }

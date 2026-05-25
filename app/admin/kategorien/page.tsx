@@ -29,6 +29,7 @@ export default async function AdminKategorienPage() {
       _count: { select: { tools: true } },
     },
     orderBy: { sortOrder: 'asc' },
+    take: 100,
   })
 
   return (
@@ -122,6 +123,11 @@ export default async function AdminKategorienPage() {
           )
         })}
       </AdminTable>
+      {categories.length === 100 && (
+        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
+          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
+        </p>
+      )}
     </div>
   )
 }

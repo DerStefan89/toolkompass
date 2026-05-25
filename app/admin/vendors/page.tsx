@@ -29,6 +29,7 @@ export default async function AdminVendorsPage() {
       _count: { select: { tools: true } },
     },
     orderBy: { name: 'asc' },
+    take: 100,
   })
 
   return (
@@ -133,6 +134,11 @@ export default async function AdminVendorsPage() {
           </div>
         ))}
       </AdminTable>
+      {vendors.length === 100 && (
+        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
+          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
+        </p>
+      )}
     </div>
   )
 }
