@@ -227,19 +227,28 @@ export default async function ToolDetailSeite({
           </div>
         </div>
 
-        {/* Spalte 2: Screenshot-Platzhalter */}
+        {/* Spalte 2: Screenshot */}
         <div style={{
           backgroundColor: 'var(--color-badge-bg)',
           borderRadius: 'var(--radius-card)',
           border: '1px solid var(--color-border)',
+          overflow: 'hidden',
+          minHeight: '200px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '14px',
-          color: 'var(--color-text-secondary)',
-          minHeight: '200px',
         }}>
-          Tool-Screenshot
+          {tool.screenshotUrl ? (
+            <img
+              src={tool.screenshotUrl}
+              alt={`${t.name} Screenshot`}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          ) : (
+            <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+              Tool-Screenshot
+            </span>
+          )}
         </div>
 
         {/* Spalte 3: Preisbox */}

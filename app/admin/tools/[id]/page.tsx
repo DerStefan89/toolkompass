@@ -20,6 +20,7 @@ import DeleteButton from '@/components/admin/DeleteButton'
 import AffiliateLinkManager from '@/components/admin/AffiliateLinkManager'
 import type { AffiliateLinkData } from '@/components/admin/AffiliateLinkManager'
 import LogoUpload from '@/components/admin/LogoUpload'
+import ScreenshotUpload from '@/components/admin/ScreenshotUpload'
 import { updateTool, deleteTool } from '@/app/admin/tools/actions'
 
 type Props = {
@@ -144,6 +145,8 @@ export default async function EditToolPage({ params }: Props) {
       </div>
 
       <LogoUpload toolId={id} currentLogoUrl={tool.logoUrl ?? null} />
+
+      <ScreenshotUpload toolId={id} currentScreenshotUrl={tool.screenshotUrl ?? null} />
 
       <AffiliateLinkManager toolId={id} toolSlug={tool.slug} links={affiliateLinks} />
 
