@@ -19,7 +19,7 @@ export default function AffiliateHinweisPage() {
         fontSize: '36px',
         fontWeight: '700',
         color: 'var(--color-text-primary)',
-        marginBottom: '24px',
+        marginBottom: '32px',
       }}>
         Affiliate-Hinweis
       </h1>
@@ -31,9 +31,33 @@ export default function AffiliateHinweisPage() {
         padding: '32px',
         fontSize: '15px',
         color: 'var(--color-text-secondary)',
-        lineHeight: '1.7',
+        lineHeight: '1.8',
       }}>
-        Diese Seite wird noch ausgefüllt.
+
+        <p style={{ marginBottom: '20px' }}>
+          Diese Website enthält Affiliate-Links. Das bedeutet: Wenn du auf einen solchen Link klickst
+          und ein Produkt oder eine Dienstleistung kaufst oder buchst, erhalten wir eine Provision vom
+          jeweiligen Anbieter. Für dich entstehen dabei <strong style={{ color: 'var(--color-text-primary)' }}>keine zusätzlichen Kosten</strong>.
+        </p>
+
+        <p style={{ marginBottom: '20px' }}>
+          Affiliate-Links sind auf dieser Website mit dem Hinweis{' '}
+          <strong style={{ color: 'var(--color-text-primary)' }}>&bdquo;Partnerlink&ldquo;</strong> oder{' '}
+          <strong style={{ color: 'var(--color-text-primary)' }}>&bdquo;Zum Anbieter&ldquo;</strong> gekennzeichnet.
+        </p>
+
+        <p style={{ marginBottom: '20px' }}>
+          Wir empfehlen nur Tools und Dienste, die wir selbst für sinnvoll halten. Die redaktionelle
+          Unabhängigkeit unserer Inhalte bleibt davon unberührt.
+        </p>
+
+        <p>
+          Bei Fragen:{' '}
+          <a href="mailto:toolsucher@gmail.com" style={{ color: 'var(--color-text-secondary)' }}>
+            toolsucher@gmail.com
+          </a>
+        </p>
+
       </div>
 
     </main>
