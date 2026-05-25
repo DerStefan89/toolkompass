@@ -14,10 +14,10 @@ import { prisma } from '@/lib/prisma'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Alle Kategorien — ToolKompass',
+  title: 'Alle Kategorien — ToolSucher',
   description: 'Entdecke digitale Business-Tools nach Kategorie: Buchhaltung, CRM, Projektmanagement und mehr.',
   openGraph: {
-    title: 'Alle Kategorien — ToolKompass',
+    title: 'Alle Kategorien — ToolSucher',
     description: 'Entdecke digitale Business-Tools nach Kategorie: Buchhaltung, CRM, Projektmanagement und mehr.',
   },
 }

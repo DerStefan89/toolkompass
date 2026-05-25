@@ -49,7 +49,7 @@ export default async function AdminDashboardPage() {
           Dashboard
         </h1>
         <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
-          Übersicht über alle Inhalte auf ToolKompass
+          Übersicht über alle Inhalte auf ToolSucher
         </p>
       </div>
 

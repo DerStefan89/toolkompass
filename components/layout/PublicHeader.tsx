@@ -1,7 +1,7 @@
 /**
  * Datei: components/layout/PublicHeader.tsx
  *
- * Zweck: Hauptnavigation von ToolKompass
+ * Zweck: Hauptnavigation von ToolSucher
  *
  * Design-Referenz:
  * - design-refs/1_Landing_Page.png
@@ -52,7 +52,7 @@ export default function PublicHeader() {
               fontWeight: '700',
               color: 'var(--color-text-primary)',
             }}>
-              ToolKompass
+              ToolSucher
             </span>
           </Link>
 

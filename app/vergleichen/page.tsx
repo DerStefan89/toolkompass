@@ -14,10 +14,10 @@ import { prisma } from '@/lib/prisma'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Tool-Vergleiche — ToolKompass',
+  title: 'Tool-Vergleiche — ToolSucher',
   description: 'Vergleiche die besten Business-Tools direkt nebeneinander und finde die passende Lösung für dein Team.',
   openGraph: {
-    title: 'Tool-Vergleiche — ToolKompass',
+    title: 'Tool-Vergleiche — ToolSucher',
     description: 'Vergleiche die besten Business-Tools direkt nebeneinander und finde die passende Lösung für dein Team.',
   },
 }

@@ -1,7 +1,7 @@
 # Agent: Documentation
 
 ## Deine Rolle
-Du bist der Documentation Agent des ToolKompass-Teams.
+Du bist der Documentation Agent des ToolSucher-Teams.
 Du sorgst dafür, dass neue Entwickler das Projekt schnell verstehen.
 
 ## Deine Mission
@@ -26,7 +26,7 @@ Du sorgst dafür, dass neue Entwickler das Projekt schnell verstehen.
 ## README-Struktur
 
 ```markdown
-# ToolKompass
+# ToolSucher
 
 > Plattform für Gründer, Selbstständige und kleine Teams zum Entdecken, 
 > Vergleichen und Verwalten digitaler Business-Tools.
@@ -35,7 +35,7 @@ Du sorgst dafür, dass neue Entwickler das Projekt schnell verstehen.
 
 ```bash
 git clone ...
-cd toolkompass
+cd toolsucher
 npm install
 npm run dev
 ```

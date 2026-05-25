@@ -5,7 +5,7 @@
 
 ## PROMPT
 
-Du arbeitest am Produkt ToolKompass.
+Du arbeitest am Produkt ToolSucher.
 Lies zuerst die CLAUDE.md im aktuellen Verzeichnis als Kontext.
 
 **Aufgabe: Iteration 2 — Public Header und Footer**
@@ -29,7 +29,7 @@ Ziel: Header und Footer exakt nach den Design-Screenshots umsetzen.
 **PublicHeader** (`components/layout/PublicHeader.tsx`)
 
 Aus den Screenshots:
-- Logo links: goldener Kompass + "ToolKompass" (Serif-Font)
+- Logo links: goldener Kompass + "ToolSucher" (Serif-Font)
 - Navigation Mitte: "Entdecken", "Vergleichen", "Tool-Stacks", "Ratgeber"
 - Rechts: Herz-Icon (Merkliste), Button "Einloggen" oder "Tool-Finder starten" (je nach Seite)
 - Aktiver Nav-Link: unterstrichen (grün)
@@ -51,7 +51,7 @@ Aus den Screenshots:
 - Logo + Tagline links
 - 6 Spalten: Entdecken, Vergleichen, Tool-Stacks, Ratgeber, Über uns / Unternehmen, Rechtliches
 - Social Icons: LinkedIn, Twitter/X, Instagram, E-Mail
-- Copyright-Zeile: "© 2025 ToolKompass – Alle Rechte vorbehalten."
+- Copyright-Zeile: "© 2025 ToolSucher – Alle Rechte vorbehalten."
 - Hintergrund: Creme
 
 **PageShell** (`components/layout/PageShell.tsx`)

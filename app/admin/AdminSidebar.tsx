@@ -56,7 +56,7 @@ export default function AdminSidebar({ user }: { user: User }) {
           color: 'white',
           lineHeight: '1.2',
         }}>
-          ToolKompass
+          ToolSucher
         </p>
         <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginTop: '2px' }}>
           Admin

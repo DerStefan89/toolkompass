@@ -14,10 +14,10 @@ import { prisma } from '@/lib/prisma'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Tool-Stacks — ToolKompass',
+  title: 'Tool-Stacks — ToolSucher',
   description: 'Entdecke bewährte Tool-Kombinationen für Freelancer, Agenturen und kleine Teams.',
   openGraph: {
-    title: 'Tool-Stacks — ToolKompass',
+    title: 'Tool-Stacks — ToolSucher',
     description: 'Entdecke bewährte Tool-Kombinationen für Freelancer, Agenturen und kleine Teams.',
   },
 }

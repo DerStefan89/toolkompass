@@ -1,4 +1,4 @@
-# ToolKompass
+# ToolSucher
 
 Plattform für Gründer, Selbstständige, Coaches, Berater, Agenturen und kleine Teams — digitale Business-Tools entdecken, vergleichen, bewerten und verwalten.
 
@@ -29,7 +29,7 @@ npm run dev
 ## Ordnerstruktur
 
 ```
-toolkompass/
+toolsucher/
 ├── app/                    # Next.js App Router
 │   ├── globals.css         # Design Tokens (CSS Variables + Tailwind @theme)
 │   ├── layout.tsx          # Root Layout mit Fonts und Metadata

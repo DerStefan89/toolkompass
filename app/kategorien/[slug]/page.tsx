@@ -34,7 +34,7 @@ export async function generateMetadata({
   if (!category) return {}
   const t = category.translations[0]
   if (!t) return {}
-  const title = `${t.name} Tools — ToolKompass`
+  const title = `${t.name} Tools — ToolSucher`
   const description = t.description ?? ''
   return { title, description, openGraph: { title, description } }
 }

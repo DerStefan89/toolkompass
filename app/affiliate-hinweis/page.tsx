@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Affiliate-Hinweis — ToolKompass',
+  title: 'Affiliate-Hinweis — ToolSucher',
 }
 
 export default function AffiliateHinweisPage() {

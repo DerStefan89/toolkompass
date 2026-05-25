@@ -64,7 +64,7 @@ export default function AdminLoginPage() {
             color: 'var(--color-text-primary)',
             marginBottom: '4px',
           }}>
-            ToolKompass Admin
+            ToolSucher Admin
           </h1>
           <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
             Melde dich an um fortzufahren

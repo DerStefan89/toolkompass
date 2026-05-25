@@ -31,7 +31,7 @@ export async function generateMetadata({
   if (!tool) return {}
   const t = tool.translations[0]
   if (!t) return {}
-  const title = `${t.name} — ToolKompass`
+  const title = `${t.name} — ToolSucher`
   const description = t.shortDescription
   return { title, description, openGraph: { title, description } }
 }

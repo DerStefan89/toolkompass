@@ -10,14 +10,14 @@
       "Bash(cmd /c \"netstat -ano | findstr :3001 | findstr LISTENING\")",
       "Bash(cmd /c \"netstat -ano | findstr \\\\\":300\\\\\" | findstr LISTENING\")",
       "Bash(npx next *)",
-      "Bash(mkdir -p \"c:/Users/stefa/OneDrive/Desktop/Javascript.course/toolkompass/app/admin/kategorien/neu\" && mkdir -p \"c:/Users/stefa/OneDrive/Desktop/Javascript.course/toolkompass/app/admin/kategorien/[id]\")",
+      "Bash(mkdir -p \"c:/Users/stefa/OneDrive/Desktop/Javascript.course/toolsucher/app/admin/kategorien/neu\" && mkdir -p \"c:/Users/stefa/OneDrive/Desktop/Javascript.course/toolsucher/app/admin/kategorien/[id]\")",
       "Bash(git commit -m ' *)",
       "Bash(npx tsx *)",
       "Bash(cat)",
       "Bash(git commit *)"
     ],
     "additionalDirectories": [
-      "c:\\Users\\stefa\\OneDrive\\Desktop\\Javascript.course\\toolkompass\\app\\admin\\kategorien"
+      "c:\\Users\\stefa\\OneDrive\\Desktop\\Javascript.course\\toolsucher\\app\\admin\\kategorien"
     ]
   }
 }

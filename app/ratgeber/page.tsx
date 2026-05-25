@@ -19,10 +19,10 @@ import { prisma } from '@/lib/prisma'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Ratgeber & Guides — ToolKompass',
+  title: 'Ratgeber & Guides — ToolSucher',
   description: 'Praxisnahe Guides, Vergleiche und Anleitungen rund um digitale Tools für Gründer, Selbstständige und kleine Teams.',
   openGraph: {
-    title: 'Ratgeber & Guides — ToolKompass',
+    title: 'Ratgeber & Guides — ToolSucher',
     description: 'Praxisnahe Guides, Vergleiche und Anleitungen rund um digitale Tools für Gründer, Selbstständige und kleine Teams.',
   },
 }

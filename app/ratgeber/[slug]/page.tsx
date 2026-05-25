@@ -29,7 +29,7 @@ export async function generateMetadata({
     select: { title: true, subtitle: true },
   })
   if (!article) return {}
-  const title = `${article.title} — ToolKompass`
+  const title = `${article.title} — ToolSucher`
   const description = article.subtitle
   return { title, description, openGraph: { title, description } }
 }
@@ -228,9 +228,9 @@ export default async function BlogArtikelSeite({
             marginBottom: '16px',
           }}>
             <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>Geschrieben von</p>
-            <p style={{ fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>ToolKompass Redaktion</p>
+            <p style={{ fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>ToolSucher Redaktion</p>
             <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-              Kuratiert und geprüft durch das ToolKompass Team.
+              Kuratiert und geprüft durch das ToolSucher Team.
             </p>
           </div>
 

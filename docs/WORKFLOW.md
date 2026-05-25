@@ -1,4 +1,4 @@
-# ToolKompass — Claude Code Workflow-Guide
+# ToolSucher — Claude Code Workflow-Guide
 
 ## Wie du Claude Code für dieses Projekt nutzt
 
@@ -8,7 +8,7 @@
 
 ```bash
 # Neuen Ordner erstellen
-mkdir toolkompass && cd toolkompass
+mkdir toolsucher && cd toolsucher
 
 # Diese Dateien hier rein kopieren:
 # - CLAUDE.md                     ← Master-Kontext (PFLICHT)
@@ -99,21 +99,21 @@ Für schnellere Entwicklung kannst du mehrere Claude Code Sessions parallel öff
 
 **Terminal 1 — Research:**
 ```bash
-cd toolkompass
+cd toolsucher
 claude
 > Agiere als Research Agent: Untersuche UX-Muster für Tool-Discovery-Seiten.
 ```
 
 **Terminal 2 — Frontend:**
 ```bash
-cd toolkompass
+cd toolsucher
 claude
 > Agiere als Frontend Builder: Baue die ToolCard nach Iteration-03-Prompt.
 ```
 
 **Terminal 3 — Review:**
 ```bash
-cd toolkompass
+cd toolsucher
 claude
 > Agiere als Frontend Reviewer: Prüfe alle neuen Komponenten in components/tool/
 ```

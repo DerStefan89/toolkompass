@@ -1,7 +1,7 @@
 /**
  * Datei: app/page.tsx
  *
- * Zweck: Startseite von ToolKompass.
+ * Zweck: Startseite von ToolSucher.
  * Aufbau: Hero (2 Spalten) → Aufgaben-Pills → Tool-Cards → Kategorien-Scroll
  *
  * Design-Referenz:
@@ -20,10 +20,10 @@ import { formatPreis } from '@/lib/utils/format'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'ToolKompass — Digitale Business-Tools entdecken & vergleichen',
+  title: 'ToolSucher — Digitale Business-Tools entdecken & vergleichen',
   description: 'Finde die besten digitalen Tools für dein Business.',
   openGraph: {
-    title: 'ToolKompass — Digitale Business-Tools entdecken & vergleichen',
+    title: 'ToolSucher — Digitale Business-Tools entdecken & vergleichen',
     description: 'Finde die besten digitalen Tools für dein Business.',
   },
 }
@@ -80,7 +80,7 @@ export default async function Home() {
             marginBottom: '32px',
             lineHeight: '1.6',
           }}>
-            ToolKompass hilft Gründern, Selbstständigen und kleinen Teams in
+            ToolSucher hilft Gründern, Selbstständigen und kleinen Teams in
             Deutschland, passende Software zu finden und zu vergleichen.
           </p>
 

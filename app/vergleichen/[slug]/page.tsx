@@ -34,7 +34,7 @@ export async function generateMetadata({
   if (!comparison) return {}
   const nameA = comparison.toolA.translations[0]?.name ?? comparison.toolA.slug
   const nameB = comparison.toolB.translations[0]?.name ?? comparison.toolB.slug
-  const title = `${nameA} vs ${nameB} — ToolKompass`
+  const title = `${nameA} vs ${nameB} — ToolSucher`
   const description = `Vergleich: ${nameA} vs ${nameB}`
   return { title, description, openGraph: { title, description } }
 }

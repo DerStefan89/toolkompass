@@ -6,7 +6,7 @@
 
 ## PROMPT
 
-Du arbeitest am Produkt ToolKompass.
+Du arbeitest am Produkt ToolSucher.
 Lies zuerst die CLAUDE.md im aktuellen Verzeichnis als Kontext.
 
 **Aufgabe: Iteration 1 — Next.js-Projektstruktur und Design Tokens**
@@ -28,7 +28,7 @@ Führe diese Schritte in dieser Reihenfolge aus:
 
 **Schritt 1: Next.js-Projekt erstellen**
 ```bash
-npx create-next-app@latest toolkompass \
+npx create-next-app@latest toolsucher \
   --typescript \
   --tailwind \
   --eslint \
@@ -122,7 +122,7 @@ export type Category = {
 ```
 
 **Schritt 8: README erstellen**
-Grundstruktur mit: Was ist ToolKompass, Stack, Quickstart, Ordnerstruktur, Design-Hinweis.
+Grundstruktur mit: Was ist ToolSucher, Stack, Quickstart, Ordnerstruktur, Design-Hinweis.
 
 ### Akzeptanzkriterien
 

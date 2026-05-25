@@ -1,8 +1,8 @@
-# ToolKompass — Claude Code Master-Kontext
+# ToolSucher — Claude Code Master-Kontext
 
-Du arbeitest am Produkt **ToolKompass**.
+Du arbeitest am Produkt **ToolSucher**.
 
-ToolKompass ist eine Plattform für Gründer, Selbstständige, Coaches, Berater, Agenturen und kleine Teams,
+ToolSucher ist eine Plattform für Gründer, Selbstständige, Coaches, Berater, Agenturen und kleine Teams,
 um digitale Business-Tools zu entdecken, zu vergleichen, zu bewerten, zu erwerben und später zu verwalten.
 
 ---
@@ -112,7 +112,7 @@ Diese Themen dürfen **architektonisch vorbereitet**, aber **nicht produktiv umg
 ## 📁 Projektstruktur
 
 ```
-toolkompass/
+toolsucher/
 ├── app/                    # Next.js App Router
 │   ├── (public)/           # Öffentliche Seiten
 │   │   ├── page.tsx        # Startseite

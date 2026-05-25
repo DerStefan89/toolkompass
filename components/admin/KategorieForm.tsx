@@ -8,7 +8,7 @@
  * - design-refs/4_Alle_Kategorien.png (Kategorien-Übersicht)
  *
  * Produkt-Kontext:
- * Kategorien sind die primäre Navigationsstruktur von ToolKompass.
+ * Kategorien sind die primäre Navigationsstruktur von ToolSucher.
  * Das Icon-Feld erwartet einen lucide-react Icon-Namen (z. B. "layout-dashboard"),
  * der auf der öffentlichen Seite gerendert wird.
  *

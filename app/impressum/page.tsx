@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Impressum — ToolKompass',
+  title: 'Impressum — ToolSucher',
 }
 
 export default function ImpressumPage() {

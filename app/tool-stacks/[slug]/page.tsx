@@ -290,7 +290,7 @@ export default async function ToolStackDetailSeite({
           margin: '0 auto 32px',
         }}>
           Bald kannst du deinen Stack speichern, Kosten tracken, Kündigungsfristen im Blick behalten
-          und alle deine Tools direkt von ToolKompass aus öffnen.
+          und alle deine Tools direkt von ToolSucher aus öffnen.
         </p>
         <div style={{
           display: 'flex',

@@ -37,7 +37,7 @@ export default function PublicFooter() {
           fontSize: '13px',
           color: 'var(--color-text-secondary)',
         }}>
-          © 2025 ToolKompass
+          © 2025 ToolSucher
         </span>
 
         {/* Links */}
