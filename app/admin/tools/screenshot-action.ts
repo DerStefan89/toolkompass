@@ -16,6 +16,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 const MAX_BYTES   = 3 * 1024 * 1024
@@ -32,6 +33,10 @@ export async function uploadToolScreenshot(
   _prev: ScreenshotActionState,
   formData: FormData,
 ): Promise<ScreenshotActionState> {
+  const authClient = await createClient()
+  const { data: { user } } = await authClient.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   const file = formData.get('screenshot') as File | null
 
   if (!file || file.size === 0) return { error: 'Keine Datei ausgewählt.' }

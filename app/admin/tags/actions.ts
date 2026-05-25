@@ -16,6 +16,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
+import { createClient } from '@/lib/supabase/server'
 
 
 
@@ -72,6 +73,10 @@ export async function createTagGroup(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   const { data, errors } = parseTagGroupForm(formData)
   if (errors) return { fieldErrors: errors }
 
@@ -110,6 +115,10 @@ export async function updateTagGroup(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   const { data, errors } = parseTagGroupForm(formData)
   if (errors) return { fieldErrors: errors }
 
@@ -149,6 +158,10 @@ export async function updateTagGroup(
 // Löscht eine Tag-Gruppe inkl. aller zugehörigen Tags (onDelete: Cascade).
 // Navigation nach Erfolg liegt beim Aufrufer (kein redirect hier).
 export async function deleteTagGroup(id: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   try {
     await prisma.tagGroup.delete({ where: { id } })
   } catch {

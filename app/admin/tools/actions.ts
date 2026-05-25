@@ -15,6 +15,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
+import { createClient } from '@/lib/supabase/server'
 
 
 
@@ -120,6 +121,10 @@ export async function createTool(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   const { data, errors } = parseToolForm(formData)
   if (errors) return { fieldErrors: errors }
 
@@ -166,6 +171,10 @@ export async function updateTool(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   const { data, errors } = parseToolForm(formData)
   if (errors) return { fieldErrors: errors }
 
@@ -226,6 +235,10 @@ export async function updateTool(
 // erfolgt automatisch via onDelete: Cascade im Schema.
 // Navigation nach Erfolg liegt beim Aufrufer (kein redirect hier).
 export async function deleteTool(id: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   try {
     await prisma.tool.delete({ where: { id } })
   } catch {
@@ -238,6 +251,10 @@ export async function deleteTool(id: string): Promise<{ error?: string }> {
 
 // Toggled published true↔false und setzt publishedAt entsprechend.
 export async function togglePublished(id: string): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
   const tool = await prisma.tool.findUnique({
     where: { id },
     select: { published: true },

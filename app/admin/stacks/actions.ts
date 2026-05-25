@@ -16,6 +16,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
+import { createClient } from '@/lib/supabase/server'
 
 
 
@@ -64,6 +65,10 @@ export async function createStack(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   const { data, errors } = parseStackForm(formData)
   if (errors) return { fieldErrors: errors }
 
@@ -108,6 +113,10 @@ export async function updateStack(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   const { data, errors } = parseStackForm(formData)
   if (errors) return { fieldErrors: errors }
 
@@ -162,6 +171,10 @@ export async function updateStack(
 // Löscht einen Tool-Stack inkl. aller Übersetzungen und Tool-Zuordnungen (onDelete: Cascade).
 // Navigation nach Erfolg liegt beim Aufrufer (kein redirect hier).
 export async function deleteStack(id: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   try {
     await prisma.toolStack.delete({ where: { id } })
   } catch {
@@ -175,6 +188,10 @@ export async function deleteStack(id: string): Promise<{ error?: string }> {
 
 // Toggled published true↔false.
 export async function toggleStackPublished(id: string): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
   const item = await prisma.toolStack.findUnique({
     where: { id },
     select: { published: true },

@@ -17,6 +17,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
+import { createClient } from '@/lib/supabase/server'
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -45,6 +46,10 @@ export async function createAffiliateLink(
   _prev: AffiliateLinkActionState,
   formData: FormData
 ): Promise<AffiliateLinkActionState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Nicht autorisiert.' }
+
   const str = (k: string) => ((formData.get(k) as string) ?? '').trim()
 
   const label        = str('label')
@@ -98,6 +103,10 @@ export async function createAffiliateLink(
 // Schaltet isActive eines Links um.
 // Der neue Zielwert wird direkt übergeben (der Client kennt den aktuellen Zustand).
 export async function toggleAffiliateActive(id: string, toolId: string, isActive: boolean): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
   await prisma.affiliateLink.update({
     where: { id },
     data:  { isActive },
@@ -108,6 +117,10 @@ export async function toggleAffiliateActive(id: string, toolId: string, isActive
 // Setzt einen Link als primären Link des Tools.
 // Alle anderen Links dieses Tools werden auf isPrimary: false gesetzt (Transaktion).
 export async function setAffiliatePrimary(id: string, toolId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
   await prisma.$transaction([
     prisma.affiliateLink.updateMany({
       where: { toolId, NOT: { id } },
@@ -123,6 +136,10 @@ export async function setAffiliatePrimary(id: string, toolId: string): Promise<v
 
 // Löscht einen Affiliate-Link dauerhaft.
 export async function deleteAffiliateLink(id: string, toolId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
   await prisma.affiliateLink.delete({ where: { id } })
   revalidatePath(`/admin/tools/${toolId}`)
 }
