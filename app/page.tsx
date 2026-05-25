@@ -13,10 +13,20 @@
  * Hero-Bereich und Tool-Stack-Box bleiben statisch (keine DB-Abfrage nötig).
  */
 
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 
 export const revalidate = 3600
+
+export const metadata: Metadata = {
+  title: 'ToolKompass — Digitale Business-Tools entdecken & vergleichen',
+  description: 'Finde die besten digitalen Tools für dein Business.',
+  openGraph: {
+    title: 'ToolKompass — Digitale Business-Tools entdecken & vergleichen',
+    description: 'Finde die besten digitalen Tools für dein Business.',
+  },
+}
 
 export default async function Home() {
   // Promise.all: beide Queries laufen parallel

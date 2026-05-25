@@ -14,11 +14,30 @@
  * in der DB existiert.
  */
 
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 
 export const revalidate = 3600
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const category = await prisma.category.findUnique({
+    where: { slug },
+    include: { translations: { where: { locale: 'de' } } },
+  })
+  if (!category) return {}
+  const t = category.translations[0]
+  if (!t) return {}
+  const title = `${t.name} Tools — ToolKompass`
+  const description = t.description ?? ''
+  return { title, description, openGraph: { title, description } }
+}
 
 export async function generateStaticParams() {
   const categories = await prisma.category.findMany({

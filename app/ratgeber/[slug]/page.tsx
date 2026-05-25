@@ -12,10 +12,27 @@
  * Per-Section-Tools aus dem Mock werden durch eine globale Tool-Box ersetzt.
  */
 
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 
 export const revalidate = 3600
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const article = await prisma.article.findUnique({
+    where: { slug },
+    select: { title: true, subtitle: true },
+  })
+  if (!article) return {}
+  const title = `${article.title} — ToolKompass`
+  const description = article.subtitle
+  return { title, description, openGraph: { title, description } }
+}
 
 export async function generateStaticParams() {
   const articles = await prisma.article.findMany({

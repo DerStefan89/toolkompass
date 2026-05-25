@@ -11,11 +11,30 @@
  * Nur die Datenquelle wechselt: toolData → Prisma.
  */
 
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 
 export const revalidate = 3600
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const tool = await prisma.tool.findUnique({
+    where: { slug },
+    include: { translations: { where: { locale: 'de' } } },
+  })
+  if (!tool) return {}
+  const t = tool.translations[0]
+  if (!t) return {}
+  const title = `${t.name} — ToolKompass`
+  const description = t.shortDescription
+  return { title, description, openGraph: { title, description } }
+}
 
 export async function generateStaticParams() {
   const tools = await prisma.tool.findMany({

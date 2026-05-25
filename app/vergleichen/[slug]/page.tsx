@@ -11,11 +11,33 @@
  * Tool-Farben sind nicht in der DB — A bekommt CTA-Farbe, B eine Kontrastfarbe.
  */
 
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 
 export const revalidate = 3600
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const comparison = await prisma.comparison.findUnique({
+    where: { slug },
+    include: {
+      toolA: { include: { translations: { where: { locale: 'de' } } } },
+      toolB: { include: { translations: { where: { locale: 'de' } } } },
+    },
+  })
+  if (!comparison) return {}
+  const nameA = comparison.toolA.translations[0]?.name ?? comparison.toolA.slug
+  const nameB = comparison.toolB.translations[0]?.name ?? comparison.toolB.slug
+  const title = `${nameA} vs ${nameB} — ToolKompass`
+  const description = `Vergleich: ${nameA} vs ${nameB}`
+  return { title, description, openGraph: { title, description } }
+}
 
 export async function generateStaticParams() {
   const comparisons = await prisma.comparison.findMany({
