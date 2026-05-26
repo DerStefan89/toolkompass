@@ -8,6 +8,7 @@
  * - design-refs/2_Tool_Detailseite.png
  */
 
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import ToolForm from '@/components/admin/ToolForm'
 import { createTool } from '@/app/admin/tools/actions'
@@ -41,12 +42,12 @@ export default async function NewToolPage() {
   return (
     <div>
       <div style={{ marginBottom: '32px' }}>
-        <a
+        <Link
           href="/admin/tools"
           style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}
         >
           ← Zurück zur Tool-Liste
-        </a>
+        </Link>
         <h1 style={{
           fontSize: '22px',
           fontWeight: '700',

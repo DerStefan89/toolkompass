@@ -18,6 +18,7 @@
 
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
 import type { ActionState } from '@/lib/types/admin'
 
@@ -243,7 +244,7 @@ export default function VendorForm({ action, defaultValues }: VendorFormProps) {
           {isPending ? 'Wird gespeichert…' : 'Speichern'}
         </button>
 
-        <a
+        <Link
           href="/admin/vendors"
           style={{
             padding: '10px 20px',
@@ -258,7 +259,7 @@ export default function VendorForm({ action, defaultValues }: VendorFormProps) {
           }}
         >
           Abbrechen
-        </a>
+        </Link>
       </div>
     </form>
   )

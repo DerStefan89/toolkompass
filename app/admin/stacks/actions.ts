@@ -98,7 +98,8 @@ export async function createStack(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[createStack]', error)
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -157,7 +158,8 @@ export async function updateStack(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[updateStack]', error)
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -176,7 +178,8 @@ export async function deleteStack(id: string): Promise<{ error?: string }> {
 
   try {
     await prisma.toolStack.delete({ where: { id } })
-  } catch {
+  } catch (error) {
+    console.error('[deleteStack]', error)
     return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/stacks')

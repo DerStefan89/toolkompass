@@ -81,7 +81,8 @@ export async function createAffiliateLink(
         data: { toolId, label, url, trackingSlug, isPrimary, isActive: true },
       })
     })
-  } catch {
+  } catch (error) {
+    console.error('[createAffiliateLink]', error)
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 

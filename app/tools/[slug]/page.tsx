@@ -11,6 +11,7 @@
  * Nur die Datenquelle wechselt: toolData → Prisma.
  */
 
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
@@ -96,11 +97,11 @@ export default async function ToolDetailSeite({
 
       {/* Breadcrumb */}
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
-        <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
+        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
         {' › '}
-        <a href="/kategorien" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
+        <Link href="/kategorien" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
           {categoryNames || 'Tools'}
-        </a>
+        </Link>
         {' › '}
         {t.name}
       </p>
@@ -201,7 +202,7 @@ export default async function ToolDetailSeite({
             }}>
               Zum Anbieter ↗
             </a>
-            <a href="/vergleichen" style={{
+            <Link href="/vergleichen" style={{
               backgroundColor: 'transparent',
               color: 'var(--color-text-primary)',
               padding: '10px 16px',
@@ -211,7 +212,7 @@ export default async function ToolDetailSeite({
               border: '1px solid var(--color-border)',
             }}>
               Vergleichen
-            </a>
+            </Link>
             {tool.isAffiliate && (
               <span style={{
                 fontSize: '11px',

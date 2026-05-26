@@ -13,6 +13,7 @@
  * - Vergleiche werden separat unten angezeigt.
  */
 
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 
@@ -71,7 +72,7 @@ export default async function RatgeberSeite() {
 
       {/* Breadcrumb */}
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
-        <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
+        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
         {' › '}
         Ratgeber
       </p>

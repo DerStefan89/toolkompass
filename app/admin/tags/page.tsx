@@ -5,6 +5,7 @@
  * Tags sind in Gruppen organisiert (z.B. "Features", "Zielgruppe").
  */
 
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 
 export default async function AdminTagsPage() {
@@ -40,7 +41,7 @@ export default async function AdminTagsPage() {
             {tagGroups.length} Gruppen · {totalTags} Tags gesamt
           </p>
         </div>
-        <a
+        <Link
           href="/admin/tags/neu"
           style={{
             padding: '10px 20px',
@@ -53,7 +54,7 @@ export default async function AdminTagsPage() {
           }}
         >
           + Tag anlegen
-        </a>
+        </Link>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -97,7 +98,7 @@ export default async function AdminTagsPage() {
                     {group.slug} · {group.tags.length} Tags
                   </p>
                 </div>
-                <a
+                <Link
                   href={`/admin/tags/${group.id}`}
                   style={{
                     fontSize: '13px',
@@ -109,7 +110,7 @@ export default async function AdminTagsPage() {
                   }}
                 >
                   Bearbeiten
-                </a>
+                </Link>
               </div>
 
               <div style={{ padding: '16px 20px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>

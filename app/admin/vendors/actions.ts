@@ -92,7 +92,8 @@ export async function createVendor(
         description: data.description,
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[createVendor]', error)
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -131,7 +132,8 @@ export async function updateVendor(
         description: data.description,
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[updateVendor]', error)
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -149,7 +151,8 @@ export async function deleteVendor(id: string): Promise<{ error?: string }> {
 
   try {
     await prisma.vendor.delete({ where: { id } })
-  } catch {
+  } catch (error) {
+    console.error('[deleteVendor]', error)
     return { error: 'Löschen fehlgeschlagen. Dem Anbieter sind möglicherweise noch Tools zugeordnet.' }
   }
   revalidatePath('/admin/vendors')

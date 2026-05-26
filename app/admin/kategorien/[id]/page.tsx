@@ -13,6 +13,7 @@
  *   Sie wird per .bind(null, id) vorgefüllt, bevor sie an KategorieForm übergeben wird.
  */
 
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import KategorieForm from '@/components/admin/KategorieForm'
@@ -56,12 +57,12 @@ export default async function EditKategoriePage({ params }: Props) {
   return (
     <div>
       <div style={{ marginBottom: '32px' }}>
-        <a
+        <Link
           href="/admin/kategorien"
           style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}
         >
           ← Zurück zur Kategorien-Liste
-        </a>
+        </Link>
         <h1 style={{
           fontSize: '22px',
           fontWeight: '700',

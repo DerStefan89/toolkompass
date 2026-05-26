@@ -86,6 +86,7 @@ export default function AffiliateLinkManager({ toolId, toolSlug, links }: Props)
   // Formular schließen und Seite auffrischen wenn Erstellen erfolgreich war
   useEffect(() => {
     if (createState.success) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowAddForm(false)
       setAddLabel('')
       setAddSlug('')
@@ -421,7 +422,7 @@ export default function AffiliateLinkManager({ toolId, toolSlug, links }: Props)
       {/* Empty State */}
       {links.length === 0 && !showAddForm && (
         <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: '13px' }}>
-          Noch keine Affiliate-Links. Klicke auf "Link hinzufügen" um einen zu erstellen.
+          Noch keine Affiliate-Links. Klicke auf &ldquo;Link hinzufügen&rdquo; um einen zu erstellen.
         </div>
       )}
     </div>

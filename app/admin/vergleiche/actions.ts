@@ -117,7 +117,8 @@ export async function createVergleich(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[createVergleich]', error)
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -165,7 +166,8 @@ export async function updateVergleich(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[updateVergleich]', error)
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -184,7 +186,8 @@ export async function deleteVergleich(id: string): Promise<{ error?: string }> {
 
   try {
     await prisma.comparison.delete({ where: { id } })
-  } catch {
+  } catch (error) {
+    console.error('[deleteVergleich]', error)
     return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/vergleiche')

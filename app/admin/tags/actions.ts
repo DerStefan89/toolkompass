@@ -92,7 +92,8 @@ export async function createTagGroup(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[createTagGroup]', error)
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -137,7 +138,8 @@ export async function updateTagGroup(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[updateTagGroup]', error)
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -154,7 +156,8 @@ export async function deleteTagGroup(id: string): Promise<{ error?: string }> {
 
   try {
     await prisma.tagGroup.delete({ where: { id } })
-  } catch {
+  } catch (error) {
+    console.error('[deleteTagGroup]', error)
     return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/tags')

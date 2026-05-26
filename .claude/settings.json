@@ -19,7 +19,9 @@
       "Bash(npm run *)",
       "Read(//tmp/**)",
       "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)",
-      "PowerShell(Stop-Process -Force)"
+      "PowerShell(Stop-Process -Force)",
+      "Bash(git tag *)",
+      "Bash(npx prisma *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\stefa\\OneDrive\\Desktop\\Javascript.course\\toolsucher\\app\\admin\\kategorien"

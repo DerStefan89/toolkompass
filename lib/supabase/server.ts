@@ -25,8 +25,12 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             )
-          } catch {
-            // In Read-only Server Components ignorieren
+          } catch (error) {
+            // Erwartetes Verhalten in Read-only Server Components.
+            // Supabase SSR-Pattern: set() wirft hier bewusst — wir ignorieren es.
+            if (process.env.NODE_ENV === 'development') {
+              console.debug('[supabase/setAll] read-only context, ignoring:', error)
+            }
           }
         },
       },

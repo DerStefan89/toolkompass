@@ -19,6 +19,7 @@
 
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
 import type { ActionState } from '@/lib/types/admin'
 import { toSlug } from '@/lib/utils/form'
@@ -421,9 +422,9 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
         {tagGroups.length === 0 ? (
           <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
             Keine Tag-Gruppen vorhanden.{' '}
-            <a href="/admin/tags" style={{ color: 'var(--color-cta)', textDecoration: 'none' }}>
+            <Link href="/admin/tags" style={{ color: 'var(--color-cta)', textDecoration: 'none' }}>
               Tags anlegen →
-            </a>
+            </Link>
           </p>
         ) : (
           <>
@@ -498,7 +499,7 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
           {isPending ? 'Wird gespeichert…' : 'Speichern'}
         </button>
 
-        <a
+        <Link
           href="/admin/tools"
           style={{
             padding: '10px 20px',
@@ -513,7 +514,7 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
           }}
         >
           Abbrechen
-        </a>
+        </Link>
       </div>
     </form>
   )

@@ -63,7 +63,8 @@ export async function uploadToolScreenshot(
 
   try {
     await prisma.tool.update({ where: { id: toolId }, data: { screenshotUrl: publicUrl } })
-  } catch {
+  } catch (error) {
+    console.error('[uploadToolScreenshot]', error)
     return { error: 'Datenbankfehler beim Speichern der Screenshot-URL.' }
   }
 

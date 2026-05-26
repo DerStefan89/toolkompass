@@ -429,6 +429,8 @@ model AffiliateClick {
   affiliateLinkId String
   sessionId       String?
   referrer        String?
+  userAgent       String?
+  ipHash          String?
   createdAt       DateTime @default(now())
 
   affiliateLink   AffiliateLink @relation(fields: [affiliateLinkId], references: [id])

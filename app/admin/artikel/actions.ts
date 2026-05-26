@@ -54,7 +54,8 @@ function parseArtikelForm(formData: FormData): {
   try {
     const raw = parseStr(formData, 'sections_json')
     if (raw) sections = JSON.parse(raw)
-  } catch {
+  } catch (error) {
+    console.error('[parseArtikelForm/sections_json]', error)
     // Bei ungültigem JSON: leere Sections, Validierung schlägt unten an
   }
 
@@ -126,7 +127,8 @@ export async function createArtikel(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[createArtikel]', error)
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -186,7 +188,8 @@ export async function updateArtikel(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[updateArtikel]', error)
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -205,7 +208,8 @@ export async function deleteArtikel(id: string): Promise<{ error?: string }> {
 
   try {
     await prisma.article.delete({ where: { id } })
-  } catch {
+  } catch (error) {
+    console.error('[deleteArtikel]', error)
     return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/artikel')

@@ -14,6 +14,7 @@
  * in der DB existiert.
  */
 
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
@@ -93,9 +94,9 @@ export default async function KategorieDetailSeite({
 
       {/* Breadcrumb */}
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
-        <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
+        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
         {' › '}
-        <a href="/kategorien" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Kategorien</a>
+        <Link href="/kategorien" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Kategorien</Link>
         {' › '}
         {t.name}
       </p>

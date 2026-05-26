@@ -15,6 +15,7 @@
 
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
 import type { ActionState } from '@/lib/types/admin'
 
@@ -398,7 +399,7 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
           {isPending ? 'Wird gespeichert…' : 'Speichern'}
         </button>
 
-        <a
+        <Link
           href="/admin/vergleiche"
           style={{
             padding: '10px 20px',
@@ -413,7 +414,7 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
           }}
         >
           Abbrechen
-        </a>
+        </Link>
       </div>
 
     </form>

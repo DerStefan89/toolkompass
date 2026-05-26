@@ -148,7 +148,8 @@ export async function createTool(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[createTool]', error)
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -214,7 +215,8 @@ export async function updateTool(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[updateTool]', error)
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -234,7 +236,8 @@ export async function deleteTool(id: string): Promise<{ error?: string }> {
 
   try {
     await prisma.tool.delete({ where: { id } })
-  } catch {
+  } catch (error) {
+    console.error('[deleteTool]', error)
     return { error: 'Löschen fehlgeschlagen. Das Tool wird möglicherweise noch referenziert.' }
   }
   revalidatePath('/admin/tools')

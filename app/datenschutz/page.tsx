@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -32,7 +33,7 @@ export default function DatenschutzPage() {
     <main style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 24px' }}>
 
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
-        <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
+        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
         {' › '}
         Datenschutz
       </p>

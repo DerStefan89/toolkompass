@@ -5,6 +5,7 @@
  * Lädt alle verfügbaren Tools für die Dropdown-Auswahl.
  */
 
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import VergleichForm from '@/components/admin/VergleichForm'
 import { createVergleich } from '../actions'
@@ -24,12 +25,12 @@ export default async function NeuVergleichPage() {
   return (
     <div>
       <div style={{ marginBottom: '32px' }}>
-        <a
+        <Link
           href="/admin/vergleiche"
           style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}
         >
           ← Zurück zur Vergleichsliste
-        </a>
+        </Link>
         <h1 style={{
           fontFamily: 'var(--font-playfair)',
           fontSize: '24px',

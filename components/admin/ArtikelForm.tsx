@@ -12,6 +12,7 @@
 
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
 import type { ActionState } from '@/lib/types/admin'
 import type { SectionInput } from '@/app/admin/artikel/actions'
@@ -410,7 +411,7 @@ export default function ArtikelForm({ action, tagGroups = [], defaultValues }: A
           {isPending ? 'Wird gespeichert…' : 'Speichern'}
         </button>
 
-        <a
+        <Link
           href="/admin/artikel"
           style={{
             padding: '10px 20px',
@@ -425,7 +426,7 @@ export default function ArtikelForm({ action, tagGroups = [], defaultValues }: A
           }}
         >
           Abbrechen
-        </a>
+        </Link>
       </div>
     </form>
   )

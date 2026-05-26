@@ -19,6 +19,7 @@
 
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
 import type { ActionState } from '@/lib/types/admin'
 
@@ -281,7 +282,7 @@ export default function KategorieForm({ action, defaultValues }: KategorieFormPr
           {isPending ? 'Wird gespeichert…' : 'Speichern'}
         </button>
 
-        <a
+        <Link
           href="/admin/kategorien"
           style={{
             padding: '10px 20px',
@@ -296,7 +297,7 @@ export default function KategorieForm({ action, defaultValues }: KategorieFormPr
           }}
         >
           Abbrechen
-        </a>
+        </Link>
       </div>
     </form>
   )

@@ -8,6 +8,7 @@
  * - design-refs/2_Tool_Detailseite.png
  */
 
+import Link from 'next/link'
 import VendorForm from '@/components/admin/VendorForm'
 import { createVendor } from '@/app/admin/vendors/actions'
 
@@ -16,12 +17,12 @@ export default function NewVendorPage() {
   return (
     <div>
       <div style={{ marginBottom: '32px' }}>
-        <a
+        <Link
           href="/admin/vendors"
           style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}
         >
           ← Zurück zur Anbieter-Liste
-        </a>
+        </Link>
         <h1 style={{
           fontSize: '22px',
           fontWeight: '700',

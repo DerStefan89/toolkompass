@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 // TOOL-FINDER SEITE (app/tool-finder/page.tsx)
 // Zweck: Coming Soon Seite — zeigt was kommt, sammelt Interesse.
 // Der echte Tool-Finder folgt in einer späteren Phase.
@@ -8,7 +10,7 @@ export default function ToolFinderSeite() {
 
       {/* Breadcrumb */}
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
-        <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
+        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
         {' › '}
         Tool-Finder
       </p>
@@ -184,7 +186,7 @@ export default function ToolFinderSeite() {
               }}>
                 🔔 Benachrichtigen lassen
               </a>
-              <a href="/kategorien" style={{
+              <Link href="/kategorien" style={{
                 backgroundColor: 'transparent',
                 color: 'var(--color-text-primary)',
                 padding: '14px 28px',
@@ -194,7 +196,7 @@ export default function ToolFinderSeite() {
                 border: '1px solid var(--color-border)',
               }}>
                 Tools selbst entdecken →
-              </a>
+              </Link>
             </div>
           </div>
 

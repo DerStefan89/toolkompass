@@ -10,6 +10,7 @@
  * - Rows werden per deleteMany + create atomisch ersetzt (onDelete: Cascade).
  */
 
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import VergleichForm from '@/components/admin/VergleichForm'
@@ -69,12 +70,12 @@ export default async function EditVergleichPage({ params }: Props) {
   return (
     <div>
       <div style={{ marginBottom: '32px' }}>
-        <a
+        <Link
           href="/admin/vergleiche"
           style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}
         >
           ← Zurück zur Vergleichsliste
-        </a>
+        </Link>
         <h1 style={{
           fontSize: '22px',
           fontWeight: '700',

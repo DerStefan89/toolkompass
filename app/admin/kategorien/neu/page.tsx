@@ -8,6 +8,7 @@
  * - design-refs/4_Alle_Kategorien.png
  */
 
+import Link from 'next/link'
 import KategorieForm from '@/components/admin/KategorieForm'
 import { createKategorie } from '@/app/admin/kategorien/actions'
 
@@ -16,12 +17,12 @@ export default function NewKategoriePage() {
   return (
     <div>
       <div style={{ marginBottom: '32px' }}>
-        <a
+        <Link
           href="/admin/kategorien"
           style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}
         >
           ← Zurück zur Kategorien-Liste
-        </a>
+        </Link>
         <h1 style={{
           fontSize: '22px',
           fontWeight: '700',

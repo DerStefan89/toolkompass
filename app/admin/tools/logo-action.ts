@@ -63,7 +63,8 @@ export async function uploadToolLogo(
 
   try {
     await prisma.tool.update({ where: { id: toolId }, data: { logoUrl: publicUrl } })
-  } catch {
+  } catch (error) {
+    console.error('[uploadToolLogo]', error)
     return { error: 'Datenbankfehler beim Speichern der Logo-URL.' }
   }
 

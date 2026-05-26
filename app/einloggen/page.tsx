@@ -5,6 +5,8 @@
  * Wird in einer späteren Phase durch echte Supabase Auth ersetzt.
  */
 
+import Link from 'next/link'
+
 export default function EinloggenSeite() {
   return (
     <main style={{
@@ -42,13 +44,13 @@ export default function EinloggenSeite() {
         }}>
           Login für Nutzer kommt bald.
         </p>
-        <a href="/" style={{
+        <Link href="/" style={{
           fontSize: '13px',
           color: 'var(--color-text-secondary)',
           textDecoration: 'none',
         }}>
           ← Zurück zur Startseite
-        </a>
+        </Link>
       </div>
     </main>
   )

@@ -12,6 +12,7 @@
  * Gesamtkosten = Summe aller startingPriceMonthly der Stack-Tools.
  */
 
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
@@ -86,9 +87,9 @@ export default async function ToolStackDetailSeite({
 
       {/* Breadcrumb */}
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
-        <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
+        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
         {' › '}
-        <a href="/tool-stacks" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Tool-Stacks</a>
+        <Link href="/tool-stacks" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Tool-Stacks</Link>
         {' › '}
         {t.name}
       </p>
@@ -312,7 +313,7 @@ export default async function ToolStackDetailSeite({
           ))}
         </div>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-          <a href="/einloggen" style={{
+          <Link href="/einloggen" style={{
             backgroundColor: 'var(--color-cta)',
             color: 'white',
             padding: '14px 28px',
@@ -322,8 +323,8 @@ export default async function ToolStackDetailSeite({
             fontWeight: '600',
           }}>
             🔔 Benachrichtigen lassen
-          </a>
-          <a href="/tool-stacks" style={{
+          </Link>
+          <Link href="/tool-stacks" style={{
             backgroundColor: 'transparent',
             color: 'var(--color-text-primary)',
             padding: '14px 28px',
@@ -333,7 +334,7 @@ export default async function ToolStackDetailSeite({
             border: '1px solid var(--color-border)',
           }}>
             Andere Stacks ansehen
-          </a>
+          </Link>
         </div>
       </div>
 

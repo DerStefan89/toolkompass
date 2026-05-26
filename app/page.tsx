@@ -13,6 +13,7 @@
  * Hero-Bereich und Tool-Stack-Box bleiben statisch (keine DB-Abfrage nötig).
  */
 
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
@@ -101,7 +102,7 @@ export default async function Home() {
 
           {/* Buttons */}
           <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
-            <a href="/tool-finder" style={{
+            <Link href="/tool-finder" style={{
               backgroundColor: 'var(--color-cta)',
               color: 'white',
               padding: '12px 24px',
@@ -111,8 +112,8 @@ export default async function Home() {
               fontWeight: '600',
             }}>
               Tool-Finder starten →
-            </a>
-            <a href="/kategorien" style={{
+            </Link>
+            <Link href="/kategorien" style={{
               backgroundColor: 'transparent',
               color: 'var(--color-text-primary)',
               padding: '12px 24px',
@@ -122,7 +123,7 @@ export default async function Home() {
               border: '1px solid var(--color-border)',
             }}>
               Kategorien ansehen
-            </a>
+            </Link>
           </div>
 
           {/* Was möchtest du erledigen? — direkt unter den Buttons */}
@@ -145,7 +146,7 @@ export default async function Home() {
               { icon: '💼', label: 'Sales Funnel aufbauen' },
               { icon: '📊', label: 'Präsentation erstellen' },
             ].map((aufgabe) => (
-              <a key={aufgabe.label} href="/aufgaben" style={{
+              <Link key={aufgabe.label} href="/aufgaben" style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
@@ -160,7 +161,7 @@ export default async function Home() {
               }}>
                 <span>{aufgabe.icon}</span>
                 <span>{aufgabe.label}</span>
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -236,7 +237,7 @@ export default async function Home() {
             </p>
           </div>
 
-          <a href="/tool-stacks" style={{
+          <Link href="/tool-stacks" style={{
             display: 'block',
             textAlign: 'center',
             backgroundColor: 'var(--color-cta)',
@@ -249,7 +250,7 @@ export default async function Home() {
             marginBottom: '12px',
           }}>
             Stack-Vorschau ansehen
-          </a>
+          </Link>
 
           <p style={{ textAlign: 'center', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
             🔔 Benachrichtigen lassen
@@ -368,9 +369,9 @@ export default async function Home() {
           }}>
             Entdecke Tools nach Kategorie
           </h2>
-          <a href="/kategorien" style={{ fontSize: '14px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
+          <Link href="/kategorien" style={{ fontSize: '14px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
             Alle Kategorien ansehen →
-          </a>
+          </Link>
         </div>
         <div style={{ display: 'flex', gap: '12px', overflowX: 'auto' }}>
           {categories.map((cat) => {

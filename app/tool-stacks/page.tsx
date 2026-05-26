@@ -8,6 +8,7 @@
  * - design-refs/5_Tool_Stacks.png
  */
 
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 
@@ -112,7 +113,7 @@ export default async function ToolStacksSeite() {
             Jeder Stack ist ein durchdachtes Tool-Set für einen bestimmten
             Anwendungsfall — keine zufälligen Listen.
           </p>
-          <a href="/kategorien" style={{
+          <Link href="/kategorien" style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -126,7 +127,7 @@ export default async function ToolStacksSeite() {
             fontWeight: '600',
           }}>
             Alle Kategorien ansehen
-          </a>
+          </Link>
         </div>
 
       </section>
@@ -250,7 +251,7 @@ export default async function ToolStacksSeite() {
               Der Tool-Finder hilft dir bei der Auswahl.
             </p>
           </div>
-          <a href="/kategorien" style={{
+          <Link href="/kategorien" style={{
             backgroundColor: 'var(--color-cta)',
             color: 'white',
             padding: '12px 24px',
@@ -261,7 +262,7 @@ export default async function ToolStacksSeite() {
             whiteSpace: 'nowrap',
           }}>
             Tools entdecken
-          </a>
+          </Link>
         </div>
 
       </section>

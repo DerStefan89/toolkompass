@@ -13,6 +13,7 @@
  *   Sie wird per .bind(null, id) vorgefüllt, bevor sie an ToolForm übergeben wird.
  */
 
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import ToolForm from '@/components/admin/ToolForm'
@@ -104,12 +105,12 @@ export default async function EditToolPage({ params }: Props) {
   return (
     <div>
       <div style={{ marginBottom: '32px' }}>
-        <a
+        <Link
           href="/admin/tools"
           style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textDecoration: 'none' }}
         >
           ← Zurück zur Tool-Liste
-        </a>
+        </Link>
         <h1 style={{
           fontSize: '22px',
           fontWeight: '700',

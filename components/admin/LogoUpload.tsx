@@ -35,6 +35,7 @@ export default function LogoUpload({ toolId, currentLogoUrl }: Props) {
 
   useEffect(() => {
     if (state.publicUrl) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreviewUrl(state.publicUrl)
       if (inputRef.current) inputRef.current.value = ''
     }

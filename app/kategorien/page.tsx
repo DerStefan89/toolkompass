@@ -8,6 +8,7 @@
  * - design-refs/4_Alle_Kategorien.png
  */
 
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import IconRenderer from '@/components/ui/IconRenderer'
@@ -45,7 +46,7 @@ export default async function KategorienSeite() {
 
       {/* Breadcrumb */}
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
-        <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
+        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
         {' › '}
         Kategorien
       </p>

@@ -61,6 +61,18 @@
   color: white !important;
 }
 
+/* ─── Header — Responsive ────────────────────────────────── */
+/* Burger-Button ist auf Desktop grundsätzlich versteckt */
+.header-burger { display: none !important; }
+
+@media (max-width: 767px) {
+  /* Desktop-Nav ausblenden, Burger einblenden */
+  .header-nav-desktop { display: none !important; }
+  .header-burger { display: flex !important; align-items: center; }
+  /* Heart-Button und Einloggen-Link im Header ausblenden */
+  .header-actions-desktop { display: none !important; }
+}
+
 /* Grundregeln für den ganzen Body */
 body {
   background-color: var(--color-bg);       /* Creme-Hintergrund */

@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 // AUFGABEN-SEITE: Unternehmen verwalten (app/aufgaben/unternehmen-verwalten/page.tsx)
 //
 // Zweck: Zeigt passende Tools für die Aufgabe "Unternehmen verwalten".
@@ -79,9 +81,9 @@ export default function UnternehmenVerwaltenSeite() {
 
       {/* Breadcrumb */}
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
-        <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
+        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
         {' › '}
-        <a href="/aufgaben" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Aufgaben</a>
+        <Link href="/aufgaben" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Aufgaben</Link>
         {' › '}
         {d.name}
       </p>
@@ -160,13 +162,13 @@ export default function UnternehmenVerwaltenSeite() {
         }}>
           Top-Empfehlungen
         </h2>
-        <a href="/tools" style={{
+        <Link href="/tools" style={{
           fontSize: '13px',
           color: 'var(--color-text-secondary)',
           textDecoration: 'none',
         }}>
           Alle Tools ansehen →
-        </a>
+        </Link>
       </div>
 
       {/* Tool-Cards — 3 Spalten */}
@@ -298,7 +300,7 @@ export default function UnternehmenVerwaltenSeite() {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
-          <a href="/tool-finder" style={{
+          <Link href="/tool-finder" style={{
             backgroundColor: 'var(--color-cta)',
             color: 'white',
             padding: '12px 22px',
@@ -309,8 +311,8 @@ export default function UnternehmenVerwaltenSeite() {
             whiteSpace: 'nowrap',
           }}>
             Tool-Finder starten
-          </a>
-          <a href="/tools" style={{
+          </Link>
+          <Link href="/tools" style={{
             backgroundColor: 'transparent',
             color: 'var(--color-text-primary)',
             padding: '12px 22px',
@@ -321,7 +323,7 @@ export default function UnternehmenVerwaltenSeite() {
             whiteSpace: 'nowrap',
           }}>
             Alle Tools ansehen
-          </a>
+          </Link>
         </div>
       </div>
 

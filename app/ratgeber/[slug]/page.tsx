@@ -12,6 +12,7 @@
  * Per-Section-Tools aus dem Mock werden durch eine globale Tool-Box ersetzt.
  */
 
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
@@ -89,9 +90,9 @@ export default async function BlogArtikelSeite({
 
       {/* Breadcrumb */}
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
-        <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
+        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
         {' › '}
-        <a href="/ratgeber" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Ratgeber</a>
+        <Link href="/ratgeber" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Ratgeber</Link>
         {' › '}
         {article.title}
       </p>

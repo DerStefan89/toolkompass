@@ -11,6 +11,7 @@
  * Tool-Farben sind nicht in der DB — A bekommt CTA-Farbe, B eine Kontrastfarbe.
  */
 
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
@@ -119,9 +120,9 @@ export default async function VergleichDetailSeite({
 
       {/* Breadcrumb */}
       <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
-        <a href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</a>
+        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
         {' › '}
-        <a href="/vergleichen" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Vergleichen</a>
+        <Link href="/vergleichen" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Vergleichen</Link>
         {' › '}
         {toolA.name} vs {toolB.name}
       </p>

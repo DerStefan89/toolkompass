@@ -103,7 +103,8 @@ export async function createKategorie(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[createKategorie]', error)
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -150,7 +151,8 @@ export async function updateKategorie(
         },
       },
     })
-  } catch {
+  } catch (error) {
+    console.error('[updateKategorie]', error)
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -170,7 +172,8 @@ export async function deleteKategorie(id: string): Promise<{ error?: string }> {
 
   try {
     await prisma.category.delete({ where: { id } })
-  } catch {
+  } catch (error) {
+    console.error('[deleteKategorie]', error)
     return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/kategorien')
