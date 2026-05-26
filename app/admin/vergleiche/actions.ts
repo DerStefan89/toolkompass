@@ -119,6 +119,10 @@ export async function createVergleich(
     })
   } catch (error) {
     console.error('[createVergleich]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -168,6 +172,10 @@ export async function updateVergleich(
     })
   } catch (error) {
     console.error('[updateVergleich]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -188,6 +196,10 @@ export async function deleteVergleich(id: string): Promise<{ error?: string }> {
     await prisma.comparison.delete({ where: { id } })
   } catch (error) {
     console.error('[deleteVergleich]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/vergleiche')

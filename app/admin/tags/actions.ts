@@ -94,6 +94,10 @@ export async function createTagGroup(
     })
   } catch (error) {
     console.error('[createTagGroup]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -140,6 +144,10 @@ export async function updateTagGroup(
     })
   } catch (error) {
     console.error('[updateTagGroup]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -158,6 +166,10 @@ export async function deleteTagGroup(id: string): Promise<{ error?: string }> {
     await prisma.tagGroup.delete({ where: { id } })
   } catch (error) {
     console.error('[deleteTagGroup]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/tags')

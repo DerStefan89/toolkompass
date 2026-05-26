@@ -65,6 +65,10 @@ export async function uploadToolLogo(
     await prisma.tool.update({ where: { id: toolId }, data: { logoUrl: publicUrl } })
   } catch (error) {
     console.error('[uploadToolLogo]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Speichern der Logo-URL.' }
   }
 

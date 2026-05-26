@@ -133,6 +133,10 @@ export async function GET(
     })
   } catch (error) {
     console.error('[track]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
   }
 
   return NextResponse.redirect(link.url, { status: 302 })

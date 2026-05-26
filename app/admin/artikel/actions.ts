@@ -129,6 +129,10 @@ export async function createArtikel(
     })
   } catch (error) {
     console.error('[createArtikel]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -190,6 +194,10 @@ export async function updateArtikel(
     })
   } catch (error) {
     console.error('[updateArtikel]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -210,6 +218,10 @@ export async function deleteArtikel(id: string): Promise<{ error?: string }> {
     await prisma.article.delete({ where: { id } })
   } catch (error) {
     console.error('[deleteArtikel]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/artikel')

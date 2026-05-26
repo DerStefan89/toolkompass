@@ -105,6 +105,10 @@ export async function createKategorie(
     })
   } catch (error) {
     console.error('[createKategorie]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -153,6 +157,10 @@ export async function updateKategorie(
     })
   } catch (error) {
     console.error('[updateKategorie]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -174,6 +182,10 @@ export async function deleteKategorie(id: string): Promise<{ error?: string }> {
     await prisma.category.delete({ where: { id } })
   } catch (error) {
     console.error('[deleteKategorie]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/kategorien')

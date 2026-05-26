@@ -83,6 +83,10 @@ export async function createAffiliateLink(
     })
   } catch (error) {
     console.error('[createAffiliateLink]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 

@@ -100,6 +100,10 @@ export async function createStack(
     })
   } catch (error) {
     console.error('[createStack]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -160,6 +164,10 @@ export async function updateStack(
     })
   } catch (error) {
     console.error('[updateStack]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -180,6 +188,10 @@ export async function deleteStack(id: string): Promise<{ error?: string }> {
     await prisma.toolStack.delete({ where: { id } })
   } catch (error) {
     console.error('[deleteStack]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Löschen fehlgeschlagen.' }
   }
   revalidatePath('/admin/stacks')

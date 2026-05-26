@@ -94,6 +94,10 @@ export async function createVendor(
     })
   } catch (error) {
     console.error('[createVendor]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
@@ -134,6 +138,10 @@ export async function updateVendor(
     })
   } catch (error) {
     console.error('[updateVendor]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
@@ -153,6 +161,10 @@ export async function deleteVendor(id: string): Promise<{ error?: string }> {
     await prisma.vendor.delete({ where: { id } })
   } catch (error) {
     console.error('[deleteVendor]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Löschen fehlgeschlagen. Dem Anbieter sind möglicherweise noch Tools zugeordnet.' }
   }
   revalidatePath('/admin/vendors')

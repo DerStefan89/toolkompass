@@ -65,6 +65,10 @@ export async function uploadToolScreenshot(
     await prisma.tool.update({ where: { id: toolId }, data: { screenshotUrl: publicUrl } })
   } catch (error) {
     console.error('[uploadToolScreenshot]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
     return { error: 'Datenbankfehler beim Speichern der Screenshot-URL.' }
   }
 
