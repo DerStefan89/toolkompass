@@ -5,19 +5,32 @@
  * Tags sind in Gruppen organisiert (z.B. "Features", "Zielgruppe").
  */
 
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import { parsePageParams, PAGE_SIZE } from '@/lib/utils/pagination'
+import Pagination from '@/components/admin/Pagination'
 
-export default async function AdminTagsPage() {
-  const tagGroups = await prisma.tagGroup.findMany({
-    include: {
-      tags: { orderBy: { sortOrder: 'asc' } },
-    },
-    orderBy: { sortOrder: 'asc' },
-    take: 100,
-  })
+type Props = { searchParams: Promise<{ page?: string }> }
 
-  const totalTags = tagGroups.reduce((sum, g) => sum + g.tags.length, 0)
+export default async function AdminTagsPage({ searchParams }: Props) {
+  const { page, skip, take } = parsePageParams(await searchParams)
+
+  const [tagGroups, total, totalTags] = await Promise.all([
+    prisma.tagGroup.findMany({
+      include: {
+        tags: { orderBy: { sortOrder: 'asc' } },
+      },
+      orderBy: { sortOrder: 'asc' },
+      skip,
+      take,
+    }),
+    prisma.tagGroup.count(),
+    prisma.tag.count(),
+  ])
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  if (page > totalPages) redirect(`/admin/tags?page=${totalPages}`)
 
   return (
     <div>
@@ -38,7 +51,7 @@ export default async function AdminTagsPage() {
             Tags
           </h1>
           <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
-            {tagGroups.length} Gruppen · {totalTags} Tags gesamt
+            {total} Gruppen · {totalTags} Tags gesamt
           </p>
         </div>
         <Link
@@ -140,11 +153,7 @@ export default async function AdminTagsPage() {
           ))
         )}
       </div>
-      {tagGroups.length === 100 && (
-        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
-          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
-        </p>
-      )}
+      <Pagination currentPage={page} totalPages={totalPages} basePath="/admin/tags" />
     </div>
   )
 }

@@ -6,11 +6,14 @@
  * und Löschen-Button direkt in der Zeile.
  */
 
+import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import PublishToggle from '@/components/admin/PublishToggle'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
 import { toggleKategoriePublished, deleteKategorie } from '@/app/admin/kategorien/actions'
+import { parsePageParams, PAGE_SIZE } from '@/lib/utils/pagination'
+import Pagination from '@/components/admin/Pagination'
 
 const COLUMNS = [
   { label: 'Kategorie', width: '1fr'   },
@@ -22,21 +25,33 @@ const COLUMNS = [
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
-export default async function AdminKategorienPage() {
-  const categories = await prisma.category.findMany({
-    include: {
-      translations: { where: { locale: 'de' } },
-      _count: { select: { tools: true } },
-    },
-    orderBy: { sortOrder: 'asc' },
-    take: 100,
-  })
+type Props = { searchParams: Promise<{ page?: string }> }
+
+export default async function AdminKategorienPage({ searchParams }: Props) {
+  const { page, skip, take } = parsePageParams(await searchParams)
+
+  const [categories, total, totalPublished] = await Promise.all([
+    prisma.category.findMany({
+      include: {
+        translations: { where: { locale: 'de' } },
+        _count: { select: { tools: true } },
+      },
+      orderBy: { sortOrder: 'asc' },
+      skip,
+      take,
+    }),
+    prisma.category.count(),
+    prisma.category.count({ where: { published: true } }),
+  ])
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  if (page > totalPages) redirect(`/admin/kategorien?page=${totalPages}`)
 
   return (
     <div>
       <AdminPageHeader
         title="Kategorien"
-        subtitle={`${categories.length} Kategorien · ${categories.filter(c => c.published).length} veröffentlicht`}
+        subtitle={`${total} Kategorien · ${totalPublished} veröffentlicht`}
         actionLabel="+ Kategorie anlegen"
         actionHref="/admin/kategorien/neu"
       />
@@ -123,11 +138,7 @@ export default async function AdminKategorienPage() {
           )
         })}
       </AdminTable>
-      {categories.length === 100 && (
-        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
-          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
-        </p>
-      )}
+      <Pagination currentPage={page} totalPages={totalPages} basePath="/admin/kategorien" />
     </div>
   )
 }

@@ -6,11 +6,14 @@
  * und Löschen-Button direkt in der Zeile.
  */
 
+import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import PublishToggle from '@/components/admin/PublishToggle'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
 import { toggleVergleichPublished, deleteVergleich } from '@/app/admin/vergleiche/actions'
+import { parsePageParams, PAGE_SIZE } from '@/lib/utils/pagination'
+import Pagination from '@/components/admin/Pagination'
 
 const COLUMNS = [
   { label: 'Tool A',  width: '1fr'   },
@@ -22,22 +25,34 @@ const COLUMNS = [
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
-export default async function AdminVergleichePage() {
-  const vergleiche = await prisma.comparison.findMany({
-    include: {
-      toolA: { include: { translations: { where: { locale: 'de' } } } },
-      toolB: { include: { translations: { where: { locale: 'de' } } } },
-      _count: { select: { rows: true } },
-    },
-    orderBy: { createdAt: 'desc' },
-    take: 100,
-  })
+type Props = { searchParams: Promise<{ page?: string }> }
+
+export default async function AdminVergleichePage({ searchParams }: Props) {
+  const { page, skip, take } = parsePageParams(await searchParams)
+
+  const [vergleiche, total, totalPublished] = await Promise.all([
+    prisma.comparison.findMany({
+      include: {
+        toolA: { include: { translations: { where: { locale: 'de' } } } },
+        toolB: { include: { translations: { where: { locale: 'de' } } } },
+        _count: { select: { rows: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take,
+    }),
+    prisma.comparison.count(),
+    prisma.comparison.count({ where: { published: true } }),
+  ])
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  if (page > totalPages) redirect(`/admin/vergleiche?page=${totalPages}`)
 
   return (
     <div>
       <AdminPageHeader
         title="Vergleiche"
-        subtitle={`${vergleiche.length} Vergleiche · ${vergleiche.filter(v => v.published).length} veröffentlicht`}
+        subtitle={`${total} Vergleiche · ${totalPublished} veröffentlicht`}
         actionLabel="+ Vergleich erstellen"
         actionHref="/admin/vergleiche/neu"
       />
@@ -115,11 +130,7 @@ export default async function AdminVergleichePage() {
           )
         })}
       </AdminTable>
-      {vergleiche.length === 100 && (
-        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
-          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
-        </p>
-      )}
+      <Pagination currentPage={page} totalPages={totalPages} basePath="/admin/vergleiche" />
     </div>
   )
 }

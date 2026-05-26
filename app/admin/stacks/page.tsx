@@ -6,11 +6,14 @@
  * und Löschen-Button direkt in der Zeile.
  */
 
+import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import PublishToggle from '@/components/admin/PublishToggle'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
 import { toggleStackPublished, deleteStack } from '@/app/admin/stacks/actions'
+import { parsePageParams, PAGE_SIZE } from '@/lib/utils/pagination'
+import Pagination from '@/components/admin/Pagination'
 
 const COLUMNS = [
   { label: 'Stack',   width: '1fr'   },
@@ -21,21 +24,33 @@ const COLUMNS = [
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
-export default async function AdminStacksPage() {
-  const stacks = await prisma.toolStack.findMany({
-    include: {
-      translations: { where: { locale: 'de' } },
-      _count: { select: { tools: true } },
-    },
-    orderBy: { createdAt: 'desc' },
-    take: 100,
-  })
+type Props = { searchParams: Promise<{ page?: string }> }
+
+export default async function AdminStacksPage({ searchParams }: Props) {
+  const { page, skip, take } = parsePageParams(await searchParams)
+
+  const [stacks, total, totalPublished] = await Promise.all([
+    prisma.toolStack.findMany({
+      include: {
+        translations: { where: { locale: 'de' } },
+        _count: { select: { tools: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take,
+    }),
+    prisma.toolStack.count(),
+    prisma.toolStack.count({ where: { published: true } }),
+  ])
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  if (page > totalPages) redirect(`/admin/stacks?page=${totalPages}`)
 
   return (
     <div>
       <AdminPageHeader
         title="Tool-Stacks"
-        subtitle={`${stacks.length} Stacks · ${stacks.filter(s => s.published).length} veröffentlicht`}
+        subtitle={`${total} Stacks · ${totalPublished} veröffentlicht`}
         actionLabel="+ Stack erstellen"
         actionHref="/admin/stacks/neu"
       />
@@ -119,11 +134,7 @@ export default async function AdminStacksPage() {
           )
         })}
       </AdminTable>
-      {stacks.length === 100 && (
-        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
-          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
-        </p>
-      )}
+      <Pagination currentPage={page} totalPages={totalPages} basePath="/admin/stacks" />
     </div>
   )
 }

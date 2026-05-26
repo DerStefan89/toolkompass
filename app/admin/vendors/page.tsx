@@ -9,10 +9,13 @@
  * - design-refs/2_Tool_Detailseite.png (Admin-Bereich)
  */
 
+import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
 import { deleteVendor } from '@/app/admin/vendors/actions'
+import { parsePageParams, PAGE_SIZE } from '@/lib/utils/pagination'
+import Pagination from '@/components/admin/Pagination'
 
 const COLUMNS = [
   { label: 'Anbieter', width: '1fr'   },
@@ -23,20 +26,31 @@ const COLUMNS = [
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
-export default async function AdminVendorsPage() {
-  const vendors = await prisma.vendor.findMany({
-    include: {
-      _count: { select: { tools: true } },
-    },
-    orderBy: { name: 'asc' },
-    take: 100,
-  })
+type Props = { searchParams: Promise<{ page?: string }> }
+
+export default async function AdminVendorsPage({ searchParams }: Props) {
+  const { page, skip, take } = parsePageParams(await searchParams)
+
+  const [vendors, total] = await Promise.all([
+    prisma.vendor.findMany({
+      include: {
+        _count: { select: { tools: true } },
+      },
+      orderBy: { name: 'asc' },
+      skip,
+      take,
+    }),
+    prisma.vendor.count(),
+  ])
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  if (page > totalPages) redirect(`/admin/vendors?page=${totalPages}`)
 
   return (
     <div>
       <AdminPageHeader
         title="Anbieter"
-        subtitle={`${vendors.length} ${vendors.length === 1 ? 'Anbieter' : 'Anbieter'} insgesamt`}
+        subtitle={`${total} Anbieter insgesamt`}
         actionLabel="+ Anbieter anlegen"
         actionHref="/admin/vendors/neu"
       />
@@ -134,11 +148,7 @@ export default async function AdminVendorsPage() {
           </div>
         ))}
       </AdminTable>
-      {vendors.length === 100 && (
-        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
-          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
-        </p>
-      )}
+      <Pagination currentPage={page} totalPages={totalPages} basePath="/admin/vendors" />
     </div>
   )
 }

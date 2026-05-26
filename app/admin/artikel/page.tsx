@@ -5,11 +5,14 @@
  * Zeigt Titel, Slug, Typ, klickbaren Published-Toggle und Löschen-Button in der Zeile.
  */
 
+import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import PublishToggle from '@/components/admin/PublishToggle'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
 import { toggleArtikelPublished, deleteArtikel } from '@/app/admin/artikel/actions'
+import { parsePageParams, PAGE_SIZE } from '@/lib/utils/pagination'
+import Pagination from '@/components/admin/Pagination'
 
 const COLUMNS = [
   { label: 'Titel',   width: '1fr'   },
@@ -27,17 +30,29 @@ const typLabel: Record<string, string> = {
   tutorial:   'Anleitung',
 }
 
-export default async function AdminArtikelPage() {
-  const articles = await prisma.article.findMany({
-    orderBy: { createdAt: 'desc' },
-    take: 100,
-  })
+type Props = { searchParams: Promise<{ page?: string }> }
+
+export default async function AdminArtikelPage({ searchParams }: Props) {
+  const { page, skip, take } = parsePageParams(await searchParams)
+
+  const [articles, total, totalPublished] = await Promise.all([
+    prisma.article.findMany({
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take,
+    }),
+    prisma.article.count(),
+    prisma.article.count({ where: { published: true } }),
+  ])
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  if (page > totalPages) redirect(`/admin/artikel?page=${totalPages}`)
 
   return (
     <div>
       <AdminPageHeader
         title="Artikel"
-        subtitle={`${articles.length} Artikel · ${articles.filter(a => a.published).length} veröffentlicht`}
+        subtitle={`${total} Artikel · ${totalPublished} veröffentlicht`}
         actionLabel="+ Artikel schreiben"
         actionHref="/admin/artikel/neu"
       />
@@ -125,11 +140,7 @@ export default async function AdminArtikelPage() {
           </div>
         ))}
       </AdminTable>
-      {articles.length === 100 && (
-        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
-          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
-        </p>
-      )}
+      <Pagination currentPage={page} totalPages={totalPages} basePath="/admin/artikel" />
     </div>
   )
 }

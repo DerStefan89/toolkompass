@@ -5,12 +5,15 @@
  * Zeigt Published-Toggle (klickbar) und Löschen-Button direkt in der Zeile.
  */
 
+import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import AdminTable, { AdminPageHeader } from '@/components/admin/AdminTable'
 import PublishToggle from '@/components/admin/PublishToggle'
 import InlineDeleteButton from '@/components/admin/InlineDeleteButton'
 import { togglePublished, deleteTool } from '@/app/admin/tools/actions'
 import { formatPreis } from '@/lib/utils/format'
+import { parsePageParams, PAGE_SIZE } from '@/lib/utils/pagination'
+import Pagination from '@/components/admin/Pagination'
 
 const COLUMNS = [
   { label: 'Tool',      width: '1fr'   },
@@ -22,20 +25,32 @@ const COLUMNS = [
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
-export default async function AdminToolsPage() {
-  const tools = await prisma.tool.findMany({
-    include: {
-      translations: { where: { locale: 'de' } },
-    },
-    orderBy: { createdAt: 'desc' },
-    take: 100,
-  })
+type Props = { searchParams: Promise<{ page?: string }> }
+
+export default async function AdminToolsPage({ searchParams }: Props) {
+  const { page, skip, take } = parsePageParams(await searchParams)
+
+  const [tools, total, totalPublished] = await Promise.all([
+    prisma.tool.findMany({
+      include: {
+        translations: { where: { locale: 'de' } },
+      },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take,
+    }),
+    prisma.tool.count(),
+    prisma.tool.count({ where: { published: true } }),
+  ])
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  if (page > totalPages) redirect(`/admin/tools?page=${totalPages}`)
 
   return (
     <div>
       <AdminPageHeader
         title="Tools"
-        subtitle={`${tools.length} Tools insgesamt · ${tools.filter(t => t.published).length} veröffentlicht`}
+        subtitle={`${total} Tools insgesamt · ${totalPublished} veröffentlicht`}
         actionLabel="+ Tool hinzufügen"
         actionHref="/admin/tools/neu"
       />
@@ -126,11 +141,7 @@ export default async function AdminToolsPage() {
           )
         })}
       </AdminTable>
-      {tools.length === 100 && (
-        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '12px', textAlign: 'center' }}>
-          Zeige erste 100 Einträge. Nutze die Suche um weitere zu finden.
-        </p>
-      )}
+      <Pagination currentPage={page} totalPages={totalPages} basePath="/admin/tools" />
     </div>
   )
 }
