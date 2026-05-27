@@ -1,5 +1,11 @@
 # ToolSucher — Claude Code Master-Kontext
 
+## Pflichtlektüre
+Lies `ARCHITECTURE.md` bevor du Code schreibst.
+Alle Konventionen dort sind verbindlich.
+
+---
+
 Du arbeitest am Produkt **ToolSucher**.
 
 ToolSucher ist eine Plattform für Gründer, Selbstständige, Coaches, Berater, Agenturen und kleine Teams,

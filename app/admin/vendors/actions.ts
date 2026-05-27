@@ -15,7 +15,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
-import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/auth/require-admin'
 import { parseStr } from '@/lib/utils/form'
 
 
@@ -69,9 +69,11 @@ export async function createVendor(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nicht autorisiert.' }
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'Nicht autorisiert.' }
+  }
 
   const { data, errors } = parseVendorForm(formData)
   if (errors) return { fieldErrors: errors }
@@ -112,9 +114,11 @@ export async function updateVendor(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nicht autorisiert.' }
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'Nicht autorisiert.' }
+  }
 
   const { data, errors } = parseVendorForm(formData)
   if (errors) return { fieldErrors: errors }
@@ -153,9 +157,11 @@ export async function updateVendor(
 // (kein onDelete: Cascade auf Tool.vendorId — bewusste Entscheidung).
 // Navigation nach Erfolg liegt beim Aufrufer (kein redirect hier).
 export async function deleteVendor(id: string): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nicht autorisiert.' }
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'Nicht autorisiert.' }
+  }
 
   try {
     await prisma.vendor.delete({ where: { id } })

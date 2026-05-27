@@ -21,7 +21,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
-import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/auth/require-admin'
 import { parseStr } from '@/lib/utils/form'
 
 
@@ -86,9 +86,11 @@ export async function createVergleich(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nicht autorisiert.' }
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'Nicht autorisiert.' }
+  }
 
   const { data, errors } = parseVergleichForm(formData)
   if (errors) return { fieldErrors: errors }
@@ -136,9 +138,11 @@ export async function updateVergleich(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nicht autorisiert.' }
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'Nicht autorisiert.' }
+  }
 
   const { data, errors } = parseVergleichForm(formData)
   if (errors) return { fieldErrors: errors }
@@ -188,9 +192,11 @@ export async function updateVergleich(
 // Löscht einen Vergleich inkl. aller ComparisonRows (onDelete: Cascade).
 // Navigation nach Erfolg liegt beim Aufrufer (kein redirect hier).
 export async function deleteVergleich(id: string): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nicht autorisiert.' }
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'Nicht autorisiert.' }
+  }
 
   try {
     await prisma.comparison.delete({ where: { id } })
@@ -210,9 +216,11 @@ export async function deleteVergleich(id: string): Promise<{ error?: string }> {
 
 // Toggled published true↔false.
 export async function toggleVergleichPublished(id: string): Promise<void> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return
+  try {
+    await requireAdmin()
+  } catch {
+    return
+  }
 
   const item = await prisma.comparison.findUnique({
     where: { id },

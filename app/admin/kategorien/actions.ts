@@ -15,7 +15,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
-import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/auth/require-admin'
 import { parseStr } from '@/lib/utils/form'
 
 
@@ -73,9 +73,11 @@ export async function createKategorie(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nicht autorisiert.' }
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'Nicht autorisiert.' }
+  }
 
   const { data, errors } = parseKategorieForm(formData)
   if (errors) return { fieldErrors: errors }
@@ -124,9 +126,11 @@ export async function updateKategorie(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nicht autorisiert.' }
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'Nicht autorisiert.' }
+  }
 
   const { data, errors } = parseKategorieForm(formData)
   if (errors) return { fieldErrors: errors }
@@ -174,9 +178,11 @@ export async function updateKategorie(
 // mitgelöscht (onDelete: Cascade). Die Tools selbst bleiben erhalten.
 // Navigation nach Erfolg liegt beim Aufrufer (kein redirect hier).
 export async function deleteKategorie(id: string): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nicht autorisiert.' }
+  try {
+    await requireAdmin()
+  } catch {
+    return { error: 'Nicht autorisiert.' }
+  }
 
   try {
     await prisma.category.delete({ where: { id } })
@@ -196,9 +202,11 @@ export async function deleteKategorie(id: string): Promise<{ error?: string }> {
 
 // Toggled published true↔false.
 export async function toggleKategoriePublished(id: string): Promise<void> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return
+  try {
+    await requireAdmin()
+  } catch {
+    return
+  }
 
   const cat = await prisma.category.findUnique({
     where: { id },
