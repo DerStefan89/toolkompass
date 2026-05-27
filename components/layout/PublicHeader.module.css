@@ -1,0 +1,185 @@
+/**
+ * Datei: components/layout/PublicHeader.module.css
+ *
+ * Zweck: Styles für PublicHeader — Mobile-First, CSS Variables.
+ * Referenz-Implementierung für alle weiteren CSS Modules im Projekt.
+ *
+ * Design-Referenz: design-refs/1_Landing_Page.png
+ *
+ * Breakpoint: 768px
+ * - < 768px → Burger + Mobile-Overlay
+ * - ≥ 768px → Desktop-Nav, Heart, Einloggen
+ */
+
+/* ─── Wrapper ─────────────────────────────────────────────── */
+
+.header {
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+/* ─── Logo ────────────────────────────────────────────────── */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logoText {
+  font-family: var(--font-playfair);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* ─── Desktop-Navigation ──────────────────────────────────── */
+/* Mobile-First: standardmäßig ausgeblendet */
+
+.navDesktop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .navDesktop {
+    display: flex;
+    gap: 36px;
+  }
+}
+
+.navLink {
+  text-decoration: none;
+  font-size: 15px;
+  color: var(--color-text-primary);
+  font-weight: 400;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
+}
+
+/* Aktiver Link: fetter + grüne Unterlinie */
+.navLinkActive {
+  font-weight: 600;
+  border-bottom-color: var(--color-cta);
+}
+
+/* ─── Rechte Aktions-Gruppe ───────────────────────────────── */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Burger — Mobile sichtbar, Desktop ausgeblendet */
+.burger {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--color-text-primary);
+}
+
+@media (min-width: 768px) {
+  .burger {
+    display: none;
+  }
+}
+
+/* Heart-Button und Login-Link — Mobile ausgeblendet */
+.heartBtn {
+  display: none;
+}
+
+.loginBtn {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .heartBtn {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--color-text-primary);
+  }
+
+  .loginBtn {
+    display: inline-block;
+    background-color: var(--color-cta);
+    color: white;
+    padding: 10px 20px;
+    border-radius: var(--radius-btn);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
+/* ─── Mobile Overlay ──────────────────────────────────────── */
+
+/* Transparenter Backdrop — schließt das Menü bei Klick außerhalb */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+/* Menü-Panel — klappt direkt unter dem Header auf */
+.mobileNav {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  padding: 8px 24px 20px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileNavLink {
+  text-decoration: none;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  font-weight: 400;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-border);
+  display: block;
+}
+
+.mobileNavLinkActive {
+  font-weight: 600;
+}
+
+.mobileLoginBtn {
+  display: block;
+  margin-top: 16px;
+  background-color: var(--color-cta);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}

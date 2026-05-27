@@ -7,55 +7,28 @@
  * - design-refs/1_Landing_Page.png
  *
  * Wichtig:
- * - Gleiche CSS-Variablen und Schriften wie PublicHeader.
+ * - Gleiche CSS-Variablen wie PublicHeader (via globals.css).
  * - Wird in app/layout.tsx direkt unter {children} eingebunden.
+ * - Mobile: Spalten untereinander; Desktop (≥ 768px): Copyright links, Links rechts.
  */
 
 import Link from 'next/link'
+import styles from './PublicFooter.module.css'
 
 export default function PublicFooter() {
   return (
-    <footer style={{
-      backgroundColor: 'var(--color-bg)',
-      borderTop: '1px solid var(--color-border)',
-      marginTop: 'auto',
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '24px 24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '12px',
-      }}>
+    <footer className={styles.footer}>
+      <div className={styles.container}>
 
-        {/* Copyright */}
-        <span style={{
-          fontFamily: 'var(--font-inter)',
-          fontSize: '13px',
-          color: 'var(--color-text-secondary)',
-        }}>
-          © 2026 ToolSucher
-        </span>
+        <span className={styles.copyright}>© 2026 ToolSucher</span>
 
-        {/* Links */}
-        <nav style={{ display: 'flex', gap: '24px' }}>
+        <nav className={styles.nav}>
           {[
-            { label: 'Impressum',        href: '/impressum' },
-            { label: 'Datenschutz',      href: '/datenschutz' },
+            { label: 'Impressum',         href: '/impressum' },
+            { label: 'Datenschutz',       href: '/datenschutz' },
             { label: 'Affiliate-Hinweis', href: '/affiliate-hinweis' },
           ].map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              style={{
-                fontSize: '13px',
-                color: 'var(--color-text-secondary)',
-                textDecoration: 'none',
-              }}
-            >
+            <Link key={href} href={href} className={styles.navLink}>
               {label}
             </Link>
           ))}
