@@ -59,8 +59,8 @@
 
 /* ─── Headline ────────────────────────────────────────────── */
 
-/* Mobile: kleinere Schriftgröße */
-.heroHeadline {
+/* Doppelte Klasse erhöht Spezifität gegenüber Tailwind-Preflight */
+.heroHeadline.heroHeadline {
   font-family: var(--font-playfair);
   font-size: 32px;
   font-weight: 700;
@@ -70,7 +70,7 @@
 }
 
 @media (min-width: 768px) {
-  .heroHeadline {
+  .heroHeadline.heroHeadline {
     font-size: 52px;
   }
 }
