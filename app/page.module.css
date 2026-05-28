@@ -59,10 +59,10 @@
 
 /* ─── Headline ────────────────────────────────────────────── */
 
-/* Doppelte Klasse erhöht Spezifität gegenüber Tailwind-Preflight */
-.heroHeadline.heroHeadline {
-  font-family: var(--font-playfair);
-  font-size: 32px;
+/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
+.heroHeadline {
+  font-family: var(--font-playfair) !important;
+  font-size: 32px !important;
   font-weight: 700;
   color: var(--color-text-primary);
   line-height: 1.2;
@@ -70,8 +70,8 @@
 }
 
 @media (min-width: 768px) {
-  .heroHeadline.heroHeadline {
-    font-size: 52px;
+  .heroHeadline {
+    font-size: 52px !important;
   }
 }
 
