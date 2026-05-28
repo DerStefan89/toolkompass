@@ -6,49 +6,20 @@
  */
 
 import Link from 'next/link'
+import styles from './page.module.css'
 
 export default function EinloggenSeite() {
   return (
-    <main style={{
-      minHeight: '60vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '40px 24px',
-    }}>
-      <div style={{
-        backgroundColor: 'var(--color-bg-card)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-card)',
-        padding: '48px 40px',
-        maxWidth: '400px',
-        width: '100%',
-        textAlign: 'center',
-        boxShadow: 'var(--shadow-card)',
-      }}>
-        <div style={{ fontSize: '32px', marginBottom: '16px' }}>🧭</div>
-        <h1 style={{
-          fontFamily: 'var(--font-playfair)',
-          fontSize: '24px',
-          fontWeight: '700',
-          color: 'var(--color-text-primary)',
-          marginBottom: '12px',
-        }}>
+    <main className={styles.main}>
+      <div className={styles.card}>
+        <div className={styles.cardIcon}>🧭</div>
+        <h1 className={styles.cardTitle}>
           Einloggen
         </h1>
-        <p style={{
-          fontSize: '15px',
-          color: 'var(--color-text-secondary)',
-          lineHeight: '1.6',
-          marginBottom: '24px',
-        }}>
+        <p className={styles.cardDesc}>
           Login für Nutzer kommt bald.
         </p>
-        <Link href="/" style={{
-          fontSize: '13px',
-          color: 'var(--color-text-secondary)',
-          textDecoration: 'none',
-        }}>
+        <Link href="/" className={styles.backLink}>
           ← Zurück zur Startseite
         </Link>
       </div>

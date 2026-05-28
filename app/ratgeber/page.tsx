@@ -16,6 +16,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
+import styles from './page.module.css'
 
 export const revalidate = 3600
 
@@ -68,32 +69,19 @@ export default async function RatgeberSeite() {
   const comparisons = articles.filter(a => a.type === 'comparison')
 
   return (
-    <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
+    <main className={styles.main}>
 
       {/* Breadcrumb */}
-      <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
-        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
+      <p className={styles.breadcrumb}>
+        <Link href="/" className={styles.breadcrumbLink}>Startseite</Link>
         {' › '}
         Ratgeber
       </p>
 
       {/* Titel */}
-      <h1 style={{
-        fontFamily: 'var(--font-playfair)',
-        fontSize: '40px',
-        fontWeight: '700',
-        color: 'var(--color-text-primary)',
-        marginBottom: '12px',
-      }}>
-        Ratgeber & Guides
-      </h1>
+      <h1 className={styles.pageTitle}>Ratgeber & Guides</h1>
 
-      <p style={{
-        fontSize: '16px',
-        color: 'var(--color-text-secondary)',
-        marginBottom: '32px',
-        lineHeight: '1.6',
-      }}>
+      <p className={styles.pageDesc}>
         Praxisnahe Guides, Vergleiche und Anleitungen rund um digitale Tools
         für Gründer, Selbstständige und kleine Teams.
       </p>
@@ -102,31 +90,13 @@ export default async function RatgeberSeite() {
       <input
         type="text"
         placeholder="Artikel, Tool oder Thema suchen ..."
-        style={{
-          width: '100%',
-          maxWidth: '560px',
-          padding: '12px 16px',
-          borderRadius: 'var(--radius-btn)',
-          border: '1px solid var(--color-border)',
-          fontSize: '14px',
-          backgroundColor: 'white',
-          marginBottom: '24px',
-        }}
+        className={styles.searchInput}
       />
 
       {/* Filter-Pills (dekorativ — Interaktivität Phase 5) */}
-      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '40px' }}>
+      <div className={styles.pillsRow}>
         {filterPills.map((filter, index) => (
-          <span key={filter} style={{
-            padding: '6px 16px',
-            borderRadius: '20px',
-            border: '1px solid var(--color-border)',
-            backgroundColor: index === 0 ? 'var(--color-cta)' : 'var(--color-bg-card)',
-            color: index === 0 ? 'white' : 'var(--color-text-primary)',
-            fontSize: '13px',
-            fontWeight: index === 0 ? '600' : '400',
-            cursor: 'default',
-          }}>
+          <span key={filter} className={index === 0 ? styles.pillActive : styles.pill}>
             {filter}
           </span>
         ))}
@@ -134,17 +104,9 @@ export default async function RatgeberSeite() {
 
       {/* ─── Empty State: Keine Artikel vorhanden ─── */}
       {articles.length === 0 && (
-        <div style={{
-          backgroundColor: 'var(--color-bg-card)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-card)',
-          padding: '48px 32px',
-          textAlign: 'center',
-        }}>
-          <p style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
-            Noch keine Artikel veröffentlicht.
-          </p>
-          <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+        <div className={styles.emptyCard}>
+          <p className={styles.emptyTitle}>Noch keine Artikel veröffentlicht.</p>
+          <p className={styles.emptyDesc}>
             Guides, Top-Listen und Vergleiche erscheinen hier, sobald sie veröffentlicht werden.
           </p>
         </div>
@@ -162,87 +124,30 @@ export default async function RatgeberSeite() {
         }))
 
         return (
-          <div style={{
-            backgroundColor: 'var(--color-bg-card)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-card)',
-            padding: '32px',
-            marginBottom: '48px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: '32px',
-          }}>
-            <div style={{ flex: 1 }}>
-              <span style={{
-                fontSize: '11px',
-                color: 'var(--color-text-secondary)',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                marginBottom: '12px',
-                display: 'block',
-              }}>
-                Featured Guide
-              </span>
+          <div className={styles.featuredCard}>
+            <div className={styles.featuredLeft}>
+              <span className={styles.featuredLabel}>Featured Guide</span>
 
-              <h2 style={{
-                fontFamily: 'var(--font-playfair)',
-                fontSize: '24px',
-                fontWeight: '700',
-                marginBottom: '12px',
-                color: 'var(--color-text-primary)',
-              }}>
-                {featured.title}
-              </h2>
+              <h2 className={styles.featuredTitle}>{featured.title}</h2>
 
-              <p style={{
-                fontSize: '14px',
-                color: 'var(--color-text-secondary)',
-                lineHeight: '1.6',
-                marginBottom: '20px',
-              }}>
-                {featured.subtitle}
-              </p>
+              <p className={styles.featuredSubtitle}>{featured.subtitle}</p>
 
-              <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
+              <p className={styles.featuredMeta}>
                 {typLabels[featured.type] ?? featured.type} · {dateStr}
               </p>
 
-              <a href={`/ratgeber/${featured.slug}`} style={{
-                backgroundColor: 'var(--color-cta)',
-                color: 'white',
-                padding: '12px 24px',
-                borderRadius: 'var(--radius-btn)',
-                textDecoration: 'none',
-                fontSize: '14px',
-                fontWeight: '600',
-              }}>
+              <a href={`/ratgeber/${featured.slug}`} className={styles.featuredBtn}>
                 Guide lesen
               </a>
             </div>
 
             {/* Tool-Logos: nur anzeigen wenn Artikel Tools enthält */}
             {toolLogos.length > 0 && (
-              <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+              <div className={styles.featuredLogos}>
                 {toolLogos.map((t) => (
-                  <div key={t.id} style={{ textAlign: 'center' }}>
-                    <div style={{
-                      width: '44px',
-                      height: '44px',
-                      borderRadius: '8px',
-                      backgroundColor: 'var(--color-cta)',
-                      color: 'white',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: '700',
-                      fontSize: '16px',
-                      marginBottom: '4px',
-                    }}>
-                      {t.kuerzel}
-                    </div>
-                    <p style={{ fontSize: '10px', color: 'var(--color-text-secondary)' }}>{t.name}</p>
+                  <div key={t.id} className={styles.featuredLogoItem}>
+                    <div className={styles.featuredLogoCircle}>{t.kuerzel}</div>
+                    <p className={styles.featuredLogoName}>{t.name}</p>
                   </div>
                 ))}
               </div>
@@ -254,59 +159,26 @@ export default async function RatgeberSeite() {
       {/* ─── Beliebte Guides ─── */}
       {guides.length > 0 && (
         <>
-          <h2 style={{
-            fontFamily: 'var(--font-playfair)',
-            fontSize: '22px',
-            fontWeight: '600',
-            marginBottom: '20px',
-            color: 'var(--color-text-primary)',
-          }}>
-            Beliebte Guides
-          </h2>
+          <h2 className={styles.sectionTitle}>Beliebte Guides</h2>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '16px',
-            marginBottom: '48px',
-          }}>
+          <div className={styles.articleGrid}>
             {guides.map((artikel) => {
               const dateStr = (artikel.publishedAt ?? artikel.createdAt).toLocaleDateString('de-DE', {
                 day: 'numeric', month: 'long', year: 'numeric',
               })
               return (
-                <a key={artikel.id} href={`/ratgeber/${artikel.slug}`} style={{
-                  backgroundColor: 'var(--color-bg-card)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-card)',
-                  padding: '20px',
-                  textDecoration: 'none',
-                  color: 'var(--color-text-primary)',
-                  display: 'block',
-                }}>
-                  <span style={{
-                    display: 'inline-block',
-                    backgroundColor: 'var(--color-badge-bg)',
-                    color: 'var(--color-text-secondary)',
-                    fontSize: '11px',
-                    padding: '3px 10px',
-                    borderRadius: '20px',
-                    marginBottom: '12px',
-                  }}>
+                <a key={artikel.id} href={`/ratgeber/${artikel.slug}`} className={styles.articleCard}>
+                  <span className={styles.typeBadge}>
                     {typLabels[artikel.type] ?? artikel.type}
                   </span>
 
-                  <h3 style={{ fontWeight: '700', fontSize: '16px', marginBottom: '8px', lineHeight: '1.3' }}>
-                    {artikel.title}
-                  </h3>
+                  <h3 className={styles.cardTitle}>{artikel.title}</h3>
 
-                  <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.5', marginBottom: '16px' }}>
-                    {artikel.subtitle}
-                  </p>
+                  <p className={styles.cardSubtitle}>{artikel.subtitle}</p>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{dateStr}</span>
-                    <span style={{ fontSize: '13px', color: 'var(--color-text-primary)' }}>Artikel lesen →</span>
+                  <div className={styles.cardFooter}>
+                    <span className={styles.cardDate}>{dateStr}</span>
+                    <span className={styles.cardReadLink}>Artikel lesen →</span>
                   </div>
                 </a>
               )
@@ -318,58 +190,24 @@ export default async function RatgeberSeite() {
       {/* ─── Tool-Vergleiche ─── */}
       {comparisons.length > 0 && (
         <>
-          <h2 style={{
-            fontFamily: 'var(--font-playfair)',
-            fontSize: '22px',
-            fontWeight: '600',
-            marginBottom: '20px',
-            color: 'var(--color-text-primary)',
-          }}>
-            Tool-Vergleiche
-          </h2>
+          <h2 className={styles.sectionTitle}>Tool-Vergleiche</h2>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '16px',
-          }}>
+          <div className={styles.articleGrid}>
             {comparisons.map((vergleich) => {
               const dateStr = (vergleich.publishedAt ?? vergleich.createdAt).toLocaleDateString('de-DE', {
                 day: 'numeric', month: 'long', year: 'numeric',
               })
               return (
-                <a key={vergleich.id} href={`/ratgeber/${vergleich.slug}`} style={{
-                  backgroundColor: 'var(--color-bg-card)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-card)',
-                  padding: '20px',
-                  textDecoration: 'none',
-                  color: 'var(--color-text-primary)',
-                  display: 'block',
-                }}>
-                  <span style={{
-                    display: 'inline-block',
-                    backgroundColor: 'var(--color-warning-bg)',
-                    color: 'var(--color-warning-text)',
-                    fontSize: '11px',
-                    padding: '3px 10px',
-                    borderRadius: '20px',
-                    marginBottom: '12px',
-                  }}>
-                    Vergleich
-                  </span>
+                <a key={vergleich.id} href={`/ratgeber/${vergleich.slug}`} className={styles.articleCard}>
+                  <span className={styles.compBadge}>Vergleich</span>
 
-                  <h3 style={{ fontWeight: '700', fontSize: '16px', marginBottom: '8px', lineHeight: '1.3' }}>
-                    {vergleich.title}
-                  </h3>
+                  <h3 className={styles.cardTitle}>{vergleich.title}</h3>
 
-                  <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.5', marginBottom: '16px' }}>
-                    {vergleich.subtitle}
-                  </p>
+                  <p className={styles.cardSubtitle}>{vergleich.subtitle}</p>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{dateStr}</span>
-                    <span style={{ fontSize: '13px', color: 'var(--color-text-primary)' }}>Artikel lesen →</span>
+                  <div className={styles.cardFooter}>
+                    <span className={styles.cardDate}>{dateStr}</span>
+                    <span className={styles.cardReadLink}>Artikel lesen →</span>
                   </div>
                 </a>
               )

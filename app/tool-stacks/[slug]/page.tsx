@@ -10,12 +10,15 @@
  * ToolStack hat kein Farb-Feld — Logos erhalten Farben aus LOGO_FARBEN per Index.
  * ToolStackItem.note wird als "Wofür"-Zeile angezeigt (optional).
  * Gesamtkosten = Summe aller startingPriceMonthly der Stack-Tools.
+ * Erlaubte Inline-Styles: backgroundColor auf .toolLogoWrap (farbe — Laufzeitwert).
+ * gridTemplateColumns wurde auf statisch 3-col vereinfacht (war dynamisch n-col).
  */
 
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
+import styles from './page.module.css'
 
 export const revalidate = 3600
 
@@ -78,65 +81,33 @@ export default async function ToolStackDetailSeite({
   )
   const preisGesamt = formatPreis(gesamtKosten, { prefix: 'ab' })
 
-  const gridTemplateColumns = stack.tools.length <= 5
-    ? `repeat(${stack.tools.length}, 1fr)`
-    : 'repeat(3, 1fr)'
-
   return (
-    <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '40px 24px' }}>
+    <main className={styles.main}>
 
       {/* Breadcrumb */}
-      <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
-        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
+      <p className={styles.breadcrumb}>
+        <Link href="/" className={styles.breadcrumbLink}>Startseite</Link>
         {' › '}
-        <Link href="/tool-stacks" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Tool-Stacks</Link>
+        <Link href="/tool-stacks" className={styles.breadcrumbLink}>Tool-Stacks</Link>
         {' › '}
         {t.name}
       </p>
 
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-        <span style={{
-          display: 'inline-block',
-          backgroundColor: 'var(--color-badge-bg)',
-          border: '1px solid var(--color-border)',
-          padding: '4px 14px',
-          borderRadius: '20px',
-          fontSize: '12px',
-          color: 'var(--color-text-secondary)',
-          marginBottom: '16px',
-        }}>
-          {t.targetAudience}
-        </span>
-        <h1 style={{
-          fontFamily: 'var(--font-playfair)',
-          fontSize: '42px',
-          fontWeight: '700',
-          color: 'var(--color-text-primary)',
-          lineHeight: '1.2',
-          marginBottom: '16px',
-        }}>
-          {t.name}
-        </h1>
+      <div className={styles.header}>
+        <span className={styles.headerBadge}>{t.targetAudience}</span>
+        <h1 className={styles.headerTitle}>{t.name}</h1>
         {t.description && (
-          <p style={{
-            fontSize: '18px',
-            color: 'var(--color-text-secondary)',
-            lineHeight: '1.6',
-            maxWidth: '600px',
-            margin: '0 auto 24px',
-          }}>
-            {t.description}
-          </p>
+          <p className={styles.headerDesc}>{t.description}</p>
         )}
-        <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+        <p className={styles.headerPrice}>
           Gesamtkosten:{' '}
-          <strong style={{ color: 'var(--color-text-primary)' }}>{preisGesamt} / Monat</strong>
+          <strong className={styles.headerPriceValue}>{preisGesamt} / Monat</strong>
         </p>
       </div>
 
       {/* Tool-Karten */}
-      <div style={{ display: 'grid', gridTemplateColumns, gap: '16px', marginBottom: '48px' }}>
+      <div className={styles.toolGrid}>
         {stack.tools.map((item, index) => {
           const tool = item.tool
           const tt = tool.translations[0]
@@ -147,118 +118,48 @@ export default async function ToolStackDetailSeite({
           const preis = formatPreis(tool.startingPriceMonthly, { prefix: 'ab', suffix: '/ Monat' })
 
           return (
-            <div
-              key={tool.id}
-              style={{
-                backgroundColor: 'var(--color-bg-card)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-card)',
-                padding: '20px',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
+            <div key={tool.id} className={styles.toolCard}>
               {/* Nummer */}
-              <p style={{
-                fontSize: '11px',
-                fontWeight: '700',
-                color: 'var(--color-text-secondary)',
-                marginBottom: '12px',
-                letterSpacing: '1px',
-              }}>
+              <p className={styles.toolIndex}>
                 {index + 1} / {stack.tools.length}
               </p>
 
-              {/* Logo */}
-              <div style={{
-                width: '52px',
-                height: '52px',
-                borderRadius: '10px',
-                backgroundColor: farbe,
-                color: 'white',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: '700',
-                fontSize: '16px',
-                marginBottom: '14px',
-              }}>
+              {/* Logo — backgroundColor: farbe ist Laufzeitwert (LOGO_FARBEN) */}
+              <div
+                className={styles.toolLogoWrap}
+                style={{ backgroundColor: farbe }}
+              >
                 {kuerzel}
               </div>
 
               {/* Name + Kategorie */}
-              <p style={{ fontWeight: '700', fontSize: '16px', marginBottom: '2px' }}>
-                {tt?.name ?? tool.slug}
-              </p>
-              <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>
-                {kategorie}
-              </p>
+              <p className={styles.toolName}>{tt?.name ?? tool.slug}</p>
+              <p className={styles.toolCategory}>{kategorie}</p>
 
               {/* Wofür (optional aus ToolStackItem.note) */}
               {item.note && (
-                <p style={{
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  color: 'var(--color-cta)',
-                  marginBottom: '12px',
-                }}>
-                  {item.note}
-                </p>
+                <p className={styles.toolNote}>{item.note}</p>
               )}
 
               {/* Beschreibung */}
-              <p style={{
-                fontSize: '12px',
-                color: 'var(--color-text-secondary)',
-                lineHeight: '1.6',
-                marginBottom: '16px',
-                flex: 1,
-              }}>
-                {tt?.shortDescription ?? ''}
-              </p>
+              <p className={styles.toolDesc}>{tt?.shortDescription ?? ''}</p>
 
               {/* Preis */}
-              <p style={{
-                fontSize: '13px',
-                fontWeight: '600',
-                color: 'var(--color-text-primary)',
-                marginBottom: badges.length > 0 ? '12px' : '16px',
-              }}>
+              <p className={badges.length > 0 ? styles.toolPriceWithBadges : styles.toolPrice}>
                 {preis}
               </p>
 
               {/* Badges */}
               {badges.length > 0 && (
-                <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '16px' }}>
+                <div className={styles.toolBadges}>
                   {badges.map((badge) => (
-                    <span key={badge} style={{
-                      backgroundColor: 'var(--color-badge-bg)',
-                      color: 'var(--color-text-secondary)',
-                      fontSize: '10px',
-                      padding: '2px 8px',
-                      borderRadius: '20px',
-                    }}>
-                      {badge}
-                    </span>
+                    <span key={badge} className={styles.toolBadge}>{badge}</span>
                   ))}
                 </div>
               )}
 
               {/* Button */}
-              <a
-                href={`/tools/${tool.slug}`}
-                style={{
-                  display: 'block',
-                  textAlign: 'center',
-                  backgroundColor: 'var(--color-cta)',
-                  color: 'white',
-                  padding: '8px',
-                  borderRadius: 'var(--radius-btn)',
-                  textDecoration: 'none',
-                  fontSize: '12px',
-                  fontWeight: '600',
-                }}
-              >
+              <a href={`/tools/${tool.slug}`} className={styles.toolBtn}>
                 Details ansehen
               </a>
             </div>
@@ -267,39 +168,14 @@ export default async function ToolStackDetailSeite({
       </div>
 
       {/* CTA Box */}
-      <div style={{
-        backgroundColor: 'var(--color-bg-card)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-card)',
-        padding: '40px',
-        textAlign: 'center',
-      }}>
-        <div style={{ fontSize: '40px', marginBottom: '16px' }}>🧭</div>
-        <h2 style={{
-          fontFamily: 'var(--font-playfair)',
-          fontSize: '26px',
-          fontWeight: '700',
-          marginBottom: '12px',
-        }}>
-          Alles in einem Account managen
-        </h2>
-        <p style={{
-          fontSize: '15px',
-          color: 'var(--color-text-secondary)',
-          lineHeight: '1.7',
-          maxWidth: '500px',
-          margin: '0 auto 32px',
-        }}>
+      <div className={styles.ctaBox}>
+        <div className={styles.ctaIcon}>🧭</div>
+        <h2 className={styles.ctaTitle}>Alles in einem Account managen</h2>
+        <p className={styles.ctaDesc}>
           Bald kannst du deinen Stack speichern, Kosten tracken, Kündigungsfristen im Blick behalten
           und alle deine Tools direkt von ToolSucher aus öffnen.
         </p>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '32px',
-          marginBottom: '32px',
-          flexWrap: 'wrap',
-        }}>
+        <div className={styles.ctaFeatures}>
           {[
             '✓ Stack speichern',
             '✓ Kosten tracken',
@@ -307,32 +183,14 @@ export default async function ToolStackDetailSeite({
             '✓ Alternativen entdecken',
             '✓ Tools direkt öffnen',
           ].map((feature) => (
-            <span key={feature} style={{ fontSize: '14px', color: 'var(--color-text-primary)', fontWeight: '500' }}>
-              {feature}
-            </span>
+            <span key={feature} className={styles.ctaFeatureItem}>{feature}</span>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-          <Link href="/einloggen" style={{
-            backgroundColor: 'var(--color-cta)',
-            color: 'white',
-            padding: '14px 28px',
-            borderRadius: 'var(--radius-btn)',
-            textDecoration: 'none',
-            fontSize: '15px',
-            fontWeight: '600',
-          }}>
+        <div className={styles.ctaBtns}>
+          <Link href="/einloggen" className={styles.ctaBtnPrimary}>
             🔔 Benachrichtigen lassen
           </Link>
-          <Link href="/tool-stacks" style={{
-            backgroundColor: 'transparent',
-            color: 'var(--color-text-primary)',
-            padding: '14px 28px',
-            borderRadius: 'var(--radius-btn)',
-            textDecoration: 'none',
-            fontSize: '15px',
-            border: '1px solid var(--color-border)',
-          }}>
+          <Link href="/tool-stacks" className={styles.ctaBtnSecondary}>
             Andere Stacks ansehen
           </Link>
         </div>

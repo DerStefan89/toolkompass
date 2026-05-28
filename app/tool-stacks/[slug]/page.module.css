@@ -1,0 +1,299 @@
+/**
+ * Datei: app/tool-stacks/[slug]/page.module.css
+ *
+ * Zweck: Styles für die Tool-Stack-Detailseite — Mobile-First, CSS Variables.
+ *
+ * Design-Referenz: design-refs/5_Tool_Stacks.png
+ *
+ * Wichtig:
+ * backgroundColor auf Logo-Divs bleibt Inline-Style (farbe — Laufzeitwert aus LOGO_FARBEN).
+ * gridTemplateColumns wurde vereinfacht (statisch 3-col Desktop statt dynamisch n-col).
+ *
+ * Breakpoints:
+ * - Default  → Mobile (375px): Tool-Liste einspaltig
+ * - ≥ 768px  → Desktop: Tool-Liste 3-spaltig
+ */
+
+/* ─── Wrapper ─────────────────────────────────────────────── */
+
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 40px 24px;
+  }
+}
+
+/* ─── Breadcrumb ──────────────────────────────────────────── */
+
+.breadcrumb {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.breadcrumbLink {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+/* ─── Header (zentriert) ──────────────────────────────────── */
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.headerBadge {
+  display: inline-block;
+  background-color: var(--color-badge-bg);
+  border: 1px solid var(--color-border);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
+.headerTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 32px !important;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .headerTitle {
+    font-size: 42px !important;
+  }
+}
+
+.headerDesc {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto 24px;
+}
+
+.headerPrice {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.headerPriceValue {
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+/* ─── Tool-Grid: einspaltig Mobile, 3-spaltig Desktop ─────── */
+
+.toolGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .toolGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ─── Tool-Card ───────────────────────────────────────────── */
+
+.toolCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolIndex {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* backgroundColor bleibt inline (farbe — LOGO_FARBEN Laufzeitwert) */
+.toolLogoWrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.toolName {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+.toolCategory {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.toolNote {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-cta);
+  margin-bottom: 12px;
+}
+
+.toolDesc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.toolPrice {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.toolPriceWithBadges {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 12px;
+}
+
+.toolBadges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.toolBadge {
+  background-color: var(--color-badge-bg);
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.toolBtn {
+  display: block;
+  text-align: center;
+  background-color: var(--color-cta);
+  color: white;
+  padding: 8px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ─── CTA-Box ─────────────────────────────────────────────── */
+
+.ctaBox {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 32px 24px;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .ctaBox {
+    padding: 40px;
+  }
+}
+
+.ctaIcon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.ctaTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 22px !important;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+  .ctaTitle {
+    font-size: 26px !important;
+  }
+}
+
+.ctaDesc {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 500px;
+  margin: 0 auto 32px;
+}
+
+.ctaFeatures {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .ctaFeatures {
+    gap: 32px;
+  }
+}
+
+.ctaFeatureItem {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.ctaBtns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ctaBtnPrimary {
+  background-color: var(--color-cta);
+  color: white;
+  padding: 14px 28px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.ctaBtnSecondary {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  padding: 14px 28px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 15px;
+  border: 1px solid var(--color-border);
+}

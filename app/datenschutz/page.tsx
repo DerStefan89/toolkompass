@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import styles from './page.module.css'
 
 export const metadata: Metadata = {
   title: 'Datenschutz — ToolSucher',
@@ -9,17 +10,11 @@ export const metadata: Metadata = {
 
 function Section({ nr, title, children }: { nr: string; title: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: '32px' }}>
-      <h2 style={{
-        fontFamily: 'var(--font-playfair)',
-        fontSize: '18px',
-        fontWeight: '700',
-        color: 'var(--color-text-primary)',
-        marginBottom: '12px',
-      }}>
+    <div className={styles.sectionWrap}>
+      <h2 className={styles.sectionH2}>
         {nr}. {title}
       </h2>
-      <div style={{ fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: '1.8' }}>
+      <div className={styles.sectionBody}>
         {children}
       </div>
     </div>
@@ -30,34 +25,23 @@ function Section({ nr, title, children }: { nr: string; title: string; children:
 
 export default function DatenschutzPage() {
   return (
-    <main style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 24px' }}>
+    <main className={styles.main}>
 
-      <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
-        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
+      <p className={styles.breadcrumb}>
+        <Link href="/" className={styles.breadcrumbLink}>Startseite</Link>
         {' › '}
         Datenschutz
       </p>
 
-      <h1 style={{
-        fontFamily: 'var(--font-playfair)',
-        fontSize: '36px',
-        fontWeight: '700',
-        color: 'var(--color-text-primary)',
-        marginBottom: '8px',
-      }}>
+      <h1 className={styles.pageTitle}>
         Datenschutzerklärung
       </h1>
 
-      <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '32px' }}>
+      <p className={styles.pageDate}>
         Stand: Mai 2026
       </p>
 
-      <div style={{
-        backgroundColor: 'var(--color-bg-card)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-card)',
-        padding: '32px',
-      }}>
+      <div className={styles.proseCard}>
 
         <Section nr="1" title="Verantwortlicher">
           <p style={{ marginBottom: '8px' }}>Verantwortlich für die Verarbeitung personenbezogener Daten auf dieser Website ist:</p>

@@ -1,0 +1,341 @@
+/**
+ * Datei: app/aufgaben/page.module.css
+ *
+ * Zweck: Styles für die Aufgaben-Seite (Unternehmen verwalten) — Mobile-First.
+ *
+ * Breakpoints:
+ * - Default  → Mobile (375px): Tool-Grid einspaltig, CTA einspaltig
+ * - ≥ 768px  → Desktop: Tool-Grid 3-spaltig, CTA 2-spaltig
+ */
+
+/* ─── Wrapper ─────────────────────────────────────────────── */
+
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 40px 24px;
+  }
+}
+
+/* ─── Breadcrumb ──────────────────────────────────────────── */
+
+.breadcrumb {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+}
+
+.breadcrumbLink {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+/* ─── Page-Badge ──────────────────────────────────────────── */
+
+.pageBadge {
+  display: inline-block;
+  background-color: var(--color-badge-bg);
+  border: 1px solid var(--color-border);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+/* ─── Seitentitel ─────────────────────────────────────────── */
+
+/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
+.pageTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 28px !important;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+  .pageTitle {
+    font-size: 38px !important;
+  }
+}
+
+.pageDesc {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 640px;
+  margin-bottom: 24px;
+}
+
+/* ─── Meta-Pills ──────────────────────────────────────────── */
+
+.metaPills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.metaPill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* ─── Section-Header ──────────────────────────────────────── */
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 22px !important;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.allToolsLink {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+/* ─── Tool-Grid: einspaltig Mobile, 3-spaltig Desktop ─────── */
+
+.toolGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+@media (min-width: 768px) {
+  .toolGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+}
+
+/* ─── Tool-Card ───────────────────────────────────────────── */
+
+.toolCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hervorgehobene Karte — empfehlung: true */
+.toolCardFeatured {
+  background-color: var(--color-bg-card);
+  border: 2px solid var(--color-cta);
+  border-radius: var(--radius-card);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.toolCardLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* backgroundColor bleibt inline (tool.farbe — Laufzeitwert) */
+.toolLogoWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.toolName {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+}
+
+.toolKategorie {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.toolHeart {
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.toolDesc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: 10px;
+  flex: 1;
+}
+
+/* ─── Badges ──────────────────────────────────────────────── */
+
+.badgeRow {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.empfehlungBadge {
+  background-color: var(--color-cta);
+  color: white;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.regularBadge {
+  background-color: var(--color-badge-bg);
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* ─── Preis + Button ──────────────────────────────────────── */
+
+.toolFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toolPreis {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* Button Standard (nicht empfohlen) */
+.detailBtn {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  padding: 6px 14px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Button Hervorgehoben (empfehlung: true) */
+.detailBtnFeatured {
+  background-color: var(--color-cta);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ─── CTA-Box ─────────────────────────────────────────────── */
+
+/* Mobile: einspaltig */
+.ctaBox {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .ctaBox {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 32px;
+    gap: 24px;
+  }
+}
+
+.ctaText {
+  flex: 1;
+}
+
+.ctaTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 20px !important;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.ctaDesc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.ctaBtns {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.ctaBtnPrimary {
+  background-color: var(--color-cta);
+  color: white;
+  padding: 12px 22px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ctaBtnSecondary {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  padding: 12px 22px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+  white-space: nowrap;
+}

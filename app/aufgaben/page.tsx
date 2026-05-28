@@ -1,10 +1,13 @@
-import Link from 'next/link'
+/**
+ * Datei: app/aufgaben/page.tsx
+ *
+ * Zweck: Zeigt passende Tools für eine Aufgabe (hier: "Unternehmen verwalten").
+ * Später: Template — Admin wählt Aufgabe + Tools aus der Datenbank.
+ * Jetzt: Daten stehen im aufgabeData Objekt.
+ */
 
-// AUFGABEN-SEITE: Unternehmen verwalten (app/aufgaben/unternehmen-verwalten/page.tsx)
-//
-// Zweck: Zeigt passende Tools für die Aufgabe "Unternehmen verwalten".
-// Später: Template — Admin wählt Aufgabe + Tools aus der Datenbank.
-// Jetzt: Daten stehen im aufgabeData Objekt unten.
+import Link from 'next/link'
+import styles from './page.module.css'
 
 const aufgabeData = {
   name: 'Unternehmen verwalten',
@@ -69,204 +72,108 @@ const aufgabeData = {
       link: '/tools/hubspot',
     },
   ],
-};
-
-// ─── LAYOUT ─────────────────────────────────────────────────────
+}
 
 export default function UnternehmenVerwaltenSeite() {
-  const d = aufgabeData;
+  const d = aufgabeData
 
   return (
-    <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '40px 24px' }}>
+    <main className={styles.main}>
 
       {/* Breadcrumb */}
-      <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
-        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
+      <p className={styles.breadcrumb}>
+        <Link href="/" className={styles.breadcrumbLink}>Startseite</Link>
         {' › '}
-        <Link href="/aufgaben" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Aufgaben</Link>
+        <Link href="/aufgaben" className={styles.breadcrumbLink}>Aufgaben</Link>
         {' › '}
         {d.name}
       </p>
 
       {/* Badge */}
-      <span style={{
-        display: 'inline-block',
-        backgroundColor: 'var(--color-badge-bg)',
-        border: '1px solid var(--color-border)',
-        padding: '4px 12px',
-        borderRadius: '20px',
-        fontSize: '12px',
-        color: 'var(--color-text-secondary)',
-        marginBottom: '16px',
-      }}>
+      <span className={styles.pageBadge}>
         🏢 Aufgabe
       </span>
 
       {/* Titel */}
-      <h1 style={{
-        fontFamily: 'var(--font-playfair)',
-        fontSize: '38px',
-        fontWeight: '700',
-        color: 'var(--color-text-primary)',
-        lineHeight: '1.2',
-        marginBottom: '12px',
-      }}>
+      <h1 className={styles.pageTitle}>
         Tools zum {d.name}
       </h1>
 
-      <p style={{
-        fontSize: '16px',
-        color: 'var(--color-text-secondary)',
-        lineHeight: '1.6',
-        maxWidth: '640px',
-        marginBottom: '24px',
-      }}>
+      <p className={styles.pageDesc}>
         {d.beschreibung}
       </p>
 
       {/* Meta-Pills */}
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '40px' }}>
+      <div className={styles.metaPills}>
         {[
           `👥 Für ${d.zielgruppe}`,
           `🛠 ${d.tools.length} empfohlene Tools`,
           `📅 Aktualisiert: ${d.aktualisiertAm}`,
         ].map((pill) => (
-          <span key={pill} style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            backgroundColor: 'var(--color-bg-card)',
-            border: '1px solid var(--color-border)',
-            padding: '6px 14px',
-            borderRadius: '20px',
-            fontSize: '13px',
-            color: 'var(--color-text-secondary)',
-          }}>
+          <span key={pill} className={styles.metaPill}>
             {pill}
           </span>
         ))}
       </div>
 
       {/* Section Header */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '16px',
-      }}>
-        <h2 style={{
-          fontFamily: 'var(--font-playfair)',
-          fontSize: '22px',
-          fontWeight: '700',
-          color: 'var(--color-text-primary)',
-        }}>
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.sectionTitle}>
           Top-Empfehlungen
         </h2>
-        <Link href="/tools" style={{
-          fontSize: '13px',
-          color: 'var(--color-text-secondary)',
-          textDecoration: 'none',
-        }}>
+        <Link href="/tools" className={styles.allToolsLink}>
           Alle Tools ansehen →
         </Link>
       </div>
 
-      {/* Tool-Cards — 3 Spalten */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '14px',
-        marginBottom: '40px',
-      }}>
+      {/* Tool-Cards */}
+      <div className={styles.toolGrid}>
         {d.tools.map((tool) => (
-          <div key={tool.name} style={{
-            backgroundColor: 'var(--color-bg-card)',
-            border: tool.empfehlung ? '2px solid var(--color-cta)' : '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-card)',
-            padding: '18px',
-            display: 'flex',
-            flexDirection: 'column',
-          }}>
+          <div key={tool.name} className={tool.empfehlung ? styles.toolCardFeatured : styles.toolCard}>
 
             {/* Logo + Herz */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '8px',
-                  backgroundColor: tool.farbe,
-                  color: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: '700',
-                  fontSize: '16px',
-                  flexShrink: 0,
-                }}>
+            <div className={styles.toolCardTop}>
+              <div className={styles.toolCardLeft}>
+                {/* backgroundColor bleibt inline (tool.farbe — Laufzeitwert) */}
+                <div
+                  className={styles.toolLogoWrap}
+                  style={{ backgroundColor: tool.farbe }}
+                >
                   {tool.kuerzel}
                 </div>
                 <div>
-                  <p style={{ fontWeight: '600', fontSize: '14px', margin: 0 }}>{tool.name}</p>
-                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', margin: 0 }}>{tool.kategorie}</p>
+                  <p className={styles.toolName}>{tool.name}</p>
+                  <p className={styles.toolKategorie}>{tool.kategorie}</p>
                 </div>
               </div>
-              <span style={{ color: 'var(--color-text-secondary)', cursor: 'pointer', fontSize: '16px' }}>♡</span>
+              <span className={styles.toolHeart}>♡</span>
             </div>
 
             {/* Beschreibung */}
-            <p style={{
-              fontSize: '12px',
-              color: 'var(--color-text-secondary)',
-              lineHeight: '1.5',
-              marginBottom: '10px',
-              flex: 1,
-            }}>
+            <p className={styles.toolDesc}>
               {tool.beschreibung}
             </p>
 
             {/* Badges */}
-            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '12px' }}>
+            <div className={styles.badgeRow}>
               {tool.empfehlung && (
-                <span style={{
-                  backgroundColor: 'var(--color-cta)',
-                  color: 'white',
-                  fontSize: '10px',
-                  padding: '2px 8px',
-                  borderRadius: '20px',
-                  fontWeight: '600',
-                }}>
+                <span className={styles.empfehlungBadge}>
                   Unsere Empfehlung
                 </span>
               )}
               {tool.badges.map((badge) => (
-                <span key={badge} style={{
-                  backgroundColor: 'var(--color-badge-bg)',
-                  color: 'var(--color-text-secondary)',
-                  fontSize: '10px',
-                  padding: '2px 8px',
-                  borderRadius: '20px',
-                }}>
+                <span key={badge} className={styles.regularBadge}>
                   {badge}
                 </span>
               ))}
             </div>
 
             {/* Preis + Button */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text-primary)' }}>
+            <div className={styles.toolFooter}>
+              <span className={styles.toolPreis}>
                 {tool.preis}
               </span>
-              <a href={tool.link} style={{
-                backgroundColor: tool.empfehlung ? 'var(--color-cta)' : 'transparent',
-                color: tool.empfehlung ? 'white' : 'var(--color-text-primary)',
-                border: tool.empfehlung ? 'none' : '1px solid var(--color-border)',
-                padding: '6px 14px',
-                borderRadius: 'var(--radius-btn)',
-                textDecoration: 'none',
-                fontSize: '12px',
-                fontWeight: '600',
-              }}>
+              <a href={tool.link} className={tool.empfehlung ? styles.detailBtnFeatured : styles.detailBtn}>
                 Details →
               </a>
             </div>
@@ -276,57 +183,25 @@ export default function UnternehmenVerwaltenSeite() {
       </div>
 
       {/* CTA Box */}
-      <div style={{
-        backgroundColor: 'var(--color-bg-card)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-card)',
-        padding: '28px 32px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: '24px',
-      }}>
-        <div>
-          <h3 style={{
-            fontFamily: 'var(--font-playfair)',
-            fontSize: '20px',
-            fontWeight: '700',
-            marginBottom: '6px',
-          }}>
+      <div className={styles.ctaBox}>
+        <div className={styles.ctaText}>
+          <h3 className={styles.ctaTitle}>
             Nicht sicher welches Tool passt?
           </h3>
-          <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: '1.5' }}>
+          <p className={styles.ctaDesc}>
             Beantworte 4 Fragen und finde dein passendes Tool für Unternehmensführung.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
-          <Link href="/tool-finder" style={{
-            backgroundColor: 'var(--color-cta)',
-            color: 'white',
-            padding: '12px 22px',
-            borderRadius: 'var(--radius-btn)',
-            textDecoration: 'none',
-            fontSize: '14px',
-            fontWeight: '600',
-            whiteSpace: 'nowrap',
-          }}>
+        <div className={styles.ctaBtns}>
+          <Link href="/tool-finder" className={styles.ctaBtnPrimary}>
             Tool-Finder starten
           </Link>
-          <Link href="/tools" style={{
-            backgroundColor: 'transparent',
-            color: 'var(--color-text-primary)',
-            padding: '12px 22px',
-            borderRadius: 'var(--radius-btn)',
-            textDecoration: 'none',
-            fontSize: '14px',
-            border: '1px solid var(--color-border)',
-            whiteSpace: 'nowrap',
-          }}>
+          <Link href="/tools" className={styles.ctaBtnSecondary}>
             Alle Tools ansehen
           </Link>
         </div>
       </div>
 
     </main>
-  );
+  )
 }

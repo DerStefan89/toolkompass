@@ -1,0 +1,270 @@
+/**
+ * Datei: app/tool-stacks/page.module.css
+ *
+ * Zweck: Styles für die Tool-Stacks-Übersicht — Mobile-First, CSS Variables.
+ *
+ * Design-Referenz: design-refs/5_Tool_Stacks.png
+ *
+ * Breakpoints:
+ * - Default  → Mobile (375px): einspaltig, Hero einspaltig
+ * - ≥ 768px  → Desktop: Hero 2-spaltig, Stacks 3-spaltig
+ */
+
+/* ─── Hero-Section ────────────────────────────────────────── */
+
+/* Mobile: einspaltig */
+.heroSection {
+  padding: 40px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+  .heroSection {
+    flex-direction: row;
+    gap: 48px;
+    align-items: flex-start;
+    padding: 60px 24px;
+  }
+}
+
+.heroLeft {
+  flex: 1;
+}
+
+/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
+.heroTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 32px !important;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .heroTitle {
+    font-size: 42px !important;
+  }
+}
+
+.heroDesc {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.emptyBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-badge-bg);
+  border: 1px solid var(--color-border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* Info-Box: volle Breite mobile, 320px desktop */
+.infoBox {
+  width: 100%;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 28px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .infoBox {
+    width: 320px;
+  }
+}
+
+.infoBoxIcon {
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+
+.infoBoxTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 20px !important;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.infoBoxDesc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.infoBoxBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--color-cta);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ─── Stacks-Section ──────────────────────────────────────── */
+
+.stacksSection {
+  padding: 0 16px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .stacksSection {
+    padding: 0 24px 60px;
+  }
+}
+
+.sectionTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 24px !important;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 24px;
+}
+
+.empty {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* Stacks-Grid: einspaltig Mobile, 3-spaltig Desktop */
+.stackGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .stackGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+.stackCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.stackIcon {
+  width: 44px;
+  height: 44px;
+  background-color: var(--color-badge-bg);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.stackName {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.stackTags {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.stackBadge {
+  display: inline-block;
+  background-color: var(--color-badge-bg);
+  border: 1px solid var(--color-border);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* ─── CTA-Box ─────────────────────────────────────────────── */
+
+/* Mobile: einspaltig */
+.ctaBox {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+  .ctaBox {
+    flex-direction: row;
+    align-items: center;
+    padding: 32px;
+    gap: 32px;
+  }
+}
+
+.ctaIcon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+@media (min-width: 768px) {
+  .ctaIcon {
+    font-size: 60px;
+  }
+}
+
+.ctaContent {
+  flex: 1;
+}
+
+.ctaTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 20px !important;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.ctaDesc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.ctaBtn {
+  background-color: var(--color-cta);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

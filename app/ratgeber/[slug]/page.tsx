@@ -16,6 +16,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import styles from './page.module.css'
 
 export const revalidate = 3600
 
@@ -86,105 +87,51 @@ export default async function BlogArtikelSeite({
   }))
 
   return (
-    <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
+    <main className={styles.main}>
 
       {/* Breadcrumb */}
-      <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
-        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
+      <p className={styles.breadcrumb}>
+        <Link href="/" className={styles.breadcrumbLink}>Startseite</Link>
         {' › '}
-        <Link href="/ratgeber" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Ratgeber</Link>
+        <Link href="/ratgeber" className={styles.breadcrumbLink}>Ratgeber</Link>
         {' › '}
         {article.title}
       </p>
 
       {/* Hauptbereich */}
-      <div style={{ display: 'flex', gap: '48px', alignItems: 'flex-start' }}>
+      <div className={styles.contentArea}>
 
         {/* Linke Seite — Artikel */}
-        <div style={{ flex: 1 }}>
+        <div className={styles.article}>
 
           {/* Typ-Badge + Meta */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-            <span style={{
-              backgroundColor: 'var(--color-badge-bg)',
-              color: 'var(--color-text-secondary)',
-              fontSize: '11px',
-              padding: '3px 10px',
-              borderRadius: '20px',
-              fontWeight: '600',
-            }}>
+          <div className={styles.metaRow}>
+            <span className={styles.typeBadge}>
               {typLabels[article.type] ?? article.type}
             </span>
-            <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
-              {dateStr}
-            </span>
+            <span className={styles.metaDate}>{dateStr}</span>
           </div>
 
           {/* Titel */}
-          <h1 style={{
-            fontFamily: 'var(--font-playfair)',
-            fontSize: '40px',
-            fontWeight: '700',
-            color: 'var(--color-text-primary)',
-            lineHeight: '1.2',
-            marginBottom: '16px',
-          }}>
-            {article.title}
-          </h1>
+          <h1 className={styles.articleTitle}>{article.title}</h1>
 
           {/* Untertitel */}
-          <p style={{
-            fontSize: '18px',
-            color: 'var(--color-text-secondary)',
-            lineHeight: '1.6',
-            marginBottom: '24px',
-          }}>
-            {article.subtitle}
-          </p>
+          <p className={styles.articleSubtitle}>{article.subtitle}</p>
 
           {/* Affiliate-Hinweis */}
-          <div style={{
-            backgroundColor: 'var(--color-badge-bg)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-card)',
-            padding: '12px 16px',
-            fontSize: '12px',
-            color: 'var(--color-text-secondary)',
-            marginBottom: '32px',
-          }}>
+          <div className={styles.affiliateNotice}>
             ℹ️ Dieser Artikel enthält Tool-Empfehlungen. Einige Links sind Affiliate-Links.
           </div>
 
           {/* Empfohlene Tools Box */}
           {empfohleneTools.length > 0 && (
-            <div style={{
-              backgroundColor: 'var(--color-bg-card)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-card)',
-              padding: '20px',
-              marginBottom: '40px',
-            }}>
-              <p style={{ fontSize: '13px', fontWeight: '600', marginBottom: '16px' }}>
-                Im Artikel empfohlene Tools:
-              </p>
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+            <div className={styles.toolsBox}>
+              <p className={styles.toolsLabel}>Im Artikel empfohlene Tools:</p>
+              <div className={styles.toolsList}>
                 {empfohleneTools.map(({ tool, name, kuerzel }) => (
-                  <a key={tool.id} href={`/tools/${tool.slug}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-                    <div style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '6px',
-                      backgroundColor: 'var(--color-cta)',
-                      color: 'white',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: '700',
-                      fontSize: '14px',
-                    }}>
-                      {kuerzel}
-                    </div>
-                    <p style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text-primary)', margin: 0 }}>{name}</p>
+                  <a key={tool.id} href={`/tools/${tool.slug}`} className={styles.toolLink}>
+                    <div className={styles.toolIcon}>{kuerzel}</div>
+                    <p className={styles.toolName}>{name}</p>
                   </a>
                 ))}
               </div>
@@ -193,23 +140,11 @@ export default async function BlogArtikelSeite({
 
           {/* Sections */}
           {article.sections.map((section) => (
-            <div key={section.id} style={{ marginBottom: '40px' }}>
+            <div key={section.id} className={styles.section}>
               {section.heading && (
-                <h2 style={{
-                  fontFamily: 'var(--font-playfair)',
-                  fontSize: '26px',
-                  fontWeight: '700',
-                  color: 'var(--color-text-primary)',
-                  marginBottom: '16px',
-                }}>
-                  {section.heading}
-                </h2>
+                <h2 className={styles.sectionHeading}>{section.heading}</h2>
               )}
-              <p style={{
-                fontSize: section.heading ? '15px' : '16px',
-                color: 'var(--color-text-secondary)',
-                lineHeight: '1.8',
-              }}>
+              <p className={section.heading ? styles.sectionContent : styles.sectionIntro}>
                 {section.content}
               </p>
             </div>
@@ -218,47 +153,24 @@ export default async function BlogArtikelSeite({
         </div>
 
         {/* Rechte Sidebar */}
-        <div style={{ width: '240px', flexShrink: 0, position: 'sticky', top: '24px' }}>
+        <div className={styles.sidebar}>
 
           {/* Autor */}
-          <div style={{
-            backgroundColor: 'var(--color-bg-card)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-card)',
-            padding: '20px',
-            marginBottom: '16px',
-          }}>
-            <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>Geschrieben von</p>
-            <p style={{ fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>ToolSucher Redaktion</p>
-            <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+          <div className={styles.sidebarCard}>
+            <p className={styles.sidebarAuthorLabel}>Geschrieben von</p>
+            <p className={styles.sidebarAuthorName}>ToolSucher Redaktion</p>
+            <p className={styles.sidebarAuthorDesc}>
               Kuratiert und geprüft durch das ToolSucher Team.
             </p>
           </div>
 
           {/* Tool-Finder CTA */}
-          <div style={{
-            backgroundColor: 'var(--color-bg-card)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-card)',
-            padding: '20px',
-          }}>
-            <p style={{ fontWeight: '700', fontSize: '14px', marginBottom: '8px' }}>
-              Nicht sicher welches Tool passt?
-            </p>
-            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px', lineHeight: '1.5' }}>
+          <div className={styles.sidebarCard}>
+            <p className={styles.sidebarFinderTitle}>Nicht sicher welches Tool passt?</p>
+            <p className={styles.sidebarFinderDesc}>
               Beantworte 4 Fragen und finde dein passendes Tool.
             </p>
-            <a href="/tool-finder" style={{
-              display: 'block',
-              textAlign: 'center',
-              backgroundColor: 'var(--color-cta)',
-              color: 'white',
-              padding: '10px',
-              borderRadius: 'var(--radius-btn)',
-              textDecoration: 'none',
-              fontSize: '13px',
-              fontWeight: '600',
-            }}>
+            <a href="/tool-finder" className={styles.sidebarFinderBtn}>
               Tool-Finder starten
             </a>
           </div>

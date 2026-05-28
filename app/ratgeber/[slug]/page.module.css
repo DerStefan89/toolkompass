@@ -1,0 +1,261 @@
+/**
+ * Datei: app/ratgeber/[slug]/page.module.css
+ *
+ * Zweck: Styles für die Ratgeber-Detailseite — Mobile-First, CSS Variables.
+ *
+ * Design-Referenz: (Layout analog zu design-refs/2_Tool_Detailseite.png)
+ *
+ * Breakpoints:
+ * - Default  → Mobile (375px): einspaltig, Sidebar unter Content
+ * - ≥ 768px  → Desktop: Artikel + 240px Sidebar sticky
+ */
+
+/* ─── Wrapper ─────────────────────────────────────────────── */
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 40px 24px;
+  }
+}
+
+/* ─── Breadcrumb ──────────────────────────────────────────── */
+
+.breadcrumb {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.breadcrumbLink {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+/* ─── Layout: Content + Sidebar ──────────────────────────── */
+
+/* Mobile: einspaltig (Sidebar unter Content) */
+.contentArea {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+  .contentArea {
+    flex-direction: row;
+    gap: 48px;
+  }
+}
+
+/* ─── Artikel-Content ─────────────────────────────────────── */
+
+.article {
+  flex: 1;
+  min-width: 0;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.typeBadge {
+  background-color: var(--color-badge-bg);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.metaDate {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
+.articleTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 28px !important;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .articleTitle {
+    font-size: 40px !important;
+  }
+}
+
+.articleSubtitle {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.affiliateNotice {
+  background-color: var(--color-badge-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 32px;
+}
+
+/* ─── Empfohlene Tools Box ────────────────────────────────── */
+
+.toolsBox {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+.toolsLabel {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.toolsList {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.toolLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.toolIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: var(--color-cta);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.toolName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* ─── Artikel-Sections ────────────────────────────────────── */
+
+.section {
+  margin-bottom: 40px;
+}
+
+/* !important auf font-family: überschreibt Tailwind v4 Preflight auf h2 */
+.sectionHeading {
+  font-family: var(--font-playfair) !important;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+
+/* Content unter einer Überschrift */
+.sectionContent {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+/* Einleitungstext ohne Überschrift */
+.sectionIntro {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+/* ─── Sidebar ─────────────────────────────────────────────── */
+
+/* Mobile: volle Breite */
+.sidebar {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    width: 240px;
+    position: sticky;
+    top: 24px;
+  }
+}
+
+.sidebarCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.sidebarAuthorLabel {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.sidebarAuthorName {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.sidebarAuthorDesc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.sidebarFinderTitle {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.sidebarFinderDesc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.sidebarFinderBtn {
+  display: block;
+  text-align: center;
+  background-color: var(--color-cta);
+  color: white;
+  padding: 10px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}

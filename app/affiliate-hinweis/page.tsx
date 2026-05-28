@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import styles from './page.module.css'
 
 export const metadata: Metadata = {
   title: 'Affiliate-Hinweis — ToolSucher',
@@ -7,33 +8,19 @@ export const metadata: Metadata = {
 
 export default function AffiliateHinweisPage() {
   return (
-    <main style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 24px' }}>
+    <main className={styles.main}>
 
-      <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
-        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
+      <p className={styles.breadcrumb}>
+        <Link href="/" className={styles.breadcrumbLink}>Startseite</Link>
         {' › '}
         Affiliate-Hinweis
       </p>
 
-      <h1 style={{
-        fontFamily: 'var(--font-playfair)',
-        fontSize: '36px',
-        fontWeight: '700',
-        color: 'var(--color-text-primary)',
-        marginBottom: '32px',
-      }}>
+      <h1 className={styles.pageTitle}>
         Affiliate-Hinweis
       </h1>
 
-      <div style={{
-        backgroundColor: 'var(--color-bg-card)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-card)',
-        padding: '32px',
-        fontSize: '15px',
-        color: 'var(--color-text-secondary)',
-        lineHeight: '1.8',
-      }}>
+      <div className={styles.proseCard}>
 
         <p style={{ marginBottom: '20px' }}>
           Diese Website enthält Affiliate-Links. Das bedeutet: Wenn du auf einen solchen Link klickst
@@ -54,7 +41,7 @@ export default function AffiliateHinweisPage() {
 
         <p>
           Bei Fragen:{' '}
-          <a href="mailto:toolsucher@gmail.com" style={{ color: 'var(--color-text-secondary)' }}>
+          <a href="mailto:toolsucher@gmail.com" className={styles.proseLink}>
             toolsucher@gmail.com
           </a>
         </p>

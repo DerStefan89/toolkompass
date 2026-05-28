@@ -1,0 +1,85 @@
+/**
+ * Datei: app/impressum/page.module.css
+ *
+ * Zweck: Styles für die Impressum-Seite — Mobile-First.
+ *
+ * Breakpoints:
+ * - Default  → Mobile (375px): volle Breite, kleineres Padding
+ * - ≥ 768px  → Desktop: max-width 800px, größeres Padding
+ */
+
+/* ─── Wrapper ─────────────────────────────────────────────── */
+
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 40px 24px;
+  }
+}
+
+/* ─── Breadcrumb ──────────────────────────────────────────── */
+
+.breadcrumb {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.breadcrumbLink {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+/* ─── Seitentitel ─────────────────────────────────────────── */
+
+/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
+.pageTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 28px !important;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .pageTitle {
+    font-size: 36px !important;
+  }
+}
+
+/* ─── Prose-Karte ─────────────────────────────────────────── */
+
+.proseCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+@media (min-width: 768px) {
+  .proseCard {
+    padding: 32px;
+  }
+}
+
+/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight auf h2 */
+.proseH2 {
+  font-family: var(--font-playfair) !important;
+  font-size: 18px !important;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 12px;
+}
+
+.proseLink {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
