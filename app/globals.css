@@ -61,6 +61,17 @@
   color: white !important;
 }
 
+/* Verhindert horizontalen Überlauf auf Mobile */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Einheitliches Box-Modell — Padding zählt zur Breite, nicht zusätzlich */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 /* Grundregeln für den ganzen Body */
 body {
   background-color: var(--color-bg);       /* Creme-Hintergrund */
