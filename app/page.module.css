@@ -1,0 +1,473 @@
+/**
+ * Datei: app/page.module.css
+ *
+ * Zweck: Styles für die Startseite — Mobile-First, CSS Variables.
+ *
+ * Design-Referenz: design-refs/1_Landing_Page.png
+ *
+ * Breakpoints:
+ * - Default   → Mobile 375px
+ * - ≥ 768px   → Tablet: Hero 2-spaltig, Tool-Cards 2-spaltig
+ * - ≥ 1024px  → Desktop: Tool-Cards 3-spaltig
+ */
+
+/* ═══════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════ */
+
+/* Mobile: einspaltig, kompakteres Padding */
+.heroSection {
+  padding: 40px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+  .heroSection {
+    flex-direction: row;
+    gap: 48px;
+    padding: 60px 24px;
+  }
+}
+
+/* Linke Spalte — nimmt verfügbaren Platz */
+.heroLeft {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Rechte Spalte — Tool-Stack Box */
+/* Mobile: volle Breite unter der linken Spalte */
+.heroRight {
+  width: 100%;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+}
+
+@media (min-width: 768px) {
+  .heroRight {
+    width: 340px;
+    flex-shrink: 0;
+  }
+}
+
+/* ─── Headline ────────────────────────────────────────────── */
+
+/* Mobile: kleinere Schriftgröße */
+.heroHeadline {
+  font-family: var(--font-playfair);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .heroHeadline {
+    font-size: 52px;
+  }
+}
+
+.heroCopy {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+/* ─── Suchfeld ────────────────────────────────────────────── */
+
+.searchInput {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--color-border);
+  font-size: 15px;
+  background-color: var(--color-bg-card);
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+/* ─── Buttons ─────────────────────────────────────────────── */
+
+/* Mobile: je 50% nebeneinander */
+.heroButtons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.btnPrimary {
+  flex: 1;
+  text-align: center;
+  background-color: var(--color-cta);
+  color: white;
+  padding: 12px 16px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btnSecondary {
+  flex: 1;
+  text-align: center;
+  background-color: transparent;
+  color: var(--color-text-primary);
+  padding: 12px 16px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+}
+
+/* Desktop: fixe Breite statt flex-Aufteilung */
+@media (min-width: 768px) {
+  .btnPrimary,
+  .btnSecondary {
+    flex: none;
+    padding: 12px 24px;
+  }
+}
+
+/* ─── Aufgaben-Pills ──────────────────────────────────────── */
+
+.pillsLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 10px;
+}
+
+/* Mobile: horizontal scrollbar statt Umbruch */
+.pillsRow {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: thin;
+  padding-bottom: 4px;
+}
+
+@media (min-width: 768px) {
+  .pillsRow {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
+/* Kein Umbruch innerhalb einer Pill auf Mobile */
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOOL-STACK BOX (rechte Spalte)
+   ═══════════════════════════════════════════════════════════ */
+
+.stackHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.stackTitle {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.badge {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.stackCopy {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.featureRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.featureCheck {
+  color: var(--color-cta);
+}
+
+.stackPreview {
+  background-color: var(--color-bg);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.stackPreviewLabel {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.stackToolRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+.stackToolDash {
+  color: var(--color-text-secondary);
+}
+
+.stackPreviewNote {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 12px;
+}
+
+.stackCta {
+  display: block;
+  text-align: center;
+  background-color: var(--color-cta);
+  color: white;
+  padding: 12px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.stackNotify {
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOOL-CARDS
+   ═══════════════════════════════════════════════════════════ */
+
+.toolSection {
+  padding: 0 16px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .toolSection {
+    padding: 0 24px 40px;
+  }
+}
+
+/* Mobile: 1 Spalte */
+.toolGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .toolGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .toolGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.toolCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+}
+
+.toolCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.toolCardLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* backgroundColor und border bleiben als Conditional Inline-Styles:
+   hängen von tool.logoUrl ab und sind zur Laufzeit berechnet */
+.toolLogoWrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.toolLogoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.toolLogoInitial {
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.toolName {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+}
+
+.toolShort {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.toolHeart {
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.toolDesc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.freeBadge {
+  display: inline-block;
+  background-color: var(--color-badge-bg);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.toolFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toolPrice {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.detailsLink {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  border: 1px solid var(--color-border);
+  padding: 6px 14px;
+  border-radius: var(--radius-btn);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   KATEGORIEN
+   ═══════════════════════════════════════════════════════════ */
+
+.catSection {
+  padding: 0 16px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .catSection {
+    padding: 0 24px 60px;
+  }
+}
+
+.catHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.catTitle {
+  font-family: var(--font-playfair);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.catAllLink {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+/* Horizontal scrollbar — bereits auf Desktop optimal */
+.catScroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+}
+
+/* Styling über CSS Module; hover-Effekt via .category-card aus globals.css */
+.catCard {
+  flex-shrink: 0;
+  min-width: 140px;
+  padding: 16px 14px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  text-align: center;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.catIcon {
+  margin-bottom: 8px;
+  color: var(--color-cta);
+  display: flex;
+  justify-content: center;
+}
