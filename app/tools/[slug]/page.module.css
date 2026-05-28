@@ -1,0 +1,511 @@
+/**
+ * Datei: app/tools/[slug]/page.module.css
+ *
+ * Zweck: Styles für die Tool-Detailseite — Mobile-First, CSS Variables.
+ *
+ * Design-Referenz: design-refs/2_Tool_Detailseite.png
+ *
+ * Breakpoints:
+ * - Default  → Mobile (375px): einspaltig, CTA sticky
+ * - ≥ 768px  → Desktop: 3-spaltig Hero, 3-spaltig Überblick, 4-spaltig Features
+ */
+
+/* ═══════════════════════════════════════════════════════════
+   WRAPPER
+   ═══════════════════════════════════════════════════════════ */
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 40px 24px;
+  }
+}
+
+/* ─── Breadcrumb ──────────────────────────────────────────── */
+
+.breadcrumb {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.breadcrumbLink {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO — einspaltig auf Mobile, 3-spaltig auf Desktop
+   ═══════════════════════════════════════════════════════════ */
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .heroGrid {
+    grid-template-columns: 1fr 1fr 280px;
+    gap: 32px;
+  }
+}
+
+/* ─── Spalte 1: Tool-Info ─────────────────────────────────── */
+
+.toolLogoRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* backgroundColor + border bleiben Conditional Inline-Styles (logoUrl abhängig) */
+.toolLogoWrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.toolLogoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.toolLogoInitial {
+  color: white;
+  font-weight: 700;
+  font-size: 28px;
+}
+
+.toolName {
+  font-family: var(--font-playfair);
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.toolCategory {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.verifiedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--color-badge-bg);
+  border: 1px solid var(--color-border);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.toolDesc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.badgeRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.badge {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  background-color: var(--color-badge-bg);
+  border: 1px solid var(--color-border);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.actionRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  background-color: var(--color-cta);
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btnSecondary {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  padding: 10px 16px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+}
+
+.affiliateBadge {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  background-color: var(--color-badge-bg);
+  border: 1px solid var(--color-border);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* ─── Spalte 2: Screenshot ────────────────────────────────── */
+
+.screenshotBox {
+  background-color: var(--color-badge-bg);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.screenshotImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.screenshotPlaceholder {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* ─── Spalte 3: Preis-/CTA-Box ────────────────────────────── */
+
+.priceBox {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+}
+
+/* Mobile: CTA-Box klebt am unteren Viewport-Rand */
+@media (max-width: 767px) {
+  .priceBox {
+    position: sticky;
+    bottom: 16px;
+  }
+}
+
+.priceBoxHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.priceBoxTitle {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.freePlanBadge {
+  background-color: var(--color-badge-bg);
+  border: 1px solid var(--color-border);
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+.priceAmount {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.priceNote {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.priceFeatureItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.priceFeatureCheck {
+  color: var(--color-cta);
+}
+
+/* min-height: 48px — gut tippbar auf Mobile */
+.ctaBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: var(--color-cta);
+  color: white;
+  padding: 12px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  min-height: 48px;
+}
+
+.affiliateNote {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TABS — horizontal scrollbar auf Mobile
+   ═══════════════════════════════════════════════════════════ */
+
+.tabBar {
+  display: flex;
+  border-bottom: 2px solid var(--color-border);
+  margin-bottom: 40px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+
+.tab {
+  padding: 12px 20px;
+  text-decoration: none;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  font-weight: 400;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tabActive {
+  color: var(--color-cta);
+  border-bottom-color: var(--color-cta);
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ÜBERBLICK — einspaltig auf Mobile, 3-spaltig auf Desktop
+   ═══════════════════════════════════════════════════════════ */
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .overviewGrid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.sectionTitle {
+  font-family: var(--font-playfair);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.sectionTitleSpaced {
+  font-family: var(--font-playfair);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.longDesc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Stärken/Schwächen — einspaltig auf Mobile, 2-spaltig auf Desktop */
+.swGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .swGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.swLabel {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.swLabelWeak {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: var(--color-error);
+}
+
+.swItem {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.swCheck {
+  color: var(--color-cta);
+  flex-shrink: 0;
+}
+
+.swCross {
+  color: var(--color-error);
+  flex-shrink: 0;
+}
+
+.bestForItem {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.bestForCheck {
+  color: var(--color-cta);
+  flex-shrink: 0;
+}
+
+.bestForLabel {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.notIdealItem {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.notIdealCross {
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FUNKTIONEN — 2-spaltig auf Mobile, 4-spaltig auf Desktop
+   ═══════════════════════════════════════════════════════════ */
+
+.featuresSection {
+  margin-bottom: 48px;
+}
+
+.featuresHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .featuresGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}
+
+.featureCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+}
+
+.featureIcon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.featureLabel {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PREISSEKTION
+   ═══════════════════════════════════════════════════════════ */
+
+.priceSection {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  margin-bottom: 48px;
+}
+
+.priceSectionTitle {
+  font-family: var(--font-playfair);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.priceSectionDesc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.priceSectionCta {
+  display: inline-block;
+  background-color: var(--color-cta);
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}

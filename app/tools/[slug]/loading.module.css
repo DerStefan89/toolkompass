@@ -1,0 +1,163 @@
+/**
+ * Datei: app/tools/[slug]/loading.module.css
+ *
+ * Zweck: Skeleton-Styles für die Tool-Detailseite.
+ * Spiegelt das responsive Layout von page.module.css.
+ *
+ * Design-Referenz: design-refs/2_Tool_Detailseite.png
+ */
+
+/* Basis-Skeleton-Block — width/height/borderRadius bleiben inline (dynamische Props) */
+.skel {
+  background-color: var(--color-badge-bg);
+  flex-shrink: 0;
+}
+
+/* ─── Wrapper ─────────────────────────────────────────────── */
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 40px 24px;
+  }
+}
+
+/* ─── Hero-Grid ───────────────────────────────────────────── */
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 28px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .heroGrid {
+    grid-template-columns: 1fr 1fr 280px;
+    gap: 32px;
+  }
+}
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.logoMeta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.descSkels {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.badgeSkels {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.btnSkels {
+  display: flex;
+  gap: 10px;
+}
+
+/* ─── Preisbox-Skeleton ───────────────────────────────────── */
+
+.priceBoxSkel {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ─── Tab-Bar ─────────────────────────────────────────────── */
+
+.tabBar {
+  display: flex;
+  border-bottom: 2px solid var(--color-border);
+  margin-bottom: 40px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+
+.tabPad {
+  padding: 12px 20px;
+  flex-shrink: 0;
+}
+
+/* ─── Überblick-Grid ──────────────────────────────────────── */
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .overviewGrid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.overviewCol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ─── Feature-Grid ────────────────────────────────────────── */
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .featuresGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}
+
+.featureCardSkel {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ─── Preis-Sektion ───────────────────────────────────────── */
+
+.priceSectionSkel {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
