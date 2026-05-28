@@ -12,6 +12,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import IconRenderer from '@/components/ui/IconRenderer'
+import styles from './page.module.css'
 
 export const revalidate = 3600
 
@@ -42,32 +43,19 @@ export default async function KategorienSeite() {
   })
 
   return (
-    <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
+    <main className={styles.main}>
 
       {/* Breadcrumb */}
-      <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
-        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
+      <p className={styles.breadcrumb}>
+        <Link href="/" className={styles.breadcrumbLink}>Startseite</Link>
         {' › '}
         Kategorien
       </p>
 
       {/* Seitentitel */}
-      <h1 style={{
-        fontFamily: 'var(--font-playfair)',
-        fontSize: '40px',
-        fontWeight: '700',
-        color: 'var(--color-text-primary)',
-        marginBottom: '12px',
-      }}>
-        Alle Tool-Kategorien
-      </h1>
+      <h1 className={styles.pageTitle}>Alle Tool-Kategorien</h1>
 
-      <p style={{
-        fontSize: '16px',
-        color: 'var(--color-text-secondary)',
-        marginBottom: '32px',
-        lineHeight: '1.6',
-      }}>
+      <p className={styles.pageDesc}>
         Entdecke Tools nach Bereich und finde passende Software für deine Aufgaben —
         kuratiert für Solo-Selbstständige und kleine Teams in Deutschland.
       </p>
@@ -76,29 +64,14 @@ export default async function KategorienSeite() {
       <input
         type="text"
         placeholder="Kategorie oder Aufgabe suchen ..."
-        style={{
-          width: '100%',
-          maxWidth: '400px',
-          padding: '12px 16px',
-          borderRadius: 'var(--radius-btn)',
-          border: '1px solid var(--color-border)',
-          fontSize: '14px',
-          backgroundColor: 'white',
-          marginBottom: '32px',
-        }}
+        className={styles.searchInput}
       />
 
       {/* Kategorien-Raster */}
       {categories.length === 0 ? (
-        <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
-          Noch keine Kategorien vorhanden.
-        </p>
+        <p className={styles.empty}>Noch keine Kategorien vorhanden.</p>
       ) : (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '16px',
-        }}>
+        <div className={styles.catGrid}>
           {categories.map((cat) => {
             const t = cat.translations[0]
             if (!t) return null
@@ -111,45 +84,28 @@ export default async function KategorienSeite() {
               <a
                 key={cat.id}
                 href={`/kategorien/${cat.slug}`}
-                className="category-card"
-                style={{
-                  backgroundColor: 'var(--color-bg-card)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-card)',
-                  padding: '20px',
-                  textDecoration: 'none',
-                  color: 'var(--color-text-primary)',
-                  display: 'block',
-                }}
+                className={`category-card ${styles.catCard}`}
               >
                 {/* Icon */}
-                <div className="category-card-icon" style={{ marginBottom: '12px', color: 'var(--color-cta)' }}>
+                <div className={`category-card-icon ${styles.catIcon}`}>
                   <IconRenderer icon={cat.icon} size={28} />
                 </div>
 
                 {/* Name */}
-                <p style={{ fontWeight: '700', fontSize: '15px', marginBottom: '8px', lineHeight: '1.3' }}>
-                  {t.name}
-                </p>
+                <p className={styles.catName}>{t.name}</p>
 
                 {/* Beschreibung */}
-                <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '12px', lineHeight: '1.5' }}>
-                  {t.description}
-                </p>
+                <p className={styles.catDesc}>{t.description}</p>
 
                 {/* Beispiel-Tools */}
                 {toolNames && (
-                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '12px' }}>
-                    {toolNames}
-                  </p>
+                  <p className={styles.catTools}>{toolNames}</p>
                 )}
 
                 {/* Anzahl Tools + Pfeil */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-                    {cat._count.tools} Tools
-                  </span>
-                  <span style={{ color: 'var(--color-text-secondary)' }}>→</span>
+                <div className={styles.catFooter}>
+                  <span className={styles.catCount}>{cat._count.tools} Tools</span>
+                  <span className={styles.catArrow}>→</span>
                 </div>
               </a>
             )

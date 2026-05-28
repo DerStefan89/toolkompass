@@ -1,0 +1,251 @@
+/**
+ * Datei: app/vergleichen/page.module.css
+ *
+ * Zweck: Styles für die Vergleichen-Übersicht — Mobile-First, CSS Variables.
+ *
+ * Design-Referenz: design-refs/3_Vergleichsseite.png
+ *
+ * Breakpoints:
+ * - Default  → Mobile (375px): Cards einspaltig, Buttons untereinander
+ * - ≥ 768px  → Desktop: Cards 2-spaltig, Buttons nebeneinander
+ */
+
+/* ─── Wrapper ─────────────────────────────────────────────── */
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 40px 24px;
+  }
+}
+
+/* ─── Seitentitel ─────────────────────────────────────────── */
+
+/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
+.pageTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 28px !important;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+  .pageTitle {
+    font-size: 40px !important;
+  }
+}
+
+.pageDesc {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+/* ─── Suchfeld ────────────────────────────────────────────── */
+
+.searchInput {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--color-border);
+  font-size: 14px;
+  background-color: white;
+  margin-bottom: 40px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .searchInput {
+    max-width: 500px;
+  }
+}
+
+/* ─── Section-Titel ───────────────────────────────────────── */
+
+.sectionTitle {
+  font-family: var(--font-playfair);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 20px;
+}
+
+/* ─── Empty State ─────────────────────────────────────────── */
+
+.empty {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 48px;
+}
+
+/* ─── Vergleichs-Cards: einspaltig Mobile, 2-spaltig Desktop ─ */
+
+.compGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .compGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+.compCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.compIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background-color: var(--color-badge-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+.compText {
+  flex: 1;
+}
+
+.compTitle {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.compDesc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.compArrow {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* ─── Vorschau-Card ───────────────────────────────────────── */
+
+.previewCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+}
+
+.previewTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* overflow-x: auto — horizontale Scrollbar auf Mobile */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tableHeadRow {
+  border-bottom: 2px solid var(--color-border);
+}
+
+.thLabel {
+  text-align: left;
+  padding: 10px 0;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.thTool {
+  text-align: left;
+  padding: 10px 16px;
+  font-weight: 600;
+}
+
+.thToolLast {
+  text-align: left;
+  padding: 10px 0;
+  font-weight: 600;
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tdLabel {
+  padding: 12px 0;
+  color: var(--color-text-secondary);
+}
+
+.tdA {
+  padding: 12px 16px;
+}
+
+.tdB {
+  padding: 12px 0;
+}
+
+/* CTA-Buttons: untereinander Mobile, nebeneinander Desktop */
+.previewCtaRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+@media (min-width: 768px) {
+  .previewCtaRow {
+    flex-direction: row;
+    gap: 12px;
+  }
+}
+
+.btnPrimary {
+  background-color: var(--color-cta);
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btnSecondary {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  padding: 10px 20px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+  text-align: center;
+}

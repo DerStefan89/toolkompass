@@ -1,0 +1,452 @@
+/**
+ * Datei: app/vergleichen/[slug]/page.module.css
+ *
+ * Zweck: Styles für die Vergleichs-Detailseite — Mobile-First, CSS Variables.
+ *
+ * Design-Referenz: design-refs/3_Vergleichsseite.png
+ *
+ * Wichtig:
+ * backgroundColor auf Icon-Divs bleibt Inline-Style (tool.farbe — Laufzeitwert).
+ *
+ * Breakpoints:
+ * - Default  → Mobile (375px): einspaltig, vs-Box ausgeblendet, Buttons untereinander
+ * - ≥ 768px  → Desktop: Hero 2-spaltig, 2-Col-Grids, Buttons nebeneinander
+ */
+
+/* ─── Wrapper ─────────────────────────────────────────────── */
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 40px 24px;
+  }
+}
+
+/* ─── Breadcrumb ──────────────────────────────────────────── */
+
+.breadcrumb {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.breadcrumbLink {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+/* ─── Hero ────────────────────────────────────────────────── */
+
+/* Mobile: einspaltig, vs-Box ausgeblendet */
+.heroRow {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+@media (min-width: 768px) {
+  .heroRow {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 48px;
+  }
+}
+
+.heroLeft {
+  flex: 1;
+}
+
+/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
+.heroTitle {
+  font-family: var(--font-playfair) !important;
+  font-size: 32px !important;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+  .heroTitle {
+    font-size: 42px !important;
+  }
+}
+
+.heroDesc {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* vs-Box: Mobile ausgeblendet */
+.heroVsBox {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .heroVsBox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 20px 24px;
+    flex-shrink: 0;
+  }
+}
+
+.vsLabel {
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.vsKategorie {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+/* Icon-Divs: backgroundColor bleibt inline (tool.farbe); Rest hier */
+.toolIconLg {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.toolIconMd {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.toolIconSm {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* ─── Unser Urteil ────────────────────────────────────────── */
+
+.verdictCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  margin-bottom: 40px;
+}
+
+.verdictTitle {
+  font-family: var(--font-playfair);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.verdictText {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+/* CTA-Buttons: untereinander Mobile, nebeneinander Desktop */
+.ctaRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+  .ctaRow {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.btnPrimary {
+  background-color: var(--color-cta);
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btnSecondary {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  padding: 10px 20px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+}
+
+.affiliateNote {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* ─── Section-Titel ───────────────────────────────────────── */
+
+.sectionTitle {
+  font-family: var(--font-playfair);
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* ─── 2-Col-Grid → einspaltig Mobile ─────────────────────── */
+
+.twoColGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .twoColGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+}
+
+/* ─── "Welches Tool passt" Card ───────────────────────────── */
+
+.fitCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+}
+
+.fitCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.fitCardTitle {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.fitItem {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.fitCheck {
+  color: var(--color-cta);
+}
+
+/* ─── Direktvergleich Tabelle ─────────────────────────────── */
+
+.tableSection {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  margin-bottom: 48px;
+}
+
+/* overflow-x: auto — horizontale Scrollbar auf Mobile */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tableHeadRow {
+  border-bottom: 2px solid var(--color-border);
+}
+
+.thLabel {
+  text-align: left;
+  padding: 10px 0;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  width: 30%;
+}
+
+.thTool {
+  text-align: left;
+  padding: 10px 16px;
+  font-weight: 700;
+  width: 35%;
+}
+
+.thToolLast {
+  text-align: left;
+  padding: 10px 0;
+  font-weight: 700;
+  width: 35%;
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tdLabel {
+  padding: 12px 0;
+  color: var(--color-text-secondary);
+}
+
+.tdA {
+  padding: 12px 16px;
+}
+
+.tdB {
+  padding: 12px 0;
+}
+
+.tableNote {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 16px;
+}
+
+/* ─── Preise ──────────────────────────────────────────────── */
+
+.priceCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.priceCardLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+
+.priceCardName {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.priceCardAmount {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.priceCardDesc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.priceNote {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 48px;
+}
+
+.vendorBtn {
+  background-color: var(--color-cta);
+  color: white;
+  padding: 10px 16px;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ─── Vorteile & Nachteile ────────────────────────────────── */
+
+.prosConsCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+}
+
+.prosConsHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.prosConsTitle {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.prosConsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.prosConsLabel {
+  font-weight: 600;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.prosConsItem {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.proCheck {
+  color: var(--color-cta);
+}
+
+.conCross {
+  color: var(--color-error);
+}

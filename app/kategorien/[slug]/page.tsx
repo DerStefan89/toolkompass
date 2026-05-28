@@ -12,6 +12,8 @@
  * Die Empfehlungsbox (Mock: Buchhaltungs-spezifisch) wird durch
  * echte Tool-Cards ersetzt, da kein strukturiertes Empfehlungsmodell
  * in der DB existiert.
+ * Erlaubte Inline-Styles: backgroundColor + border auf .toolLogoWrap
+ * (conditional auf tool.logoUrl — Laufzeitwert).
  */
 
 import Link from 'next/link'
@@ -20,6 +22,7 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 import IconRenderer from '@/components/ui/IconRenderer'
+import styles from './page.module.css'
 
 export const revalidate = 3600
 
@@ -90,89 +93,42 @@ export default async function KategorieDetailSeite({
   const sidebarTags = category.tags.map((ct) => ct.tag.name)
 
   return (
-    <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
+    <main className={styles.main}>
 
       {/* Breadcrumb */}
-      <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
-        <Link href="/" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Startseite</Link>
+      <p className={styles.breadcrumb}>
+        <Link href="/" className={styles.breadcrumbLink}>Startseite</Link>
         {' › '}
-        <Link href="/kategorien" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>Kategorien</Link>
+        <Link href="/kategorien" className={styles.breadcrumbLink}>Kategorien</Link>
         {' › '}
         {t.name}
       </p>
 
       {/* Hero */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: '32px',
-        gap: '48px',
-      }}>
-        <div style={{ flex: 1 }}>
-          <h1 style={{
-            fontFamily: 'var(--font-playfair)',
-            fontSize: '42px',
-            fontWeight: '700',
-            color: 'var(--color-text-primary)',
-            lineHeight: '1.2',
-            marginBottom: '16px',
-          }}>
-            {t.name}
-          </h1>
-          <p style={{
-            fontSize: '16px',
-            color: 'var(--color-text-secondary)',
-            lineHeight: '1.6',
-          }}>
-            {t.description}
-          </p>
+      <div className={styles.heroRow}>
+        <div className={styles.heroLeft}>
+          <h1 className={styles.heroTitle}>{t.name}</h1>
+          <p className={styles.heroDesc}>{t.description}</p>
         </div>
-        <div style={{
-          width: '280px',
-          height: '180px',
-          backgroundColor: 'var(--color-badge-bg)',
-          borderRadius: 'var(--radius-card)',
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--color-cta)',
-        }}>
+        <div className={styles.heroIconBox}>
           <IconRenderer icon={category.icon} size={64} />
         </div>
       </div>
 
       {/* Hauptbereich */}
-      <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
+      <div className={styles.contentArea}>
 
         {/* Linke Seite */}
-        <div style={{ flex: 1 }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '16px',
-          }}>
-            <h2 style={{
-              fontFamily: 'var(--font-playfair)',
-              fontSize: '20px',
-              fontWeight: '700',
-              color: 'var(--color-text-primary)',
-            }}>
-              Top-Empfehlungen
-            </h2>
-            <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-              {tools.length} Tools
-            </span>
+        <div className={styles.mainCol}>
+          <div className={styles.toolsHeader}>
+            <h2 className={styles.toolsTitle}>Top-Empfehlungen</h2>
+            <span className={styles.toolCount}>{tools.length} Tools</span>
           </div>
 
           {tools.length === 0 ? (
-            <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', padding: '24px 0' }}>
-              Noch keine Tools in dieser Kategorie.
-            </p>
+            <p className={styles.toolsEmpty}>Noch keine Tools in dieser Kategorie.</p>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+            <div className={styles.toolGrid}>
               {tools.map((tool) => {
                 const tl = tool.translations[0]
                 const name = tl?.name ?? tool.slug
@@ -180,89 +136,45 @@ export default async function KategorieDetailSeite({
                 const preis = formatPreis(tool.startingPriceMonthly, { prefix: 'ab' })
 
                 return (
-                  <div key={tool.id} style={{
-                    backgroundColor: 'var(--color-bg-card)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-card)',
-                    padding: '16px',
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                      <div style={{
-                        width: '44px',
-                        height: '44px',
-                        borderRadius: '8px',
-                        backgroundColor: tool.logoUrl ? 'transparent' : 'var(--color-cta)',
-                        border: tool.logoUrl ? '1px solid var(--color-border)' : 'none',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        overflow: 'hidden',
-                      }}>
+                  <div key={tool.id} className={styles.toolCard}>
+                    <div className={styles.toolCardTop}>
+                      {/* backgroundColor + border: conditional auf logoUrl — erlaubte Inline-Styles */}
+                      <div
+                        className={styles.toolLogoWrap}
+                        style={{
+                          backgroundColor: tool.logoUrl ? 'transparent' : 'var(--color-cta)',
+                          border: tool.logoUrl ? '1px solid var(--color-border)' : 'none',
+                        }}
+                      >
                         {tool.logoUrl ? (
-                          <img src={tool.logoUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={tool.logoUrl} alt={name} className={styles.toolLogoImg} />
                         ) : (
-                          <span style={{ color: 'white', fontWeight: '700', fontSize: '18px' }}>
+                          <span className={styles.toolLogoInitial}>
                             {name.charAt(0).toUpperCase()}
                           </span>
                         )}
                       </div>
                     </div>
 
-                    <p style={{ fontWeight: '700', fontSize: '15px', marginBottom: '4px' }}>{name}</p>
-                    <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '10px', lineHeight: '1.5' }}>
-                      {tl?.shortDescription}
-                    </p>
+                    <p className={styles.toolName}>{name}</p>
+                    <p className={styles.toolDesc}>{tl?.shortDescription}</p>
 
-                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                    <div className={styles.toolBadges}>
                       {tool.hasFreePlan && (
-                        <span style={{
-                          backgroundColor: 'var(--color-badge-bg)',
-                          color: 'var(--color-text-secondary)',
-                          fontSize: '11px',
-                          padding: '2px 8px',
-                          borderRadius: '20px',
-                        }}>
-                          Free Plan
-                        </span>
+                        <span className={styles.toolBadge}>Free Plan</span>
                       )}
                       {tool.tags.slice(0, 2).map(({ tag }) => (
-                        <span key={tag.id} style={{
-                          backgroundColor: 'var(--color-badge-bg)',
-                          color: 'var(--color-text-secondary)',
-                          fontSize: '11px',
-                          padding: '2px 8px',
-                          borderRadius: '20px',
-                        }}>
-                          {tag.name}
-                        </span>
+                        <span key={tag.id} className={styles.toolBadge}>{tag.name}</span>
                       ))}
                     </div>
 
-                    <p style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text-secondary)', marginBottom: '12px' }}>
-                      {preis} / Monat
-                    </p>
+                    <p className={styles.toolPrice}>{preis} / Monat</p>
 
-                    <a href={`/tools/${tool.slug}`} style={{
-                      display: 'block',
-                      textAlign: 'center',
-                      backgroundColor: 'var(--color-cta)',
-                      color: 'white',
-                      padding: '8px',
-                      borderRadius: 'var(--radius-btn)',
-                      textDecoration: 'none',
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      marginBottom: '8px',
-                    }}>
+                    <a href={`/tools/${tool.slug}`} className={styles.toolDetailBtn}>
                       Details ansehen
                     </a>
-                    <a href={primaryUrl} target="_blank" rel="noopener noreferrer" style={{
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'var(--color-text-secondary)',
-                      fontSize: '12px',
-                      textDecoration: 'none',
-                    }}>
+                    <a href={primaryUrl} target="_blank" rel="noopener noreferrer" className={styles.toolVendorLink}>
                       Zum Anbieter →
                     </a>
                   </div>
@@ -273,57 +185,26 @@ export default async function KategorieDetailSeite({
         </div>
 
         {/* Rechte Sidebar */}
-        <div style={{ width: '220px', flexShrink: 0 }}>
+        <div className={styles.sidebar}>
 
           {sidebarTags.length > 0 && (
-            <div style={{
-              backgroundColor: 'var(--color-bg-card)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-card)',
-              padding: '20px',
-              marginBottom: '16px',
-            }}>
-              <h3 style={{ fontWeight: '700', fontSize: '15px', marginBottom: '16px' }}>
-                Worauf achten?
-              </h3>
+            <div className={styles.sidebarCard}>
+              <h3 className={styles.sidebarTitle}>Worauf achten?</h3>
               {sidebarTags.map((tag) => (
-                <div key={tag} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  marginBottom: '10px',
-                  fontSize: '13px',
-                }}>
-                  <span style={{ color: 'var(--color-cta)' }}>✓</span>
+                <div key={tag} className={styles.sidebarTagItem}>
+                  <span className={styles.sidebarTagCheck}>✓</span>
                   {tag}
                 </div>
               ))}
             </div>
           )}
 
-          <div style={{
-            backgroundColor: 'var(--color-bg-card)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-card)',
-            padding: '20px',
-          }}>
-            <h3 style={{ fontWeight: '700', fontSize: '15px', marginBottom: '8px' }}>
-              Nicht sicher?
-            </h3>
-            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '16px', lineHeight: '1.5' }}>
+          <div className={styles.sidebarCard}>
+            <h3 className={styles.sidebarTitle}>Nicht sicher?</h3>
+            <p className={styles.sidebarFinderDesc}>
               Finde in 2 Minuten das passende Tool.
             </p>
-            <a href="/tool-finder" style={{
-              display: 'block',
-              textAlign: 'center',
-              backgroundColor: 'var(--color-cta)',
-              color: 'white',
-              padding: '10px',
-              borderRadius: 'var(--radius-btn)',
-              textDecoration: 'none',
-              fontSize: '13px',
-              fontWeight: '600',
-            }}>
+            <a href="/tool-finder" className={styles.sidebarFinderBtn}>
               Tool-Finder starten
             </a>
           </div>

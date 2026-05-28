@@ -10,6 +10,7 @@
 
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
+import styles from './page.module.css'
 
 export const revalidate = 3600
 
@@ -53,25 +54,12 @@ export default async function VergleichenSeite() {
   ])
 
   return (
-    <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
+    <main className={styles.main}>
 
       {/* Seitentitel */}
-      <h1 style={{
-        fontFamily: 'var(--font-playfair)',
-        fontSize: '40px',
-        fontWeight: '700',
-        color: 'var(--color-text-primary)',
-        marginBottom: '12px',
-      }}>
-        Tools vergleichen
-      </h1>
+      <h1 className={styles.pageTitle}>Tools vergleichen</h1>
 
-      <p style={{
-        fontSize: '16px',
-        color: 'var(--color-text-secondary)',
-        marginBottom: '32px',
-        lineHeight: '1.6',
-      }}>
+      <p className={styles.pageDesc}>
         Vergleiche beliebte Tools nach Preis, Funktionen, Einsatzbereich und Alternativen.
       </p>
 
@@ -79,40 +67,16 @@ export default async function VergleichenSeite() {
       <input
         type="text"
         placeholder="Tool A vs Tool B suchen ..."
-        style={{
-          width: '100%',
-          maxWidth: '500px',
-          padding: '12px 16px',
-          borderRadius: 'var(--radius-btn)',
-          border: '1px solid var(--color-border)',
-          fontSize: '14px',
-          backgroundColor: 'white',
-          marginBottom: '40px',
-        }}
+        className={styles.searchInput}
       />
 
       {/* Beliebte Vergleiche */}
-      <h2 style={{
-        fontFamily: 'var(--font-playfair)',
-        fontSize: '22px',
-        fontWeight: '600',
-        color: 'var(--color-text-primary)',
-        marginBottom: '20px',
-      }}>
-        Beliebte Vergleiche
-      </h2>
+      <h2 className={styles.sectionTitle}>Beliebte Vergleiche</h2>
 
       {comparisons.length === 0 ? (
-        <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '48px' }}>
-          Noch keine Vergleiche vorhanden.
-        </p>
+        <p className={styles.empty}>Noch keine Vergleiche vorhanden.</p>
       ) : (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '16px',
-          marginBottom: '48px',
-        }}>
+        <div className={styles.compGrid}>
           {comparisons.map((comp) => {
             const tA = comp.toolA.translations[0]
             const tB = comp.toolB.translations[0]
@@ -127,47 +91,21 @@ export default async function VergleichenSeite() {
               <a
                 key={comp.id}
                 href={`/vergleichen/${comp.slug}`}
-                style={{
-                  backgroundColor: 'var(--color-bg-card)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-card)',
-                  padding: '20px',
-                  textDecoration: 'none',
-                  color: 'var(--color-text-primary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '16px',
-                }}
+                className={styles.compCard}
               >
                 {/* Icon — erste Buchstaben beider Tools */}
-                <div style={{
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '8px',
-                  backgroundColor: 'var(--color-badge-bg)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '14px',
-                  fontWeight: '700',
-                  flexShrink: 0,
-                  color: 'var(--color-text-secondary)',
-                }}>
+                <div className={styles.compIcon}>
                   {tA.name.charAt(0)}{tB.name.charAt(0)}
                 </div>
 
                 {/* Text */}
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontWeight: '600', fontSize: '15px', marginBottom: '4px' }}>
-                    {tA.name} vs {tB.name}
-                  </p>
-                  <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
-                    {beschreibung}
-                  </p>
+                <div className={styles.compText}>
+                  <p className={styles.compTitle}>{tA.name} vs {tB.name}</p>
+                  <p className={styles.compDesc}>{beschreibung}</p>
                 </div>
 
                 {/* Pfeil */}
-                <span style={{ color: 'var(--color-text-secondary)', whiteSpace: 'nowrap' }}>Ansehen →</span>
+                <span className={styles.compArrow}>Ansehen →</span>
               </a>
             )
           })}
@@ -182,66 +120,38 @@ export default async function VergleichenSeite() {
 
         return (
           <>
-            <h2 style={{
-              fontFamily: 'var(--font-playfair)',
-              fontSize: '22px',
-              fontWeight: '600',
-              color: 'var(--color-text-primary)',
-              marginBottom: '20px',
-            }}>
-              Vergleichsdetail: Vorschau
-            </h2>
+            <h2 className={styles.sectionTitle}>Vergleichsdetail: Vorschau</h2>
 
-            <div style={{
-              backgroundColor: 'var(--color-bg-card)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-card)',
-              padding: '24px',
-            }}>
-              <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '20px' }}>
-                {tA.name} vs {tB.name}
-              </h3>
+            <div className={styles.previewCard}>
+              <p className={styles.previewTitle}>{tA.name} vs {tB.name}</p>
 
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid var(--color-border)' }}>
-                    <th style={{ textAlign: 'left', padding: '10px 0', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Kriterium</th>
-                    <th style={{ textAlign: 'left', padding: '10px 16px', fontWeight: '600' }}>{tA.name}</th>
-                    <th style={{ textAlign: 'left', padding: '10px 0', fontWeight: '600' }}>{tB.name}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {featured.rows.map((zeile) => (
-                    <tr key={zeile.id} style={{ borderBottom: '1px solid var(--color-border)' }}>
-                      <td style={{ padding: '12px 0', color: 'var(--color-text-secondary)' }}>{zeile.criterion}</td>
-                      <td style={{ padding: '12px 16px' }}>{zeile.toolAValue}</td>
-                      <td style={{ padding: '12px 0' }}>{zeile.toolBValue}</td>
+              <div className={styles.tableWrap}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr className={styles.tableHeadRow}>
+                      <th className={styles.thLabel}>Kriterium</th>
+                      <th className={styles.thTool}>{tA.name}</th>
+                      <th className={styles.thToolLast}>{tB.name}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {featured.rows.map((zeile) => (
+                      <tr key={zeile.id} className={styles.tableRow}>
+                        <td className={styles.tdLabel}>{zeile.criterion}</td>
+                        <td className={styles.tdA}>{zeile.toolAValue}</td>
+                        <td className={styles.tdB}>{zeile.toolBValue}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-              <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-                <a href={`/tools/${featured.toolA.slug}`} style={{
-                  backgroundColor: 'var(--color-cta)',
-                  color: 'white',
-                  padding: '10px 20px',
-                  borderRadius: 'var(--radius-btn)',
-                  textDecoration: 'none',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                }}>
+              {/* CTA-Buttons: untereinander Mobile, nebeneinander Desktop */}
+              <div className={styles.previewCtaRow}>
+                <a href={`/tools/${featured.toolA.slug}`} className={styles.btnPrimary}>
                   {tA.name} ansehen ↗
                 </a>
-                <a href={`/tools/${featured.toolB.slug}`} style={{
-                  backgroundColor: 'transparent',
-                  color: 'var(--color-text-primary)',
-                  padding: '10px 20px',
-                  borderRadius: 'var(--radius-btn)',
-                  textDecoration: 'none',
-                  fontSize: '14px',
-                  border: '1px solid var(--color-border)',
-                }}>
+                <a href={`/tools/${featured.toolB.slug}`} className={styles.btnSecondary}>
                   {tB.name} ansehen ↗
                 </a>
               </div>
