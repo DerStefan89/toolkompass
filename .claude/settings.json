@@ -21,7 +21,10 @@
       "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)",
       "PowerShell(Stop-Process -Force)",
       "Bash(git tag *)",
-      "Bash(npx prisma *)"
+      "Bash(npx prisma *)",
+      "Bash(echo \"LINT_EXIT:$?\")",
+      "Bash(echo \"TSC:$?\")",
+      "Bash(echo \"LINT:$?\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\stefa\\OneDrive\\Desktop\\Javascript.course\\toolsucher\\app\\admin\\kategorien"

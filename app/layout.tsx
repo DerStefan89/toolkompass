@@ -4,7 +4,7 @@
 
 // Metadata = ermöglicht uns Titel und Beschreibung
 // für Google und Browser-Tab zu setzen
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 // Die zwei Schriften die wir von Google laden
 // Playfair Display = die Serif-Schrift für Headlines
@@ -44,6 +44,11 @@ const inter = Inter({
 // ============================================
 // SEO — Was Google und der Browser-Tab sehen
 // ============================================
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://toolsucher.de'),
