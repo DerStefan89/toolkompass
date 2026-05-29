@@ -59,20 +59,16 @@
 
 /* ─── Headline ────────────────────────────────────────────── */
 
-/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
 .heroHeadline {
-  font-family: var(--font-playfair) !important;
-  font-size: 32px !important;
+  font-family: var(--font-playfair);
+  font-size: clamp(24px, 7vw, 52px);
   font-weight: 700;
   color: var(--color-text-primary);
   line-height: 1.2;
   margin-bottom: 20px;
-}
-
-@media (min-width: 768px) {
-  .heroHeadline {
-    font-size: 52px !important;
-  }
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .heroCopy {
