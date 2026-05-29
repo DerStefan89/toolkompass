@@ -74,6 +74,7 @@ html, body {
 
 /* Grundregeln für den ganzen Body */
 body {
+  margin: 0;                               /* ersetzt Tailwind Preflight body { margin: 0 } */
   background-color: var(--color-bg);       /* Creme-Hintergrund */
   color: var(--color-text-primary);        /* Standard-Textfarbe */
   font-family: var(--font-inter), sans-serif; /* Standard-Schrift */
