@@ -1,5 +1,5 @@
-/* Tailwind laden — gibt uns alle Hilfsklassen wie "flex", "text-center" etc. */
-@import "tailwindcss";
+/* Tailwind Utilities laden — kein Preflight-Reset, damit CSS-Module-Styles nicht überschrieben werden */
+@import "tailwindcss/utilities";
 
 /* ============================================
    DESIGN TOKENS — die Farbpalette von ToolSucher

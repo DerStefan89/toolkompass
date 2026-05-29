@@ -67,7 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // className= gibt beiden Schriften Zugriff auf die ganze Seite
     <html lang="de" className={`${playfair.variable} ${inter.variable} h-full antialiased`}>
 
-      <body className="min-h-full flex flex-col">
+      <body style={{ minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
 
         {/* Header erscheint auf JEDER Seite oben */}
         <PublicHeader />
