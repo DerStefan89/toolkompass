@@ -48,6 +48,8 @@
   flex-direction: column;
   gap: 24px;
   margin-bottom: 40px;
+  width: 100%;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -61,6 +63,10 @@
 
 .heroLeft {
   flex: 1;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 /* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
