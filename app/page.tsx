@@ -15,6 +15,7 @@
  */
 
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
@@ -170,8 +171,7 @@ export default async function Home() {
                       }}
                     >
                       {tool.logoUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={tool.logoUrl} alt={name} className={styles.toolLogoImg} />
+                        <Image src={tool.logoUrl} alt={name} width={36} height={36} className={styles.toolLogoImg} />
                       ) : (
                         <span className={styles.toolLogoInitial}>
                           {name.charAt(0).toUpperCase()}

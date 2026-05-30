@@ -12,6 +12,7 @@
  */
 
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
@@ -122,8 +123,7 @@ export default async function ToolDetailSeite({
               }}
             >
               {tool.logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={tool.logoUrl} alt={t.name} className={styles.toolLogoImg} />
+                <Image src={tool.logoUrl} alt={t.name} width={64} height={64} className={styles.toolLogoImg} />
               ) : (
                 <span className={styles.toolLogoInitial}>
                   {t.name.charAt(0).toUpperCase()}
@@ -168,10 +168,11 @@ export default async function ToolDetailSeite({
         {/* Spalte 2: Screenshot */}
         <div className={styles.screenshotBox}>
           {tool.screenshotUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={tool.screenshotUrl}
               alt={`${t.name} Screenshot`}
+              width={1200}
+              height={750}
               className={styles.screenshotImg}
             />
           ) : (

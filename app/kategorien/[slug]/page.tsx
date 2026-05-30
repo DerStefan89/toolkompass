@@ -17,6 +17,7 @@
  */
 
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
@@ -147,8 +148,7 @@ export default async function KategorieDetailSeite({
                         }}
                       >
                         {tool.logoUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={tool.logoUrl} alt={name} className={styles.toolLogoImg} />
+                          <Image src={tool.logoUrl} alt={name} width={44} height={44} className={styles.toolLogoImg} />
                         ) : (
                           <span className={styles.toolLogoInitial}>
                             {name.charAt(0).toUpperCase()}
