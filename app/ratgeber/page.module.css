@@ -16,6 +16,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -59,6 +60,9 @@
   color: var(--color-text-secondary);
   margin-bottom: 32px;
   line-height: 1.6;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 /* ─── Suchfeld ────────────────────────────────────────────── */
@@ -203,6 +207,9 @@
   font-weight: 700;
   margin-bottom: 12px;
   color: var(--color-text-primary);
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -216,6 +223,8 @@
   color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: 20px;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .featuredMeta {

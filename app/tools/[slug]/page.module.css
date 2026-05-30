@@ -18,6 +18,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -99,12 +100,16 @@
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 4px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .toolCategory {
   font-size: 14px;
   color: var(--color-text-secondary);
   margin-bottom: 8px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .verifiedBadge {
@@ -125,6 +130,8 @@
   color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: 16px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .badgeRow {
@@ -208,6 +215,8 @@
 .screenshotPlaceholder {
   font-size: 14px;
   color: var(--color-text-secondary);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* ─── Spalte 3: Preis-/CTA-Box ────────────────────────────── */
@@ -239,6 +248,8 @@
 .priceBoxTitle {
   font-weight: 700;
   font-size: 15px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .freePlanBadge {
@@ -259,6 +270,8 @@
   font-size: 13px;
   color: var(--color-text-secondary);
   margin-bottom: 16px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .priceFeatureItem {
@@ -299,6 +312,8 @@
   color: var(--color-text-secondary);
   text-align: center;
   margin-top: 8px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -357,6 +372,8 @@
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 12px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .sectionTitleSpaced {
@@ -364,6 +381,8 @@
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 16px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .longDesc {
@@ -371,6 +390,8 @@
   color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: 20px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Stärken/Schwächen — einspaltig auf Mobile, 2-spaltig auf Desktop */
@@ -392,6 +413,8 @@
   font-weight: 600;
   font-size: 13px;
   margin-bottom: 8px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .swLabelWeak {
@@ -399,6 +422,8 @@
   font-size: 13px;
   margin-bottom: 8px;
   color: var(--color-error);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .swItem {
@@ -437,6 +462,8 @@
 .bestForLabel {
   font-weight: 500;
   color: var(--color-text-primary);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .notIdealItem {
@@ -501,6 +528,8 @@
   font-size: 13px;
   color: var(--color-text-primary);
   line-height: 1.4;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -520,12 +549,16 @@
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 8px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .priceSectionDesc {
   font-size: 14px;
   color: var(--color-text-secondary);
   margin-bottom: 16px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .priceSectionCta {
