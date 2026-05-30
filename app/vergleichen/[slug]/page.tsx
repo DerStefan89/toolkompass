@@ -42,7 +42,12 @@ export async function generateMetadata({
   const nameB = comparison.toolB.translations[0]?.name ?? comparison.toolB.slug
   const title = `${nameA} vs ${nameB} — ToolSucher`
   const description = `Vergleich: ${nameA} vs ${nameB}`
-  return { title, description, openGraph: { title, description } }
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+    twitter: { card: 'summary_large_image', title, description },
+  }
 }
 
 export async function generateStaticParams() {

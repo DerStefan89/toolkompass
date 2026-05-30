@@ -39,7 +39,12 @@ export async function generateMetadata({
   if (!t) return {}
   const title = `${t.name} — ToolSucher`
   const description = t.shortDescription
-  return { title, description, openGraph: { title, description } }
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+    twitter: { card: 'summary_large_image', title, description },
+  }
 }
 
 export async function generateStaticParams() {
