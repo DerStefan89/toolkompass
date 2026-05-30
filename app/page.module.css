@@ -280,6 +280,8 @@
   padding: 0 16px 40px;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -415,6 +417,8 @@
   padding: 0 16px 60px;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
