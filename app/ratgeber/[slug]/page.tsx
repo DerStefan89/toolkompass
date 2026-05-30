@@ -16,7 +16,10 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { articleJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
 import styles from './page.module.css'
+
+const SITE_URL = 'https://toolsucher.de'
 
 export const revalidate = 3600
 
@@ -86,8 +89,25 @@ export default async function BlogArtikelSeite({
     kuerzel: (at.tool.translations[0]?.name ?? at.tool.slug).charAt(0).toUpperCase(),
   }))
 
+  const jsonLd = articleJsonLd({
+    title: article.title,
+    subtitle: article.subtitle,
+    publishedAt: article.publishedAt,
+    updatedAt: article.updatedAt,
+    slug: article.slug,
+  }, SITE_URL)
+
+  const crumbLd = breadcrumbJsonLd([
+    { name: 'Startseite', url: SITE_URL },
+    { name: 'Ratgeber', url: `${SITE_URL}/ratgeber` },
+    { name: article.title, url: `${SITE_URL}/ratgeber/${article.slug}` },
+  ])
+
   return (
-    <main className={styles.main}>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: crumbLd }} />
+      <main className={styles.main}>
 
       {/* Breadcrumb */}
       <p className={styles.breadcrumb}>
@@ -180,5 +200,6 @@ export default async function BlogArtikelSeite({
       </div>
 
     </main>
+    </>
   )
 }

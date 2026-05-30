@@ -23,7 +23,10 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 import IconRenderer from '@/components/ui/IconRenderer'
+import { breadcrumbJsonLd } from '@/lib/seo/json-ld'
 import styles from './page.module.css'
+
+const SITE_URL = 'https://toolsucher.de'
 
 export const revalidate = 3600
 
@@ -93,8 +96,16 @@ export default async function KategorieDetailSeite({
   const tools = category.tools.map((tc) => tc.tool)
   const sidebarTags = category.tags.map((ct) => ct.tag.name)
 
+  const crumbLd = breadcrumbJsonLd([
+    { name: 'Startseite', url: SITE_URL },
+    { name: 'Kategorien', url: `${SITE_URL}/kategorien` },
+    { name: t.name, url: `${SITE_URL}/kategorien/${slug}` },
+  ])
+
   return (
-    <main className={styles.main}>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: crumbLd }} />
+      <main className={styles.main}>
 
       {/* Breadcrumb */}
       <p className={styles.breadcrumb}>
@@ -214,5 +225,6 @@ export default async function KategorieDetailSeite({
       </div>
 
     </main>
+    </>
   )
 }

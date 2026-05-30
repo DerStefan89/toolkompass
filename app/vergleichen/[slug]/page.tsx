@@ -17,7 +17,10 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
+import { comparisonJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
 import styles from './page.module.css'
+
+const SITE_URL = 'https://toolsucher.de'
 
 export const revalidate = 3600
 
@@ -117,8 +120,25 @@ export default async function VergleichDetailSeite({
 
   const [toolA, toolB] = tools
 
+  const jsonLd = comparisonJsonLd({
+    slug: comparison.slug,
+    verdict: comparison.verdict,
+    updatedAt: comparison.updatedAt,
+    toolAName: tA.name,
+    toolBName: tB.name,
+  }, SITE_URL)
+
+  const crumbLd = breadcrumbJsonLd([
+    { name: 'Startseite', url: SITE_URL },
+    { name: 'Vergleichen', url: `${SITE_URL}/vergleichen` },
+    { name: `${tA.name} vs ${tB.name}`, url: `${SITE_URL}/vergleichen/${comparison.slug}` },
+  ])
+
   return (
-    <main className={styles.main}>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: crumbLd }} />
+      <main className={styles.main}>
 
       {/* Breadcrumb */}
       <p className={styles.breadcrumb}>
@@ -282,5 +302,6 @@ export default async function VergleichDetailSeite({
       </div>
 
     </main>
+    </>
   )
 }

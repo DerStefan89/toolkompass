@@ -5,6 +5,10 @@
 // Metadata = ermöglicht uns Titel und Beschreibung
 // für Google und Browser-Tab zu setzen
 import type { Metadata, Viewport } from "next";
+import { organizationJsonLd } from '@/lib/seo/json-ld'
+
+const SITE_URL = 'https://toolsucher.de'
+const orgLd = organizationJsonLd(SITE_URL)
 
 // Die zwei Schriften die wir von Google laden
 // Playfair Display = die Serif-Schrift für Headlines
@@ -73,6 +77,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="de" className={`${playfair.variable} ${inter.variable} h-full antialiased`}>
 
       <body style={{ minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
+
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: orgLd }} />
 
         {/* Header erscheint auf JEDER Seite oben */}
         <PublicHeader />

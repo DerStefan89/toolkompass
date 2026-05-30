@@ -17,7 +17,10 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
+import { toolJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
 import styles from './page.module.css'
+
+const SITE_URL = 'https://toolsucher.de'
 
 export const revalidate = 3600
 
@@ -94,8 +97,26 @@ export default async function ToolDetailSeite({
 
   const tabs = ['Überblick', 'Funktionen', 'Preise', 'Vergleich', 'Alternativen', 'FAQ']
 
+  const jsonLd = toolJsonLd({
+    name: t.name,
+    description: t.shortDescription,
+    url: `${SITE_URL}/tools/${tool.slug}`,
+    logoUrl: tool.logoUrl,
+    startingPriceMonthly: tool.startingPriceMonthly,
+    hasFreePlan: tool.hasFreePlan,
+  }, SITE_URL)
+
+  const crumbLd = breadcrumbJsonLd([
+    { name: 'Startseite', url: SITE_URL },
+    { name: categoryNames || 'Tools', url: `${SITE_URL}/kategorien` },
+    { name: t.name, url: `${SITE_URL}/tools/${tool.slug}` },
+  ])
+
   return (
-    <main className={styles.main}>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: crumbLd }} />
+      <main className={styles.main}>
 
       {/* Breadcrumb */}
       <p className={styles.breadcrumb}>
@@ -304,5 +325,6 @@ export default async function ToolDetailSeite({
       </div>
 
     </main>
+    </>
   )
 }
