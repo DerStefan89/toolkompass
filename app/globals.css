@@ -72,6 +72,21 @@ html, body {
   box-sizing: border-box;
 }
 
+/* Verhindert horizontalen Overflow auf allen Elementen */
+* {
+  max-width: 100%;
+}
+
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Flex und Grid Kinder schrumpfen korrekt */
+* {
+  min-width: 0;
+}
+
 /* Grundregeln für den ganzen Body */
 body {
   margin: 0;                               /* ersetzt Tailwind Preflight body { margin: 0 } */
