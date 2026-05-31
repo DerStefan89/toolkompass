@@ -17,6 +17,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: 'Tool-Vergleiche — ToolSucher',
   description: 'Vergleiche die besten Business-Tools direkt nebeneinander und finde die passende Lösung für dein Team.',
+  alternates: { canonical: '/vergleichen' },
   openGraph: {
     title: 'Tool-Vergleiche — ToolSucher',
     description: 'Vergleiche die besten Business-Tools direkt nebeneinander und finde die passende Lösung für dein Team.',

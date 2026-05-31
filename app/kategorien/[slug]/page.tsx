@@ -45,7 +45,12 @@ export async function generateMetadata({
   if (!t) return {}
   const title = `${t.name} Tools — ToolSucher`
   const description = t.description ?? ''
-  return { title, description, openGraph: { title, description } }
+  return {
+    title,
+    description,
+    alternates: { canonical: `/kategorien/${slug}` },
+    openGraph: { title, description },
+  }
 }
 
 export async function generateStaticParams() {

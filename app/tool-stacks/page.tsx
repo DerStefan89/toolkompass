@@ -18,6 +18,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: 'Tool-Stacks — ToolSucher',
   description: 'Entdecke bewährte Tool-Kombinationen für Freelancer, Agenturen und kleine Teams.',
+  alternates: { canonical: '/tool-stacks' },
   openGraph: {
     title: 'Tool-Stacks — ToolSucher',
     description: 'Entdecke bewährte Tool-Kombinationen für Freelancer, Agenturen und kleine Teams.',

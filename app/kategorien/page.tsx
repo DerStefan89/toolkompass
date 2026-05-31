@@ -19,6 +19,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: 'Alle Kategorien — ToolSucher',
   description: 'Entdecke digitale Business-Tools nach Kategorie: Buchhaltung, CRM, Projektmanagement und mehr.',
+  alternates: { canonical: '/kategorien' },
   openGraph: {
     title: 'Alle Kategorien — ToolSucher',
     description: 'Entdecke digitale Business-Tools nach Kategorie: Buchhaltung, CRM, Projektmanagement und mehr.',

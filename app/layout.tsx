@@ -58,6 +58,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://toolsucher.de'),
   title: "ToolSucher — Digitale Business-Tools entdecken & vergleichen",
   description: "ToolSucher hilft Gründern...",
+  alternates: { canonical: '/' },
 };
 
 

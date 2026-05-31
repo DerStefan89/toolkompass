@@ -23,6 +23,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: 'Ratgeber & Guides — ToolSucher',
   description: 'Praxisnahe Guides, Vergleiche und Anleitungen rund um digitale Tools für Gründer, Selbstständige und kleine Teams.',
+  alternates: { canonical: '/ratgeber' },
   openGraph: {
     title: 'Ratgeber & Guides — ToolSucher',
     description: 'Praxisnahe Guides, Vergleiche und Anleitungen rund um digitale Tools für Gründer, Selbstständige und kleine Teams.',
