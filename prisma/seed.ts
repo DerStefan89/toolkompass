@@ -87,7 +87,7 @@ async function main() {
   // ─── TOOLS ───────────────────────────────────────────────────
   type ToolSeed = {
     slug: string
-    startingPriceMonthly?: number
+    startingPriceCents?: number  // in Cent (Int), null = kein bezahlter Plan
     hasFreePlan: boolean
     targetAudiences: string[]
     translation: {
@@ -105,7 +105,7 @@ async function main() {
   const toolsData: ToolSeed[] = [
     {
       slug: 'notion',
-      startingPriceMonthly: 4.0,
+      startingPriceCents: 400,
       hasFreePlan: true,
       targetAudiences: ['solo', 'team', 'agency', 'consultant'],
       translation: {
@@ -122,7 +122,7 @@ async function main() {
     },
     {
       slug: 'sevdesk',
-      startingPriceMonthly: 9.9,
+      startingPriceCents: 990,
       hasFreePlan: false,
       targetAudiences: ['solo', 'freelancer'],
       translation: {
@@ -139,7 +139,7 @@ async function main() {
     },
     {
       slug: 'lexware-office',
-      startingPriceMonthly: 8.9,
+      startingPriceCents: 890,
       hasFreePlan: false,
       targetAudiences: ['solo', 'team', 'consultant'],
       translation: {
@@ -156,7 +156,7 @@ async function main() {
     },
     {
       slug: 'lexoffice',
-      startingPriceMonthly: 7.9,
+      startingPriceCents: 790,
       hasFreePlan: false,
       targetAudiences: ['solo', 'freelancer'],
       translation: {
@@ -173,7 +173,7 @@ async function main() {
     },
     {
       slug: 'fastbill',
-      startingPriceMonthly: 10.0,
+      startingPriceCents: 1000,
       hasFreePlan: false,
       targetAudiences: ['solo', 'freelancer'],
       translation: {
@@ -188,7 +188,7 @@ async function main() {
     },
     {
       slug: 'wiso-meinburo',
-      startingPriceMonthly: 14.9,
+      startingPriceCents: 1490,
       hasFreePlan: false,
       targetAudiences: ['solo', 'team'],
       translation: {
@@ -203,7 +203,7 @@ async function main() {
     },
     {
       slug: 'accountable',
-      startingPriceMonthly: 8.0,
+      startingPriceCents: 800,
       hasFreePlan: false,
       targetAudiences: ['solo', 'freelancer'],
       translation: {
@@ -218,7 +218,7 @@ async function main() {
     },
     {
       slug: 'papierkram',
-      startingPriceMonthly: 4.9,
+      startingPriceCents: 490,
       hasFreePlan: false,
       targetAudiences: ['solo'],
       translation: {
@@ -233,7 +233,6 @@ async function main() {
     },
     {
       slug: 'loom',
-      startingPriceMonthly: 0,
       hasFreePlan: true,
       targetAudiences: ['solo', 'team', 'agency'],
       translation: {
@@ -248,7 +247,7 @@ async function main() {
     },
     {
       slug: 'figma',
-      startingPriceMonthly: 12.0,
+      startingPriceCents: 1200,
       hasFreePlan: false,
       targetAudiences: ['solo', 'team', 'agency', 'developer'],
       translation: {
@@ -263,7 +262,7 @@ async function main() {
     },
     {
       slug: 'clickup',
-      startingPriceMonthly: 5.0,
+      startingPriceCents: 500,
       hasFreePlan: true,
       targetAudiences: ['solo', 'team', 'agency'],
       translation: {
@@ -278,7 +277,6 @@ async function main() {
     },
     {
       slug: 'canva',
-      startingPriceMonthly: 0,
       hasFreePlan: true,
       targetAudiences: ['solo', 'team', 'creator'],
       translation: {
@@ -293,7 +291,7 @@ async function main() {
     },
     {
       slug: 'claude',
-      startingPriceMonthly: 18.0,
+      startingPriceCents: 1800,
       hasFreePlan: false,
       targetAudiences: ['solo', 'team', 'developer', 'consultant'],
       translation: {
@@ -308,7 +306,6 @@ async function main() {
     },
     {
       slug: 'vivid',
-      startingPriceMonthly: 0,
       hasFreePlan: true,
       targetAudiences: ['solo', 'freelancer'],
       translation: {
@@ -323,7 +320,6 @@ async function main() {
     },
     {
       slug: 'capcut',
-      startingPriceMonthly: 0,
       hasFreePlan: true,
       targetAudiences: ['creator', 'solo'],
       translation: {
@@ -338,7 +334,6 @@ async function main() {
     },
     {
       slug: 'buffer',
-      startingPriceMonthly: 0,
       hasFreePlan: true,
       targetAudiences: ['solo', 'creator', 'agency'],
       translation: {
@@ -353,7 +348,6 @@ async function main() {
     },
     {
       slug: 'calendly',
-      startingPriceMonthly: 0,
       hasFreePlan: true,
       targetAudiences: ['solo', 'consultant', 'freelancer'],
       translation: {
@@ -368,7 +362,6 @@ async function main() {
     },
     {
       slug: 'tidycal',
-      startingPriceMonthly: 0,
       hasFreePlan: false,
       targetAudiences: ['solo'],
       translation: {
@@ -383,7 +376,6 @@ async function main() {
     },
     {
       slug: 'chatgpt',
-      startingPriceMonthly: 0,
       hasFreePlan: true,
       targetAudiences: ['solo', 'team', 'developer', 'creator'],
       translation: {
@@ -398,7 +390,6 @@ async function main() {
     },
     {
       slug: 'hubspot-crm',
-      startingPriceMonthly: 0,
       hasFreePlan: true,
       targetAudiences: ['solo', 'team', 'agency'],
       translation: {
@@ -413,7 +404,6 @@ async function main() {
     },
     {
       slug: 'zapier',
-      startingPriceMonthly: 0,
       hasFreePlan: true,
       targetAudiences: ['solo', 'team', 'developer'],
       translation: {
@@ -437,7 +427,7 @@ async function main() {
     const tool = await prisma.tool.upsert({
       where: { slug: t.slug },
       update: {
-        startingPriceMonthly: t.startingPriceMonthly,
+        startingPriceCents: t.startingPriceCents,
         hasFreePlan: t.hasFreePlan,
         targetAudiences: t.targetAudiences,
         published: true,
@@ -446,7 +436,7 @@ async function main() {
       },
       create: {
         slug: t.slug,
-        startingPriceMonthly: t.startingPriceMonthly,
+        startingPriceCents: t.startingPriceCents,
         hasFreePlan: t.hasFreePlan,
         targetAudiences: t.targetAudiences,
         published: true,

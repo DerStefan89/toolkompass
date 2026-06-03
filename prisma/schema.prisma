@@ -119,7 +119,7 @@ model Tool {
   slug                 String    @unique
   logoUrl              String?
   screenshotUrl        String?
-  startingPriceMonthly Float?
+  startingPriceCents   Int?
   hasFreePlan          Boolean   @default(false)
   isAffiliate          Boolean   @default(false)
   targetAudiences      String[]

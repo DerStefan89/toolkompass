@@ -101,7 +101,7 @@ export default async function AdminToolsPage({ searchParams }: Props) {
 
               {/* Preis */}
               <span style={{ color: 'var(--color-text-primary)' }}>
-                {formatPreis(tool.startingPriceMonthly)}
+                {formatPreis(tool.startingPriceCents)}
               </span>
 
               {/* Free Plan */}

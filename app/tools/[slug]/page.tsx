@@ -99,7 +99,7 @@ export default async function ToolDetailSeite({
     .filter(Boolean)
     .join(' · ')
 
-  const preisFormatted = formatPreis(tool.startingPriceMonthly)
+  const preisFormatted = formatPreis(tool.startingPriceCents)
 
   const tabs = ['Überblick', 'Funktionen', 'Preise', 'Vergleich', 'Alternativen', 'FAQ']
 
@@ -108,7 +108,7 @@ export default async function ToolDetailSeite({
     description: t.shortDescription,
     url: `${SITE_URL}/tools/${tool.slug}`,
     logoUrl: tool.logoUrl,
-    startingPriceMonthly: tool.startingPriceMonthly,
+    startingPriceCents: tool.startingPriceCents,
     hasFreePlan: tool.hasFreePlan,
   }, SITE_URL)
 

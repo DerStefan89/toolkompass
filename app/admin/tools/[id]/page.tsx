@@ -64,7 +64,7 @@ export default async function EditToolPage({ params }: Props) {
     vendorId: tool.vendorId,
     shortDescription: translation?.shortDescription ?? '',
     longDescription: translation?.longDescription ?? null,
-    startingPriceMonthly: tool.startingPriceMonthly ?? null,
+    startingPriceCents: tool.startingPriceCents ?? null,
     hasFreePlan: tool.hasFreePlan,
     isAffiliate: tool.isAffiliate,
     published: tool.published,

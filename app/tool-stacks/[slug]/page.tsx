@@ -9,7 +9,7 @@
  * Wichtig:
  * ToolStack hat kein Farb-Feld — Logos erhalten Farben aus LOGO_FARBEN per Index.
  * ToolStackItem.note wird als "Wofür"-Zeile angezeigt (optional).
- * Gesamtkosten = Summe aller startingPriceMonthly der Stack-Tools.
+ * Gesamtkosten = Summe aller startingPriceCents der Stack-Tools.
  * Erlaubte Inline-Styles: backgroundColor auf .toolLogoWrap (farbe — Laufzeitwert).
  * gridTemplateColumns wurde auf statisch 3-col vereinfacht (war dynamisch n-col).
  */
@@ -76,7 +76,7 @@ export default async function ToolStackDetailSeite({
   if (!t) notFound()
 
   const gesamtKosten = stack.tools.reduce(
-    (sum, item) => sum + (item.tool.startingPriceMonthly ?? 0),
+    (sum, item) => sum + (item.tool.startingPriceCents ?? 0),
     0,
   )
   const preisGesamt = formatPreis(gesamtKosten, { prefix: 'ab' })
@@ -115,7 +115,7 @@ export default async function ToolStackDetailSeite({
           const kuerzel = tt?.name.slice(0, 2).toUpperCase() ?? tool.slug.slice(0, 2).toUpperCase()
           const kategorie = tool.categories[0]?.category.translations[0]?.name ?? '—'
           const badges = tool.tags.map(({ tag }) => tag.name)
-          const preis = formatPreis(tool.startingPriceMonthly, { prefix: 'ab', suffix: '/ Monat' })
+          const preis = formatPreis(tool.startingPriceCents, { prefix: 'ab', suffix: '/ Monat' })
 
           return (
             <div key={tool.id} className={styles.toolCard}>

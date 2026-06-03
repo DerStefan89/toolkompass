@@ -12,7 +12,7 @@ export function toolJsonLd(
     description: string
     url: string
     logoUrl: string | null
-    startingPriceMonthly: number | null
+    startingPriceCents: number | null
     hasFreePlan: boolean
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -29,7 +29,7 @@ export function toolJsonLd(
     ...(tool.logoUrl && { image: tool.logoUrl }),
     offers: {
       '@type': 'Offer',
-      price: tool.hasFreePlan ? '0' : (tool.startingPriceMonthly?.toString() ?? '0'),
+      price: tool.hasFreePlan ? '0' : (tool.startingPriceCents != null ? (tool.startingPriceCents / 100).toFixed(2) : '0'),
       priceCurrency: 'EUR',
       availability: 'https://schema.org/OnlineOnly',
     },

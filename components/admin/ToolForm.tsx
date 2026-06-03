@@ -48,7 +48,7 @@ export type ToolFormDefaults = {
   vendorId: string
   shortDescription: string
   longDescription: string | null
-  startingPriceMonthly: number | null
+  startingPriceCents: number | null
   hasFreePlan: boolean
   isAffiliate: boolean
   published: boolean
@@ -263,15 +263,15 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
       {/* ── Preisgestaltung ── */}
       <Section title="Preisgestaltung">
         <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: '16px', alignItems: 'end' }}>
-          <Field label="Preis ab (€/Monat)" error={fe.startingPriceMonthly}>
+          <Field label="Preis ab (€/Monat)" error={fe.startingPriceCents}>
             <input
               type="number"
-              name="startingPriceMonthly"
-              defaultValue={defaultValues?.startingPriceMonthly ?? ''}
+              name="startingPriceCents"
+              defaultValue={defaultValues?.startingPriceCents != null ? defaultValues.startingPriceCents / 100 : ''}
               placeholder="z. B. 19.99"
               step="0.01"
               min="0"
-              style={inputStyle(!!fe.startingPriceMonthly)}
+              style={inputStyle(!!fe.startingPriceCents)}
             />
           </Field>
 

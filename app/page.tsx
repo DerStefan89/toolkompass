@@ -156,7 +156,7 @@ export default async function Home() {
           {tools.map((tool) => {
             const t = tool.translations[0]
             const name = t?.name ?? tool.slug
-            const preis = formatPreis(tool.startingPriceMonthly, { prefix: 'ab' })
+            const preis = formatPreis(tool.startingPriceCents, { prefix: 'ab' })
 
             return (
               <div key={tool.id} className={styles.toolCard}>

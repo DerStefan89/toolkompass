@@ -150,7 +150,7 @@ export default async function KategorieDetailSeite({
                 const tl = tool.translations[0]
                 const name = tl?.name ?? tool.slug
                 const primaryUrl = tool.affiliateLinks[0]?.url ?? '#'
-                const preis = formatPreis(tool.startingPriceMonthly, { prefix: 'ab' })
+                const preis = formatPreis(tool.startingPriceCents, { prefix: 'ab' })
 
                 return (
                   <div key={tool.id} className={styles.toolCard}>

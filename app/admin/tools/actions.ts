@@ -27,7 +27,7 @@ type ToolFormData = {
   vendorId: string
   shortDescription: string
   longDescription: string | null
-  startingPriceMonthly: number | null
+  startingPriceCents: number | null
   hasFreePlan: boolean
   isAffiliate: boolean
   published: boolean
@@ -53,8 +53,8 @@ function parseToolForm(formData: FormData): {
   const vendorId = parseStr(formData, 'vendorId')
   const shortDescription = parseStr(formData, 'shortDescription')
   const longDescription = parseStr(formData, 'longDescription') || null
-  const priceRaw = parseStr(formData, 'startingPriceMonthly')
-  const startingPriceMonthly = priceRaw !== '' ? parseFloat(priceRaw) : null
+  const priceRaw = parseStr(formData, 'startingPriceCents')
+  const startingPriceCents = priceRaw !== '' ? Math.round(parseFloat(priceRaw) * 100) : null
   const hasFreePlan = formData.get('hasFreePlan') === 'on'
   const isAffiliate = formData.get('isAffiliate') === 'on'
   const published = formData.get('published') === 'on'
@@ -74,14 +74,14 @@ function parseToolForm(formData: FormData): {
   } else if (shortDescription.length > 160) {
     errors.shortDescription = `Zu lang (${shortDescription.length}/160).`
   }
-  if (startingPriceMonthly !== null && isNaN(startingPriceMonthly)) {
-    errors.startingPriceMonthly = 'Ungültiger Preis.'
+  if (startingPriceCents !== null && isNaN(startingPriceCents)) {
+    errors.startingPriceCents = 'Ungültiger Preis.'
   }
 
   return {
     data: {
       name, slug, vendorId, shortDescription, longDescription,
-      startingPriceMonthly, hasFreePlan, isAffiliate, published, categoryIds, tagIds,
+      startingPriceCents, hasFreePlan, isAffiliate, published, categoryIds, tagIds,
       features: parseLines(formData, 'features'),
       strengths: parseLines(formData, 'strengths'),
       weaknesses: parseLines(formData, 'weaknesses'),
@@ -134,7 +134,7 @@ export async function createTool(
     await prisma.tool.create({
       data: {
         slug: data.slug,
-        startingPriceMonthly: data.startingPriceMonthly,
+        startingPriceCents: data.startingPriceCents,
         hasFreePlan: data.hasFreePlan,
         isAffiliate: data.isAffiliate,
         published: data.published,
@@ -198,7 +198,7 @@ export async function updateTool(
       where: { id },
       data: {
         slug: data.slug,
-        startingPriceMonthly: data.startingPriceMonthly,
+        startingPriceCents: data.startingPriceCents,
         hasFreePlan: data.hasFreePlan,
         isAffiliate: data.isAffiliate,
         published: data.published,
