@@ -15,13 +15,23 @@ const staticRoutes: MetadataRoute.Sitemap = [
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [tools, categories, articles, comparisons, stacks] = await Promise.all([
-    prisma.tool.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
-    prisma.category.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
-    prisma.article.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
-    prisma.comparison.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
-    prisma.toolStack.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
-  ])
+  let tools: { slug: string; updatedAt: Date }[] = []
+  let categories: { slug: string; updatedAt: Date }[] = []
+  let articles: { slug: string; updatedAt: Date }[] = []
+  let comparisons: { slug: string; updatedAt: Date }[] = []
+  let stacks: { slug: string; updatedAt: Date }[] = []
+
+  try {
+    ;[tools, categories, articles, comparisons, stacks] = await Promise.all([
+      prisma.tool.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
+      prisma.category.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
+      prisma.article.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
+      prisma.comparison.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
+      prisma.toolStack.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
+    ])
+  } catch (error) {
+    console.error('[sitemap] DB nicht erreichbar — nur statische Routen', error)
+  }
 
   const toolRoutes: MetadataRoute.Sitemap = tools.map((t) => ({
     url:             `${BASE_URL}/tools/${t.slug}`,
