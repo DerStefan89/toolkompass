@@ -23,13 +23,6 @@ import styles from './page.module.css'
 export const dynamic = 'force-dynamic'
 export const revalidate = 3600
 
-export async function generateStaticParams() {
-  const stacks = await prisma.toolStack.findMany({
-    where: { published: true },
-    select: { slug: true },
-  })
-  return stacks.map((s) => ({ slug: s.slug }))
-}
 
 const LOGO_FARBEN = [
   'var(--color-cta)',

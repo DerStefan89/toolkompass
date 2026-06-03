@@ -54,13 +54,6 @@ export async function generateMetadata({
   }
 }
 
-export async function generateStaticParams() {
-  const categories = await prisma.category.findMany({
-    where: { published: true },
-    select: { slug: true },
-  })
-  return categories.map((c) => ({ slug: c.slug }))
-}
 
 export default async function KategorieDetailSeite({
   params,

@@ -49,13 +49,6 @@ export async function generateMetadata({
   }
 }
 
-export async function generateStaticParams() {
-  const tools = await prisma.tool.findMany({
-    where: { published: true },
-    select: { slug: true },
-  })
-  return tools.map((t) => ({ slug: t.slug }))
-}
 
 export default async function ToolDetailSeite({
   params,

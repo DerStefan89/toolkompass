@@ -46,13 +46,6 @@ export async function generateMetadata({
   }
 }
 
-export async function generateStaticParams() {
-  const articles = await prisma.article.findMany({
-    where: { published: true },
-    select: { slug: true },
-  })
-  return articles.map((a) => ({ slug: a.slug }))
-}
 
 const typLabels: Record<string, string> = {
   guide: 'Guide',

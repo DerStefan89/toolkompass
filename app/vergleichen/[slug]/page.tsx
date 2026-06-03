@@ -52,13 +52,6 @@ export async function generateMetadata({
   }
 }
 
-export async function generateStaticParams() {
-  const comparisons = await prisma.comparison.findMany({
-    where: { published: true },
-    select: { slug: true },
-  })
-  return comparisons.map((c) => ({ slug: c.slug }))
-}
 
 const TOOL_FARBEN = ['var(--color-cta)', '#c8a96e'] as const
 
