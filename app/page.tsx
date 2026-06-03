@@ -99,7 +99,7 @@ export default async function Home() {
               { icon: '💼', label: 'Sales Funnel aufbauen' },
               { icon: '📊', label: 'Präsentation erstellen' },
             ].map((aufgabe) => (
-              <Link key={aufgabe.label} href="/aufgaben" className={styles.pill}>
+              <Link key={aufgabe.label} href="/tool-finder" className={styles.pill}>
                 <span>{aufgabe.icon}</span>
                 <span>{aufgabe.label}</span>
               </Link>

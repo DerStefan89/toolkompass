@@ -75,8 +75,13 @@ function getIp(request: NextRequest): string | null {
   return request.headers.get('x-real-ip')
 }
 
-function hashIp(ip: string): string {
-  return createHash('sha256').update(ip).digest('hex')
+function hashIp(ip: string): string | null {
+  const salt = process.env.IP_HASH_SALT
+  if (!salt) {
+    console.warn('[track] IP_HASH_SALT nicht gesetzt — IP-Hash wird nicht gespeichert (Privacy-by-default)')
+    return null
+  }
+  return createHash('sha256').update(salt + ip).digest('hex')
 }
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
