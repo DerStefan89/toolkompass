@@ -22,6 +22,7 @@ import styles from './page.module.css'
 
 const SITE_URL = 'https://toolsucher.de'
 
+export const dynamic = 'force-dynamic'
 export const revalidate = 3600
 
 export async function generateMetadata({
