@@ -3,6 +3,7 @@
  *
  * Zweck: Liste aller Tools im Admin-Bereich.
  * Zeigt Published-Toggle (klickbar) und Löschen-Button direkt in der Zeile.
+ * Filter-Leiste: Alle / Mit Affiliate / Ohne Affiliate (URL-basiert via ?filter=).
  */
 
 import { redirect } from 'next/navigation'
@@ -14,37 +15,84 @@ import { togglePublished, deleteTool } from '@/app/admin/tools/actions'
 import { formatPreis } from '@/lib/utils/format'
 import { parsePageParams, PAGE_SIZE } from '@/lib/utils/pagination'
 import Pagination from '@/components/admin/Pagination'
+import styles from './page.module.css'
+
+// ─── Filter-Typen ────────────────────────────────────────────────────────────
+
+type FilterType = 'all' | 'with-affiliate' | 'without-affiliate'
+
+function parseFilter(raw: string | undefined): FilterType {
+  if (raw === 'with-affiliate' || raw === 'without-affiliate') return raw
+  return 'all'
+}
+
+function buildFilterWhere(filter: FilterType) {
+  if (filter === 'with-affiliate')    return { affiliateLinks: { some: {} } }
+  if (filter === 'without-affiliate') return { affiliateLinks: { none: {} } }
+  return {}
+}
+
+// ─── Spalten-Definition ──────────────────────────────────────────────────────
 
 const COLUMNS = [
-  { label: 'Tool',      width: '1fr'   },
-  { label: 'Slug',      width: '140px' },
-  { label: 'Preis ab',  width: '100px' },
-  { label: 'Free Plan', width: '80px'  },
-  { label: 'Status',    width: '140px' },
-  { label: '',          width: '160px' },
+  { label: 'Tool',       width: '1fr'   },
+  { label: 'Slug',       width: '140px' },
+  { label: 'Preis ab',   width: '100px' },
+  { label: 'Free Plan',  width: '80px'  },
+  { label: 'Affiliate',  width: '80px'  },
+  { label: 'Status',     width: '140px' },
+  { label: '',           width: '160px' },
 ]
 const GRID = COLUMNS.map(c => c.width).join(' ')
 
-type Props = { searchParams: Promise<{ page?: string }> }
+// ─── Page ────────────────────────────────────────────────────────────────────
+
+type Props = { searchParams: Promise<{ page?: string; filter?: string }> }
 
 export default async function AdminToolsPage({ searchParams }: Props) {
-  const { page, skip, take } = parsePageParams(await searchParams)
+  const params = await searchParams
+  const { page, skip, take } = parsePageParams(params)
+  const filter = parseFilter(params.filter)
+  const filterWhere = buildFilterWhere(filter)
 
-  const [tools, total, totalPublished] = await Promise.all([
-    prisma.tool.findMany({
-      include: {
-        translations: { where: { locale: 'de' } },
-      },
-      orderBy: { createdAt: 'desc' },
-      skip,
-      take,
-    }),
-    prisma.tool.count(),
-    prisma.tool.count({ where: { published: true } }),
-  ])
+  const [tools, total, totalPublished, countAll, countWithAffiliate, countWithoutAffiliate] =
+    await Promise.all([
+      prisma.tool.findMany({
+        where: filterWhere,
+        include: {
+          translations: { where: { locale: 'de' } },
+          _count: {
+            select: {
+              affiliateLinks: { where: { isActive: true } },
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take,
+      }),
+      prisma.tool.count({ where: filterWhere }),
+      prisma.tool.count({ where: { ...filterWhere, published: true } }),
+      prisma.tool.count(),
+      prisma.tool.count({ where: { affiliateLinks: { some: {} } } }),
+      prisma.tool.count({ where: { affiliateLinks: { none: {} } } }),
+    ])
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
-  if (page > totalPages) redirect(`/admin/tools?page=${totalPages}`)
+  if (page > totalPages) {
+    const base = filter !== 'all' ? `/admin/tools?filter=${filter}&page=` : `/admin/tools?page=`
+    redirect(`${base}${totalPages}`)
+  }
+
+  // Pagination-basePath erhält filter als Query-Param damit Seitenwechsel den Filter behält
+  const paginationBase = filter !== 'all' ? `/admin/tools?filter=${filter}` : '/admin/tools'
+
+  // Filter-Buttons
+  const filterButtons: { label: string; value: FilterType; count: number }[] = [
+    { label: 'Alle',            value: 'all',              count: countAll            },
+    { label: 'Mit Affiliate',   value: 'with-affiliate',   count: countWithAffiliate  },
+    { label: 'Ohne Affiliate',  value: 'without-affiliate', count: countWithoutAffiliate },
+  ]
 
   return (
     <div>
@@ -54,10 +102,31 @@ export default async function AdminToolsPage({ searchParams }: Props) {
         actionLabel="+ Tool hinzufügen"
         actionHref="/admin/tools/neu"
       />
-      <AdminTable columns={COLUMNS} isEmpty={tools.length === 0} emptyText="Noch keine Tools vorhanden.">
+
+      {/* ─── Filter-Leiste ─────────────────────────────────── */}
+      <div className={styles.filterBar}>
+        {filterButtons.map((btn) => {
+          const isActive = filter === btn.value
+          const href = btn.value === 'all' ? '/admin/tools' : `/admin/tools?filter=${btn.value}`
+          return (
+            <a
+              key={btn.value}
+              href={href}
+              className={`${styles.filterBtn}${isActive ? ` ${styles.filterBtnActive}` : ''}`}
+            >
+              {btn.label}
+              <span className={styles.filterCount}>({btn.count})</span>
+            </a>
+          )
+        })}
+      </div>
+
+      {/* ─── Tabelle ───────────────────────────────────────── */}
+      <AdminTable columns={COLUMNS} isEmpty={tools.length === 0} emptyText="Keine Tools gefunden.">
         {tools.map((tool, index) => {
           const translation = tool.translations[0]
           const name = translation?.name ?? tool.slug
+          const affiliateCount = tool._count.affiliateLinks
 
           return (
             <div
@@ -109,6 +178,15 @@ export default async function AdminToolsPage({ searchParams }: Props) {
                 {tool.hasFreePlan ? '✓ Ja' : '—'}
               </span>
 
+              {/* Affiliate-Links (aktive) */}
+              <span style={{
+                fontSize: '13px',
+                fontWeight: affiliateCount > 0 ? '600' : '400',
+                color: affiliateCount > 0 ? 'var(--color-success)' : 'var(--color-text-secondary)',
+              }}>
+                {affiliateCount > 0 ? affiliateCount : '—'}
+              </span>
+
               {/* Status — klickbarer Toggle */}
               <PublishToggle
                 published={tool.published}
@@ -141,7 +219,8 @@ export default async function AdminToolsPage({ searchParams }: Props) {
           )
         })}
       </AdminTable>
-      <Pagination currentPage={page} totalPages={totalPages} basePath="/admin/tools" />
+
+      <Pagination currentPage={page} totalPages={totalPages} basePath={paginationBase} />
     </div>
   )
 }

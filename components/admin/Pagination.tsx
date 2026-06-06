@@ -20,6 +20,8 @@ export default function Pagination({ currentPage, totalPages, basePath }: Props)
 
   const isFirst = currentPage <= 1
   const isLast  = currentPage >= totalPages
+  // Wenn basePath bereits Query-Params enthält (z.B. ?filter=...) → & statt ?
+  const sep = basePath.includes('?') ? '&' : '?'
 
   const btn = {
     display: 'inline-flex',
@@ -50,11 +52,11 @@ export default function Pagination({ currentPage, totalPages, basePath }: Props)
     }}>
       {isFirst
         ? <span style={off}>« Erste</span>
-        : <Link href={`${basePath}?page=1`} style={btn}>« Erste</Link>}
+        : <Link href={`${basePath}${sep}page=1`} style={btn}>« Erste</Link>}
 
       {isFirst
         ? <span style={off}>‹ Vorige</span>
-        : <Link href={`${basePath}?page=${currentPage - 1}`} style={btn}>‹ Vorige</Link>}
+        : <Link href={`${basePath}${sep}page=${currentPage - 1}`} style={btn}>‹ Vorige</Link>}
 
       <span style={{ padding: '5px 14px', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
         Seite {currentPage} von {totalPages}
@@ -62,11 +64,11 @@ export default function Pagination({ currentPage, totalPages, basePath }: Props)
 
       {isLast
         ? <span style={off}>Nächste ›</span>
-        : <Link href={`${basePath}?page=${currentPage + 1}`} style={btn}>Nächste ›</Link>}
+        : <Link href={`${basePath}${sep}page=${currentPage + 1}`} style={btn}>Nächste ›</Link>}
 
       {isLast
         ? <span style={off}>Letzte »</span>
-        : <Link href={`${basePath}?page=${totalPages}`} style={btn}>Letzte »</Link>}
+        : <Link href={`${basePath}${sep}page=${totalPages}`} style={btn}>Letzte »</Link>}
     </div>
   )
 }

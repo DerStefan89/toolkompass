@@ -1,0 +1,61 @@
+/**
+ * Datei: app/admin/tools/page.module.css
+ *
+ * Zweck: Styles für die Admin-Tools-Liste — primär die Filter-Leiste.
+ *
+ * Design-Referenz: design-refs/2_Tool_Detailseite.png (Admin-Bereich)
+ */
+
+/* ─── Filter-Leiste ───────────────────────────────────────── */
+
+.filterBar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+/* Basis-Button: <a>-Element, da URL-Navigation */
+.filterBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.filterBtn:hover {
+  background-color: var(--color-badge-bg);
+  color: var(--color-text-primary);
+}
+
+/* Aktiver Filter: dunkelgrüner Hintergrund wie CTA */
+.filterBtnActive {
+  background-color: var(--color-cta);
+  color: white;
+  border-color: var(--color-cta);
+  font-weight: 600;
+}
+
+.filterBtnActive:hover {
+  background-color: var(--color-cta-hover);
+  color: white;
+}
+
+/* Zähler im Button */
+.filterCount {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.filterBtnActive .filterCount {
+  opacity: 0.85;
+}
