@@ -7,8 +7,8 @@
  * - design-refs/2_Tool_Detailseite.png
  *
  * Wichtig:
- * Erlaubte Inline-Styles: backgroundColor + border auf .toolLogoWrap
- * (conditional auf tool.logoUrl — Laufzeitwert).
+ * Erlaubte Inline-Styles: backgroundColor + border auf .toolLogoWrap und .altLogo
+ * (conditional auf logoUrl — Laufzeitwert).
  */
 
 import Link from 'next/link'
@@ -95,6 +95,23 @@ export default async function ToolDetailSeite({
 
   const preisFormatted = formatPreis(tool.startingPriceCents)
 
+  const alternatives = await prisma.tool.findMany({
+    where: {
+      categories: { some: { categoryId: tool.categories[0]?.categoryId } },
+      slug: { not: slug },
+      published: true,
+    },
+    take: 3,
+    select: {
+      slug: true,
+      logoUrl: true,
+      translations: {
+        where: { locale: 'de' },
+        select: { name: true, shortDescription: true },
+      },
+    },
+  })
+
   const tabs = ['Überblick', 'Funktionen', 'Preise', 'Vergleich', 'Alternativen', 'FAQ']
 
   const jsonLd = toolJsonLd({
@@ -129,7 +146,7 @@ export default async function ToolDetailSeite({
         {t.name}
       </p>
 
-      {/* ─── HERO: 3 Spalten → Mobile: einspaltig ────────────── */}
+      {/* ─── HERO: 2 Spalten → Mobile: einspaltig ────────────── */}
       <div className={styles.heroGrid}>
 
         {/* Spalte 1: Tool-Info */}
@@ -186,22 +203,7 @@ export default async function ToolDetailSeite({
           </div>
         </div>
 
-        {/* Spalte 2: Screenshot */}
-        <div className={styles.screenshotBox}>
-          {tool.screenshotUrl ? (
-            <Image
-              src={tool.screenshotUrl}
-              alt={`${t.name} Screenshot`}
-              width={1200}
-              height={750}
-              className={styles.screenshotImg}
-            />
-          ) : (
-            <span className={styles.screenshotPlaceholder}>Tool-Screenshot</span>
-          )}
-        </div>
-
-        {/* Spalte 3: Preisbox — sticky auf Mobile */}
+        {/* Spalte 2: Preisbox — sticky auf Mobile */}
         <div className={styles.priceBox}>
           <div className={styles.priceBoxHeader}>
             <span className={styles.priceBoxTitle}>Plan & Preisdetails</span>
@@ -246,52 +248,51 @@ export default async function ToolDetailSeite({
       </div>
 
       {/* ─── ÜBERBLICK ───────────────────────────────────────── */}
-      <div className={styles.overviewGrid}>
+      <div className={styles.overviewSection}>
 
-        {/* Kurzfazit + Stärken/Schwächen */}
-        <div>
-          <h2 className={styles.sectionTitle}>Kurzfazit</h2>
-          <p className={styles.longDesc}>{t.longDescription ?? t.shortDescription}</p>
+        {/* Kurzfazit — full-width */}
+        <h2 className={styles.sectionTitle}>Kurzfazit</h2>
+        <p className={styles.longDesc}>{t.longDescription ?? t.shortDescription}</p>
 
-          <div className={styles.swGrid}>
-            <div>
-              <p className={styles.swLabel}>Stärken</p>
-              {t.strengths.map((s) => (
-                <div key={s} className={styles.swItem}>
-                  <span className={styles.swCheck}>✓</span>{s}
-                </div>
-              ))}
-            </div>
-            <div>
-              <p className={styles.swLabelWeak}>Schwächen</p>
-              {t.weaknesses.map((s) => (
-                <div key={s} className={styles.swItem}>
-                  <span className={styles.swCross}>✗</span>{s}
-                </div>
-              ))}
-            </div>
+        {/* Stärken / Schwächen */}
+        <div className={styles.swGrid}>
+          <div>
+            <p className={styles.swLabel}>Stärken</p>
+            {t.strengths.map((s) => (
+              <div key={s} className={styles.swItem}>
+                <span className={styles.swCheck}>✓</span>{s}
+              </div>
+            ))}
+          </div>
+          <div>
+            <p className={styles.swLabelWeak}>Schwächen</p>
+            {t.weaknesses.map((s) => (
+              <div key={s} className={styles.swItem}>
+                <span className={styles.swCross}>✗</span>{s}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Für wen geeignet? */}
-        <div>
-          <h2 className={styles.sectionTitleSpaced}>Für wen geeignet?</h2>
-          {t.bestFor.map((gruppe) => (
-            <div key={gruppe} className={styles.bestForItem}>
-              <span className={styles.bestForCheck}>✓</span>
-              <span className={styles.bestForLabel}>{gruppe}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Für wen nicht geeignet? */}
-        <div>
-          <h2 className={styles.sectionTitleSpaced}>Für wen eher nicht geeignet?</h2>
-          {t.notIdealFor.map((n) => (
-            <div key={n} className={styles.notIdealItem}>
-              <span className={styles.notIdealCross}>✗</span>{n}
-            </div>
-          ))}
+        {/* Für wen geeignet / nicht geeignet — zwei Boxen nebeneinander */}
+        <div className={styles.fitGrid}>
+          <div className={styles.fitBox}>
+            <h2 className={styles.sectionTitleSpaced}>Für wen geeignet?</h2>
+            {t.bestFor.map((gruppe) => (
+              <div key={gruppe} className={styles.bestForItem}>
+                <span className={styles.bestForCheck}>✓</span>
+                <span className={styles.bestForLabel}>{gruppe}</span>
+              </div>
+            ))}
+          </div>
+          <div className={styles.fitBox}>
+            <h2 className={styles.sectionTitleSpaced}>Für wen eher nicht geeignet?</h2>
+            {t.notIdealFor.map((n) => (
+              <div key={n} className={styles.notIdealItem}>
+                <span className={styles.notIdealCross}>✗</span>{n}
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>
@@ -309,6 +310,54 @@ export default async function ToolDetailSeite({
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ─── ALTERNATIVEN ────────────────────────────────────── */}
+      {alternatives.length > 0 && (
+        <div className={styles.altSection}>
+          <h2 className={styles.sectionTitle}>Alternativen</h2>
+          <div className={styles.altGrid}>
+            {alternatives.map((alt) => {
+              const altT = alt.translations[0]
+              if (!altT) return null
+              return (
+                <Link key={alt.slug} href={`/tools/${alt.slug}`} className={styles.altCard}>
+                  {/* backgroundColor + border: conditional auf alt.logoUrl — erlaubte Inline-Styles */}
+                  <div
+                    className={styles.altLogo}
+                    style={{
+                      backgroundColor: alt.logoUrl ? 'transparent' : 'var(--color-cta)',
+                      border: alt.logoUrl ? '1px solid var(--color-border)' : 'none',
+                    }}
+                  >
+                    {alt.logoUrl ? (
+                      <Image src={alt.logoUrl} alt={altT.name} width={40} height={40} className={styles.altLogoImg} />
+                    ) : (
+                      <span className={styles.altLogoInitial}>{altT.name.charAt(0)}</span>
+                    )}
+                  </div>
+                  <p className={styles.altName}>{altT.name}</p>
+                  <p className={styles.altDesc}>{altT.shortDescription}</p>
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ─── FAQ ─────────────────────────────────────────────── */}
+      <div className={styles.faqSection}>
+        <h2 className={styles.sectionTitle}>Häufige Fragen</h2>
+        {/* TODO: faqItems aus DB wenn Schema erweitert */}
+        <ul className={styles.faqList}>
+          <li className={styles.faqItem}>
+            <p className={styles.faqQuestion}>Gibt es eine kostenlose Testversion?</p>
+            <p className={styles.faqAnswer}>
+              Viele Tools bieten eine kostenlose Testphase oder einen Free Plan an.
+              Aktuelle Konditionen direkt beim Anbieter prüfen.
+            </p>
+          </li>
+        </ul>
       </div>
 
       {/* ─── PREISE ──────────────────────────────────────────── */}
