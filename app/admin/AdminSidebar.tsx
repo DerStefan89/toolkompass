@@ -13,6 +13,7 @@ import type { User } from '@supabase/supabase-js'
 
 const navItems = [
   { href: '/admin',            label: 'Dashboard',  icon: '⊞'  },
+  { href: '/admin/analytics',  label: 'Analytics',  icon: '▦'  },
   { href: '/admin/tools',      label: 'Tools',      icon: '🔧' },
   { href: '/admin/vendors',    label: 'Anbieter',   icon: '🏢' },
   { href: '/admin/kategorien', label: 'Kategorien', icon: '⊙'  },
