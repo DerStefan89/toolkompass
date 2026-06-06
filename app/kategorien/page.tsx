@@ -11,7 +11,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
-import IconRenderer from '@/components/ui/IconRenderer'
+import CategoryFilter from '@/components/category/CategoryFilter'
 import styles from './page.module.css'
 
 export const dynamic = 'force-dynamic'
@@ -62,57 +62,11 @@ export default async function KategorienSeite() {
         kuratiert für Solo-Selbstständige und kleine Teams in Deutschland.
       </p>
 
-      {/* Suchfeld */}
-      <input
-        type="text"
-        placeholder="Kategorie oder Aufgabe suchen ..."
-        className={styles.searchInput}
-      />
-
-      {/* Kategorien-Raster */}
+      {/* Suchfeld + Kategorien-Raster — Client-seitig gefiltert */}
       {categories.length === 0 ? (
         <p className={styles.empty}>Noch keine Kategorien vorhanden.</p>
       ) : (
-        <div className={styles.catGrid}>
-          {categories.map((cat) => {
-            const t = cat.translations[0]
-            if (!t) return null
-
-            const toolNames = cat.tools
-              .map((tc) => tc.tool.translations[0]?.name ?? tc.tool.slug)
-              .join(' · ')
-
-            return (
-              <a
-                key={cat.id}
-                href={`/kategorien/${cat.slug}`}
-                className={`category-card ${styles.catCard}`}
-              >
-                {/* Icon */}
-                <div className={`category-card-icon ${styles.catIcon}`}>
-                  <IconRenderer icon={cat.icon} size={28} />
-                </div>
-
-                {/* Name */}
-                <p className={styles.catName}>{t.name}</p>
-
-                {/* Beschreibung */}
-                <p className={styles.catDesc}>{t.description}</p>
-
-                {/* Beispiel-Tools */}
-                {toolNames && (
-                  <p className={styles.catTools}>{toolNames}</p>
-                )}
-
-                {/* Anzahl Tools + Pfeil */}
-                <div className={styles.catFooter}>
-                  <span className={styles.catCount}>{cat._count.tools} Tools</span>
-                  <span className={styles.catArrow}>→</span>
-                </div>
-              </a>
-            )
-          })}
-        </div>
+        <CategoryFilter categories={categories} />
       )}
 
     </main>

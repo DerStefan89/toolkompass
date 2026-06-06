@@ -20,6 +20,7 @@ import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 import IconRenderer from '@/components/ui/IconRenderer'
+import SearchInput from '@/components/SearchInput'
 import styles from './page.module.css'
 
 export const dynamic = 'force-dynamic'
@@ -71,8 +72,7 @@ export default async function Home() {
             Deutschland, passende Software zu finden und zu vergleichen.
           </p>
 
-          <input
-            type="text"
+          <SearchInput
             placeholder="Nach Tool, Kategorie oder Anwendungsfall suchen ..."
             className={styles.searchInput}
           />
