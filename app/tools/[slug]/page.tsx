@@ -93,7 +93,7 @@ export default async function ToolDetailSeite({
     .filter(Boolean)
     .join(' · ')
 
-  const preisFormatted = formatPreis(tool.startingPriceCents)
+  const preisFormatted = formatPreis(tool.startingPriceCents, { hasFreePlan: tool.hasFreePlan })
 
   const alternatives = await prisma.tool.findMany({
     where: {
@@ -364,8 +364,10 @@ export default async function ToolDetailSeite({
       <div className={styles.priceSection}>
         <h2 className={styles.priceSectionTitle}>Preise</h2>
         <p className={styles.priceSectionDesc}>
-          Einstieg ab {preisFormatted} / Monat.
-          {tool.hasFreePlan ? ' Kostenloser Plan verfügbar.' : ''}
+          {tool.startingPriceCents != null
+            ? <>Einstieg ab {preisFormatted} / Monat.{tool.hasFreePlan ? ' Kostenloser Plan verfügbar.' : ''}</>
+            : <>{preisFormatted}.</>
+          }
           {' '}Aktuelle Preise und Tarife direkt beim Anbieter prüfen.
         </p>
         <a href={primaryUrl} target="_blank" rel="noopener noreferrer" className={styles.priceSectionCta}>

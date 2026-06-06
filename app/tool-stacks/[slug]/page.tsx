@@ -109,7 +109,7 @@ export default async function ToolStackDetailSeite({
           const kuerzel = tt?.name.slice(0, 2).toUpperCase() ?? tool.slug.slice(0, 2).toUpperCase()
           const kategorie = tool.categories[0]?.category.translations[0]?.name ?? '—'
           const badges = tool.tags.map(({ tag }) => tag.name)
-          const preis = formatPreis(tool.startingPriceCents, { prefix: 'ab', suffix: '/ Monat' })
+          const preis = formatPreis(tool.startingPriceCents, { prefix: 'ab', suffix: '/ Monat', hasFreePlan: tool.hasFreePlan })
 
           return (
             <div key={tool.id} className={styles.toolCard}>
