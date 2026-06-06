@@ -12,6 +12,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { Prisma } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { ActionState } from '@/lib/types/admin'
@@ -19,6 +20,8 @@ import { requireAdmin } from '@/lib/auth/require-admin'
 import { parseStr, parseLines } from '@/lib/utils/form'
 
 
+
+type FaqItem = { question: string; answer: string }
 
 // Interne Repräsentation der validierten Formulardaten
 type ToolFormData = {
@@ -38,6 +41,7 @@ type ToolFormData = {
   weaknesses: string[]
   bestFor: string[]
   notIdealFor: string[]
+  faqItems: FaqItem[]
 }
 
 // ─── Hilfsfunktionen ────────────────────────────────────────────────────────
@@ -78,6 +82,14 @@ function parseToolForm(formData: FormData): {
     errors.startingPriceCents = 'Ungültiger Preis.'
   }
 
+  let faqItems: FaqItem[] = []
+  try {
+    const raw = parseStr(formData, 'faqItems')
+    if (raw) faqItems = JSON.parse(raw) as FaqItem[]
+  } catch {
+    // ungültiges JSON → leeres Array verwenden
+  }
+
   return {
     data: {
       name, slug, vendorId, shortDescription, longDescription,
@@ -87,6 +99,7 @@ function parseToolForm(formData: FormData): {
       weaknesses: parseLines(formData, 'weaknesses'),
       bestFor: parseLines(formData, 'bestFor'),
       notIdealFor: parseLines(formData, 'notIdealFor'),
+      faqItems,
     },
     errors: Object.keys(errors).length > 0 ? errors : null,
   }
@@ -104,6 +117,7 @@ function buildTranslation(d: ToolFormData) {
     weaknesses: d.weaknesses,
     bestFor: d.bestFor,
     notIdealFor: d.notIdealFor,
+    faqItems: d.faqItems.length > 0 ? d.faqItems : Prisma.DbNull,
   }
 }
 

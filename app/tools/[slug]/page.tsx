@@ -18,6 +18,7 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 import { toolJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
+import type { FaqItem } from '@/components/admin/FaqEditor'
 import styles from './page.module.css'
 
 const SITE_URL = 'https://toolsucher.de'
@@ -346,19 +347,25 @@ export default async function ToolDetailSeite({
       )}
 
       {/* ─── FAQ ─────────────────────────────────────────────── */}
-      <div className={styles.faqSection}>
-        <h2 className={styles.sectionTitle}>Häufige Fragen</h2>
-        {/* TODO: faqItems aus DB wenn Schema erweitert */}
-        <ul className={styles.faqList}>
-          <li className={styles.faqItem}>
-            <p className={styles.faqQuestion}>Gibt es eine kostenlose Testversion?</p>
-            <p className={styles.faqAnswer}>
-              Viele Tools bieten eine kostenlose Testphase oder einen Free Plan an.
-              Aktuelle Konditionen direkt beim Anbieter prüfen.
-            </p>
-          </li>
-        </ul>
-      </div>
+      {(() => {
+        const faqItems = (t.faqItems as FaqItem[] | null) ?? []
+        const items: FaqItem[] = faqItems.length > 0
+          ? faqItems
+          : [{ question: 'Gibt es eine kostenlose Testversion?', answer: 'Viele Tools bieten eine kostenlose Testphase oder einen Free Plan an. Aktuelle Konditionen direkt beim Anbieter prüfen.' }]
+        return (
+          <div className={styles.faqSection}>
+            <h2 className={styles.sectionTitle}>Häufige Fragen</h2>
+            <ul className={styles.faqList}>
+              {items.map((item, i) => (
+                <li key={i} className={styles.faqItem}>
+                  <p className={styles.faqQuestion}>{item.question}</p>
+                  <p className={styles.faqAnswer}>{item.answer}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      })()}
 
       {/* ─── PREISE ──────────────────────────────────────────── */}
       <div className={styles.priceSection}>

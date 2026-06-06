@@ -159,6 +159,7 @@ model ToolTranslation {
   weaknesses       String[]
   bestFor          String[]
   notIdealFor      String[]
+  faqItems         Json?
 
   toolId           String
   tool             Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)

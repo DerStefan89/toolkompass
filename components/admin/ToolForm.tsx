@@ -23,6 +23,7 @@ import Link from 'next/link'
 import { useActionState, useState } from 'react'
 import type { ActionState } from '@/lib/types/admin'
 import { toSlug } from '@/lib/utils/form'
+import FaqEditor, { type FaqItem } from '@/components/admin/FaqEditor'
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -59,6 +60,7 @@ export type ToolFormDefaults = {
   weaknesses: string[]
   bestFor: string[]
   notIdealFor: string[]
+  faqItems: FaqItem[]
 }
 
 type ToolFormProps = {
@@ -473,6 +475,14 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
             </div>
           </>
         )}
+      </Section>
+
+      {/* ── FAQ ── */}
+      <Section title="FAQ">
+        <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '-8px' }}>
+          Häufige Fragen und Antworten — erscheinen auf der Tool-Detailseite.
+        </p>
+        <FaqEditor initialFaqs={defaultValues?.faqItems ?? []} />
       </Section>
 
       {/* ── Submit-Bereich ── */}

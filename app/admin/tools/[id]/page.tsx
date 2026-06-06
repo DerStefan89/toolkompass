@@ -17,6 +17,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import ToolForm from '@/components/admin/ToolForm'
+import type { FaqItem } from '@/components/admin/FaqEditor'
 import DeleteButton from '@/components/admin/DeleteButton'
 import AffiliateLinkManager from '@/components/admin/AffiliateLinkManager'
 import type { AffiliateLinkData } from '@/components/admin/AffiliateLinkManager'
@@ -74,6 +75,7 @@ export default async function EditToolPage({ params }: Props) {
     weaknesses: translation?.weaknesses ?? [],
     bestFor: translation?.bestFor ?? [],
     notIdealFor: translation?.notIdealFor ?? [],
+    faqItems: (translation?.faqItems as FaqItem[] | null) ?? [],
   }
 
   const vendorOptions = vendors.map(v => ({ id: v.id, name: v.name }))
