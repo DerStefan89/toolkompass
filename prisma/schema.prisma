@@ -155,6 +155,7 @@ model ToolTranslation {
   shortDescription String
   longDescription  String?
   features         String[]
+  planFeatures     String[]
   strengths        String[]
   weaknesses       String[]
   bestFor          String[]

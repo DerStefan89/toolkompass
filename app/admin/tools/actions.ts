@@ -37,6 +37,7 @@ type ToolFormData = {
   categoryIds: string[]
   tagIds: string[]
   features: string[]
+  planFeatures: string[]
   strengths: string[]
   weaknesses: string[]
   bestFor: string[]
@@ -75,8 +76,11 @@ function parseToolForm(formData: FormData): {
   if (!vendorId) errors.vendorId = 'Anbieter ist erforderlich.'
   if (!shortDescription) {
     errors.shortDescription = 'Kurzbeschreibung ist erforderlich.'
-  } else if (shortDescription.length > 160) {
-    errors.shortDescription = `Zu lang (${shortDescription.length}/160).`
+  } else if (shortDescription.length > 500) {
+    // Hard-Limit 500 für Flexibilität — shortDescription wird zwar auch als
+    // Meta-/OG-Description verwendet, deren SEO-optimale Länge bei ≤160 Zeichen
+    // liegt, das ist aber eine Empfehlung und kein technisches Limit.
+    errors.shortDescription = `Zu lang (${shortDescription.length}/500).`
   }
   if (startingPriceCents !== null && isNaN(startingPriceCents)) {
     errors.startingPriceCents = 'Ungültiger Preis.'
@@ -95,6 +99,7 @@ function parseToolForm(formData: FormData): {
       name, slug, vendorId, shortDescription, longDescription,
       startingPriceCents, hasFreePlan, isAffiliate, published, categoryIds, tagIds,
       features: parseLines(formData, 'features'),
+      planFeatures: parseLines(formData, 'planFeatures'),
       strengths: parseLines(formData, 'strengths'),
       weaknesses: parseLines(formData, 'weaknesses'),
       bestFor: parseLines(formData, 'bestFor'),
@@ -113,6 +118,7 @@ function buildTranslation(d: ToolFormData) {
     shortDescription: d.shortDescription,
     longDescription: d.longDescription,
     features: d.features,
+    planFeatures: d.planFeatures,
     strengths: d.strengths,
     weaknesses: d.weaknesses,
     bestFor: d.bestFor,

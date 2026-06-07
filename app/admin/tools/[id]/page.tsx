@@ -71,6 +71,7 @@ export default async function EditToolPage({ params }: Props) {
     categoryIds: tool.categories.map(c => c.categoryId),
     tagIds:      tool.tags.map(t => t.tagId),
     features: translation?.features ?? [],
+    planFeatures: translation?.planFeatures ?? [],
     strengths: translation?.strengths ?? [],
     weaknesses: translation?.weaknesses ?? [],
     bestFor: translation?.bestFor ?? [],

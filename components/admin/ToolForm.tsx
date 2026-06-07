@@ -13,8 +13,12 @@
  *
  * Wichtig:
  * - Slug wird automatisch aus dem Name generiert, kann aber manuell überschrieben werden.
- * - shortDescription ist auf 160 Zeichen begrenzt (SEO-Meta-Description).
+ * - shortDescription ist auf 500 Zeichen begrenzt. Sie wird zusätzlich als
+ *   Meta-/OG-Description verwendet — SEO-optimal sind dort ≤160 Zeichen,
+ *   das ist aber eine Empfehlung und kein technisches Limit.
  * - Array-Felder (features, strengths, etc.) werden als ein Wert pro Zeile erfasst.
+ * - Alle Textfelder nutzen MarkdownTextarea (B/I/U-Toolbar). Speicherformat ist
+ *   Markdown — wird auf der Tool-Detailseite per react-markdown gerendert.
  */
 
 'use client'
@@ -24,6 +28,7 @@ import { useActionState, useState } from 'react'
 import type { ActionState } from '@/lib/types/admin'
 import { toSlug } from '@/lib/utils/form'
 import FaqEditor, { type FaqItem } from '@/components/admin/FaqEditor'
+import MarkdownTextarea from '@/components/admin/MarkdownTextarea'
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -56,6 +61,7 @@ export type ToolFormDefaults = {
   categoryIds: string[]
   tagIds: string[]
   features: string[]
+  planFeatures: string[]
   strengths: string[]
   weaknesses: string[]
   bestFor: string[]
@@ -150,6 +156,13 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
   const [name, setName] = useState(defaultValues?.name ?? '')
   const [slug, setSlug] = useState(defaultValues?.slug ?? '')
   const [shortDesc, setShortDesc] = useState(defaultValues?.shortDescription ?? '')
+  const [longDesc, setLongDesc] = useState(defaultValues?.longDescription ?? '')
+  const [features, setFeatures] = useState(defaultValues?.features.join('\n') ?? '')
+  const [planFeatures, setPlanFeatures] = useState(defaultValues?.planFeatures.join('\n') ?? '')
+  const [strengths, setStrengths] = useState(defaultValues?.strengths.join('\n') ?? '')
+  const [weaknesses, setWeaknesses] = useState(defaultValues?.weaknesses.join('\n') ?? '')
+  const [bestFor, setBestFor] = useState(defaultValues?.bestFor.join('\n') ?? '')
+  const [notIdealFor, setNotIdealFor] = useState(defaultValues?.notIdealFor.join('\n') ?? '')
   const [published, setPublished] = useState(defaultValues?.published ?? false)
   const [hasFreePlan, setHasFreePlan] = useState(defaultValues?.hasFreePlan ?? false)
   const [isAffiliate, setIsAffiliate] = useState(defaultValues?.isAffiliate ?? false)
@@ -238,26 +251,28 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
         <Field
           label="Kurzbeschreibung"
           required
-          hint={`${shortDesc.length}/160 Zeichen`}
+          // Hinweis: shortDescription dient auch als Meta-/OG-Description.
+          // SEO-optimal sind dort ≤160 Zeichen — das technische Limit liegt
+          // bei 500, damit längere Texte für Listen-Ansichten möglich sind.
+          hint={`${shortDesc.length}/500 Zeichen — SEO-optimal für Meta-Description: ≤160`}
           error={fe.shortDescription}
         >
-          <textarea
+          <MarkdownTextarea
             name="shortDescription"
             value={shortDesc}
-            onChange={e => setShortDesc(e.target.value)}
+            onChange={setShortDesc}
             placeholder="Prägnante Beschreibung für Listen und Meta-Tags"
-            rows={2}
-            style={{ ...inputStyle(!!fe.shortDescription), resize: 'vertical' }}
+            rows={3}
           />
         </Field>
 
-        <Field label="Ausführliche Beschreibung" hint="Markdown wird unterstützt">
-          <textarea
+        <Field label="Ausführliche Beschreibung" hint="Markdown wird unterstützt (fett, kursiv, unterstrichen)">
+          <MarkdownTextarea
             name="longDescription"
-            defaultValue={defaultValues?.longDescription ?? ''}
+            value={longDesc}
+            onChange={setLongDesc}
             placeholder="Detaillierte Beschreibung des Tools..."
             rows={6}
-            style={{ ...inputStyle(false), resize: 'vertical' }}
           />
         </Field>
       </Section>
@@ -368,52 +383,62 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <Field label="Features" hint="Kernfunktionen des Tools">
-            <textarea
+            <MarkdownTextarea
               name="features"
-              defaultValue={defaultValues?.features.join('\n') ?? ''}
+              value={features}
+              onChange={setFeatures}
               placeholder={'Automatisierung\nWebhook-Unterstützung\n...'}
               rows={5}
-              style={{ ...inputStyle(false), resize: 'vertical' }}
+            />
+          </Field>
+
+          <Field label="Plan & Preisdetails" hint="Ein Eintrag pro Zeile. Erscheint in der Preisbox auf der Tool-Seite.">
+            <MarkdownTextarea
+              name="planFeatures"
+              value={planFeatures}
+              onChange={setPlanFeatures}
+              placeholder={'Unbegrenzte Workflows\n5 Team-Mitglieder\n...'}
+              rows={5}
             />
           </Field>
 
           <Field label="Stärken">
-            <textarea
+            <MarkdownTextarea
               name="strengths"
-              defaultValue={defaultValues?.strengths.join('\n') ?? ''}
+              value={strengths}
+              onChange={setStrengths}
               placeholder={'Einfache Einrichtung\nGroße App-Bibliothek\n...'}
               rows={5}
-              style={{ ...inputStyle(false), resize: 'vertical' }}
             />
           </Field>
 
           <Field label="Schwächen">
-            <textarea
+            <MarkdownTextarea
               name="weaknesses"
-              defaultValue={defaultValues?.weaknesses.join('\n') ?? ''}
+              value={weaknesses}
+              onChange={setWeaknesses}
               placeholder={'Teuer bei hohem Volumen\n...'}
               rows={5}
-              style={{ ...inputStyle(false), resize: 'vertical' }}
             />
           </Field>
 
           <Field label="Ideal für">
-            <textarea
+            <MarkdownTextarea
               name="bestFor"
-              defaultValue={defaultValues?.bestFor.join('\n') ?? ''}
+              value={bestFor}
+              onChange={setBestFor}
               placeholder={'Kleine Teams\nMarketing-Agenturen\n...'}
               rows={5}
-              style={{ ...inputStyle(false), resize: 'vertical' }}
             />
           </Field>
 
           <Field label="Nicht ideal für">
-            <textarea
+            <MarkdownTextarea
               name="notIdealFor"
-              defaultValue={defaultValues?.notIdealFor.join('\n') ?? ''}
+              value={notIdealFor}
+              onChange={setNotIdealFor}
               placeholder={'Entwickler, die API bevorzugen\n...'}
               rows={5}
-              style={{ ...inputStyle(false), resize: 'vertical' }}
             />
           </Field>
         </div>

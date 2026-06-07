@@ -19,9 +19,30 @@ import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 import { toolJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
 import type { FaqItem } from '@/components/admin/FaqEditor'
+import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
 import styles from './page.module.css'
 
 const SITE_URL = 'https://toolsucher.de'
+
+// Rendert Markdown (fett/kursiv/unterstrichen) aus dem Admin-Formular inline,
+// ohne den Block-Wrapper <p>, den react-markdown standardmäßig erzeugt —
+// der würde in Listen-Items und neben Icons zu ungültigem verschachteltem
+// HTML und gebrochenem Inline-Layout führen.
+//
+// rehypeRaw erlaubt rohes HTML (für <u>…</u>, da Markdown kein natives
+// Underline kennt). Das ist hier unbedenklich, weil der Inhalt ausschließlich
+// aus dem eigenen Admin-Bereich stammt — kein nutzergenerierter Content.
+function InlineMarkdown({ text }: { text: string }) {
+  return (
+    <ReactMarkdown
+      rehypePlugins={[rehypeRaw]}
+      components={{ p: ({ children }) => <>{children}</> }}
+    >
+      {text}
+    </ReactMarkdown>
+  )
+}
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 3600
@@ -83,6 +104,10 @@ export default async function ToolDetailSeite({
 
   const t = tool.translations[0]
   if (!t) notFound()
+
+  // Plan & Preisdetails: eigenes Feld — Fallback auf features, solange ältere
+  // Tools noch kein planFeatures gepflegt haben.
+  const planFeatures = t.planFeatures.length > 0 ? t.planFeatures : t.features
 
   const primaryLink = tool.affiliateLinks[0]
   // Tracking-URL wenn Affiliate-Link vorhanden, sonst Vendor-Website als Fallback
@@ -178,7 +203,7 @@ export default async function ToolDetailSeite({
             </div>
           </div>
 
-          <p className={styles.toolDesc}>{t.shortDescription}</p>
+          <p className={styles.toolDesc}><InlineMarkdown text={t.shortDescription} /></p>
 
           {/* Badges */}
           <div className={styles.badgeRow}>
@@ -216,10 +241,10 @@ export default async function ToolDetailSeite({
           <p className={styles.priceAmount}>{preisFormatted}</p>
           <p className={styles.priceNote}>pro Monat (Einstiegspreis)</p>
 
-          {t.features.slice(0, 4).map((feature) => (
+          {planFeatures.slice(0, 4).map((feature) => (
             <div key={feature} className={styles.priceFeatureItem}>
               <span className={styles.priceFeatureCheck}>✓</span>
-              {feature}
+              <InlineMarkdown text={feature} />
             </div>
           ))}
 
@@ -253,7 +278,7 @@ export default async function ToolDetailSeite({
 
         {/* Kurzfazit — full-width */}
         <h2 className={styles.sectionTitle}>Kurzfazit</h2>
-        <p className={styles.longDesc}>{t.longDescription ?? t.shortDescription}</p>
+        <p className={styles.longDesc}><InlineMarkdown text={t.longDescription ?? t.shortDescription} /></p>
 
         {/* Stärken / Schwächen */}
         <div className={styles.swGrid}>
@@ -261,7 +286,7 @@ export default async function ToolDetailSeite({
             <p className={styles.swLabel}>Stärken</p>
             {t.strengths.map((s) => (
               <div key={s} className={styles.swItem}>
-                <span className={styles.swCheck}>✓</span>{s}
+                <span className={styles.swCheck}>✓</span><InlineMarkdown text={s} />
               </div>
             ))}
           </div>
@@ -269,7 +294,7 @@ export default async function ToolDetailSeite({
             <p className={styles.swLabelWeak}>Schwächen</p>
             {t.weaknesses.map((s) => (
               <div key={s} className={styles.swItem}>
-                <span className={styles.swCross}>✗</span>{s}
+                <span className={styles.swCross}>✗</span><InlineMarkdown text={s} />
               </div>
             ))}
           </div>
@@ -282,7 +307,7 @@ export default async function ToolDetailSeite({
             {t.bestFor.map((gruppe) => (
               <div key={gruppe} className={styles.bestForItem}>
                 <span className={styles.bestForCheck}>✓</span>
-                <span className={styles.bestForLabel}>{gruppe}</span>
+                <span className={styles.bestForLabel}><InlineMarkdown text={gruppe} /></span>
               </div>
             ))}
           </div>
@@ -290,7 +315,7 @@ export default async function ToolDetailSeite({
             <h2 className={styles.sectionTitleSpaced}>Für wen eher nicht geeignet?</h2>
             {t.notIdealFor.map((n) => (
               <div key={n} className={styles.notIdealItem}>
-                <span className={styles.notIdealCross}>✗</span>{n}
+                <span className={styles.notIdealCross}>✗</span><InlineMarkdown text={n} />
               </div>
             ))}
           </div>
@@ -307,7 +332,7 @@ export default async function ToolDetailSeite({
           {t.features.map((feature) => (
             <div key={feature} className={styles.featureCard}>
               <div className={styles.featureIcon}>✓</div>
-              <p className={styles.featureLabel}>{feature}</p>
+              <p className={styles.featureLabel}><InlineMarkdown text={feature} /></p>
             </div>
           ))}
         </div>
