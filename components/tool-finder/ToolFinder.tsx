@@ -192,7 +192,7 @@ export default function ToolFinder({ categories }: ToolFinderProps) {
               {tools.map((tool) => {
                 const t = tool.translations[0]
                 const name = t?.name ?? tool.slug
-                const vendorUrl = tool.affiliateLinks[0]?.url
+                const affiliateLink = tool.affiliateLinks[0]
                 const preis = formatPreis(tool.startingPriceCents, {
                   prefix: 'ab',
                   suffix: '/ Monat',
@@ -235,9 +235,9 @@ export default function ToolFinder({ categories }: ToolFinderProps) {
                     <Link href={`/tools/${tool.slug}`} className={styles.detailBtn}>
                       Details ansehen
                     </Link>
-                    {vendorUrl && (
+                    {affiliateLink && (
                       <a
-                        href={vendorUrl}
+                        href={`/api/track/${affiliateLink.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.vendorLink}
@@ -249,6 +249,13 @@ export default function ToolFinder({ categories }: ToolFinderProps) {
                 )
               })}
             </div>
+          )}
+
+          {/* Affiliate-Hinweis — nur wenn mindestens ein Tool einen Affiliate-Link hat */}
+          {tools.some((tool) => tool.affiliateLinks.length > 0) && (
+            <p className={styles.affiliateNote}>
+              * Bei mit → gekennzeichneten Links handelt es sich um Affiliate-Links.
+            </p>
           )}
 
           <button type="button" className={styles.restartBtn} onClick={handleRestart}>
