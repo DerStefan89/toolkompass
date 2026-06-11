@@ -58,6 +58,12 @@ enum PayoutStatus {
   failed
 }
 
+enum BillingCycle {
+  monthly
+  yearly
+  one_time
+}
+
 // ============================================================
 // 2. TAG-SYSTEM
 // ============================================================
@@ -135,6 +141,7 @@ model Tool {
   categories           ToolCategory[]
   tags                 ToolTag[]
   affiliateLinks       AffiliateLink[]
+  pricingPlans         PricingPlan[]
   comparisonsAsToolA   Comparison[]      @relation("ComparisonToolA")
   comparisonsAsToolB   Comparison[]      @relation("ComparisonToolB")
   articleMentions      ArticleTool[]
@@ -393,6 +400,23 @@ model AffiliateLink {
   @@index([toolId])
   @@index([trackingSlug])
   @@index([isActive])
+}
+
+model PricingPlan {
+  id            String       @id @default(cuid())
+  toolId        String
+  name          String       // z.B. "Starter", "Pro", "Enterprise"
+  priceCents    Int          // Preis in Cent (0 = kostenlos)
+  billingCycle  BillingCycle @default(monthly)
+  features      String[]     // z.B. ["5 User", "10 GB", "E-Mail-Support"]
+  isHighlighted Boolean      @default(false)
+  sortOrder     Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  tool Tool @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@index([toolId])
 }
 
 // ============================================================
