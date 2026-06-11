@@ -42,3 +42,8 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
+
+# lokale Arbeitsdateien (Tooltexte, Logos)
+Toolsucher_Tooltexte_*.docx
+Toolsucher_alle_Logos_PNG/
+Toolsucher_fehlende_Logos_PNG/
