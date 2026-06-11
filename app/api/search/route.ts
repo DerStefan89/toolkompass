@@ -2,14 +2,49 @@
  * Datei: app/api/search/route.ts
  *
  * Zweck: Öffentliche Autocomplete-API — liefert max. 5 Tool-Vorschläge
- *        für einen Suchbegriff (≥ 2 Zeichen), case-insensitive.
+ *        für einen Suchbegriff (≥ 2 Zeichen, ≤ 100 Zeichen), case-insensitive.
  *
- * Kein requireAdmin — öffentliche Route.
- * Kein Caching — kurze dynamische Antworten.
+ * Sicherheit:
+ * - Kein requireAdmin — öffentliche Route.
+ * - Rate-Limit: max 30 Requests pro IP pro 60 Sekunden (in-memory, sliding window).
+ * - Query-Länge auf 100 Zeichen begrenzt (verhindert teure ILIKE-Queries).
+ *
+ * Wird aufgerufen von:
+ * - components/SearchInput.tsx (Autocomplete-Dropdown)
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+
+// ─── Rate-Limit (gleiche Architektur wie app/api/track/[linkId]/route.ts) ────
+
+const RATE_LIMIT_MAX       = 30
+const RATE_LIMIT_WINDOW_MS = 60_000
+const MAX_QUERY_LENGTH     = 100
+
+const requestTimestamps = new Map<string, number[]>()
+
+function getIp(request: NextRequest): string | null {
+  const forwarded = request.headers.get('x-forwarded-for')
+  if (forwarded) return forwarded.split(',')[0].trim()
+  return request.headers.get('x-real-ip')
+}
+
+function isRateLimited(ip: string): boolean {
+  const now    = Date.now()
+  const cutoff = now - RATE_LIMIT_WINDOW_MS
+  const times  = (requestTimestamps.get(ip) ?? []).filter(t => t > cutoff)
+
+  if (times.length >= RATE_LIMIT_MAX) {
+    requestTimestamps.set(ip, times)
+    return true
+  }
+  times.push(now)
+  requestTimestamps.set(ip, times)
+  return false
+}
+
+// ─── Type ────────────────────────────────────────────────────────────────────
 
 export type SearchSuggestion = {
   slug: string
@@ -19,8 +54,17 @@ export type SearchSuggestion = {
   categoryName: string | null
 }
 
+// ─── Handler ─────────────────────────────────────────────────────────────────
+
 export async function GET(request: NextRequest) {
-  const q = request.nextUrl.searchParams.get('q')?.trim() ?? ''
+  // Rate-Limit prüfen
+  const ip = getIp(request)
+  if (ip && isRateLimited(ip)) {
+    return new NextResponse(null, { status: 429 })
+  }
+
+  // Query kappen und validieren
+  const q = (request.nextUrl.searchParams.get('q')?.trim() ?? '').slice(0, MAX_QUERY_LENGTH)
 
   if (q.length < 2) {
     return NextResponse.json([])

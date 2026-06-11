@@ -16,6 +16,7 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { getToolBySlug } from '@/lib/data/tools'
 import { formatPreis } from '@/lib/utils/format'
 import { toolJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
 import type { FaqItem } from '@/components/admin/FaqEditor'
@@ -45,7 +46,6 @@ function InlineMarkdown({ text }: { text: string }) {
 }
 
 export const dynamic = 'force-dynamic'
-export const revalidate = 3600
 
 export async function generateMetadata({
   params,
@@ -53,10 +53,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const tool = await prisma.tool.findUnique({
-    where: { slug },
-    include: { translations: { where: { locale: 'de' } } },
-  })
+  const tool = await getToolBySlug(slug)
   if (!tool) return {}
   const t = tool.translations[0]
   if (!t) return {}
@@ -79,26 +76,7 @@ export default async function ToolDetailSeite({
 }) {
   const { slug } = await params
 
-  const tool = await prisma.tool.findUnique({
-    where: { slug },
-    include: {
-      translations: { where: { locale: 'de' } },
-      vendor: true,
-      categories: {
-        include: {
-          category: {
-            include: { translations: { where: { locale: 'de' } } },
-          },
-        },
-      },
-      affiliateLinks: {
-        where: { isActive: true },
-        orderBy: { isPrimary: 'desc' },
-        take: 1,
-      },
-      tags: { include: { tag: true } },
-    },
-  })
+  const tool = await getToolBySlug(slug)
 
   if (!tool || !tool.published) notFound()
 

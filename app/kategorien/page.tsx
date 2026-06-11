@@ -15,7 +15,6 @@ import CategoryFilter from '@/components/category/CategoryFilter'
 import styles from './page.module.css'
 
 export const dynamic = 'force-dynamic'
-export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Alle Kategorien — ToolSucher',

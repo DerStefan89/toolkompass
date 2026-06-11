@@ -21,7 +21,6 @@ import { formatPreis } from '@/lib/utils/format'
 import styles from './page.module.css'
 
 export const dynamic = 'force-dynamic'
-export const revalidate = 3600
 
 
 const LOGO_FARBEN = [

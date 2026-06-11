@@ -20,7 +20,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { prisma } from '@/lib/prisma'
+import { getCategoryBySlug } from '@/lib/data/categories'
 import { formatPreis } from '@/lib/utils/format'
 import IconRenderer from '@/components/ui/IconRenderer'
 import { breadcrumbJsonLd } from '@/lib/seo/json-ld'
@@ -29,7 +29,6 @@ import styles from './page.module.css'
 const SITE_URL = 'https://toolsucher.de'
 
 export const dynamic = 'force-dynamic'
-export const revalidate = 3600
 
 export async function generateMetadata({
   params,
@@ -37,10 +36,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const category = await prisma.category.findUnique({
-    where: { slug },
-    include: { translations: { where: { locale: 'de' } } },
-  })
+  const category = await getCategoryBySlug(slug)
   if (!category) return {}
   const t = category.translations[0]
   if (!t) return {}
@@ -63,29 +59,7 @@ export default async function KategorieDetailSeite({
   // Next.js 15: params ist ein Promise — muss explizit awaited werden (Breaking Change vs. Next.js 14)
   const { slug } = await params
 
-  const category = await prisma.category.findUnique({
-    where: { slug },
-    include: {
-      translations: { where: { locale: 'de' } },
-      tools: {
-        where: { tool: { published: true } },
-        include: {
-          tool: {
-            include: {
-              translations: { where: { locale: 'de' } },
-              tags: { include: { tag: true } },
-              affiliateLinks: {
-                where: { isActive: true },
-                orderBy: { isPrimary: 'desc' },
-                take: 1,
-              },
-            },
-          },
-        },
-      },
-      tags: { include: { tag: true } },
-    },
-  })
+  const category = await getCategoryBySlug(slug)
 
   if (!category || !category.published) notFound()
 

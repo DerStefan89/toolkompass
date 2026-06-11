@@ -22,11 +22,16 @@ Das Design darf **nicht** frei interpretiert, modernisiert oder verändert werde
 
 ```
 Primärfarbe CTA:     #1e3a2a  (dunkles Grün)
+CTA Hover:           #152d1f
 Hintergrund:         #f5f0e8  (Creme/Offwhite)
 Karten-Hintergrund:  #ffffff
 Text primär:         #1a1a1a
-Text sekundär:       #555555
+Text sekundär:       #666666
 Border:              #e0dbd0
+Badge-Hintergrund:   #f0ece2
+Erfolg:              #38a169
+Fehler:              #e53e3e
+Warnung:             #d97706
 Border-Radius Card:  8px
 Border-Radius Button: 6px
 Schrift Headlines:   Playfair Display (Serif)
@@ -57,15 +62,22 @@ design-refs/6_Tool_bewerten.png         → Bewertungsformular
 ## 🏗️ Technischer Stack
 
 ```
-Framework:    Next.js 14+ mit App Router
-Sprache:      TypeScript (strict)
-Styling:      Tailwind CSS + CSS Variables für Design Tokens
-Datenbank:    PostgreSQL (Phase 3+)
-ORM:          Prisma
-Tests:        Playwright (E2E), Vitest (Unit)
-Validierung:  Zod
-Linting:      ESLint + Prettier
+Framework:    Next.js 16.2.6 (App Router)
+Sprache:      TypeScript (strict, 0 Fehler Pflicht)
+Styling:      CSS Modules (Mobile-First) + CSS Variables aus globals.css
+Datenbank:    PostgreSQL via Supabase (eu-central-1 Frankfurt)
+ORM:          Prisma 7 mit pg Driver Adapter
+Auth:         Supabase Auth (app_metadata.role für Admin)
+Hosting:      Vercel (Hobby Plan)
+Monitoring:   Sentry (nur Production, tracesSampleRate: 0)
+Linting:      ESLint (eslint-config-next)
 ```
+
+**Nicht im Projekt (nicht verwenden):**
+- Kein Tailwind-Preflight (nur `@import "tailwindcss/utilities"` für PostCSS)
+- Kein Zod (kommt erst für Webhook-Validierung in Phase 4.6)
+- Kein Playwright, kein Vitest (Vitest wird in Phase 4.6 eingeführt)
+- Kein Prettier (ESLint reicht)
 
 ---
 
@@ -85,90 +97,142 @@ Linting:      ESLint + Prettier
 - Jede Iteration ist klein, prüfbar und abgeschlossen
 - Keine großen Funktionspakete auf einmal
 - Erst planen, dann umsetzen
-- Mock-Daten klar von echten Daten trennen
+- Ein Task nach dem anderen — nie parallel
 
 ### Definition of Done
-- [ ] Screenshot-Referenz wurde genannt
-- [ ] Design bleibt treu
+- [ ] Design bleibt treu (Design-Tokens, keine neuen Farben/Schatten)
 - [ ] Komponenten sind wiederverwendbar
-- [ ] Props sind typisiert (TypeScript)
-- [ ] Fehlerzustände berücksichtigt
-- [ ] Leere Zustände berücksichtigt
+- [ ] Props sind typisiert (TypeScript strict, kein `any`)
+- [ ] Fehlerzustände berücksichtigt (catch + console.error + captureException)
+- [ ] Leere Zustände berücksichtigt (freundlicher Empty-State)
 - [ ] Lange Texte zerstören das Layout nicht
-- [ ] Mobile Darstellung berücksichtigt
-- [ ] Code ist sinnvoll kommentiert
-- [ ] Testfälle definiert
+- [ ] Mobile Darstellung berücksichtigt (375px default)
+- [ ] Jeder Container mit max-width hat auch width: 100%
+- [ ] Code ist sinnvoll kommentiert (Datei-Header + JSDoc)
+- [ ] `npx tsc --noEmit` → Exit 0
+- [ ] `npm run lint` → 0 neue Errors
+- [ ] KEINE Commits ohne explizite Freigabe
 
 ---
 
-## 🚫 Nicht im MVP (nicht bauen!)
+## 🔄 Aktueller Scope — Phase 4
 
-- Cashback / Auszahlungen
+### In Phase 4 (bauen!):
+- Tool-Finder (interaktiver Fragebogen)
+- PricingPlan-Modell + Admin-UI + Anzeige
+- User-Accounts mit Magic Link (Supabase Auth)
+- Bewertungssystem mit kategoriespezifischen Kriterien + Moderation
+- Tool-Stack-Manager (eingeloggter Bereich)
+- Cashback-Infrastruktur (Webhooks + Admin, NICHT öffentlich)
+
+### Nicht bauen:
 - Reselling
 - Partnerzugänge
 - Komplexes Abo-Management
-- Community-Bewertungen mit Moderation
 - White-Label-Funktionen
 - Automatische Preis-Scraper
-
-Diese Themen dürfen **architektonisch vorbereitet**, aber **nicht produktiv umgesetzt** werden.
+- Cashback-UI für Endnutzer (erst wenn echte Conversions bestätigt)
 
 ---
 
 ## 📁 Projektstruktur
 
 ```
-toolsucher/
-├── app/                    # Next.js App Router
-│   ├── (public)/           # Öffentliche Seiten
-│   │   ├── page.tsx        # Startseite
-│   │   ├── tools/          # /tools und /tools/[slug]
-│   │   ├── kategorien/     # /kategorien und /kategorien/[slug]
-│   │   ├── vergleichen/    # /vergleichen und /vergleichen/[slug]
-│   │   └── tool-stacks/    # /tool-stacks
-│   ├── (admin)/            # Admin-Bereich (Phase 3)
-│   └── layout.tsx
+toolkompass/
+├── app/
+│   ├── page.tsx                          Startseite
+│   ├── layout.tsx                        Root Layout
+│   ├── globals.css                       Design Tokens
+│   ├── sitemap.ts                        Auto-Sitemap
+│   ├── api/search/route.ts              Autocomplete-API
+│   ├── api/track/[linkId]/              Affiliate-Tracking
+│   ├── suche/                           Suchseite
+│   ├── kategorien/[slug]/               Kategorie-Detail
+│   ├── tools/[slug]/                    Tool-Detail
+│   ├── vergleichen/[slug]/              Vergleich
+│   ├── ratgeber/[slug]/                 Artikel
+│   ├── tool-stacks/[slug]/              Stack-Detail
+│   ├── tool-finder/                     Tool-Finder
+│   ├── einloggen/                       Login
+│   └── admin/
+│       ├── analytics/                   Affiliate-Dashboard
+│       ├── tools/                       Tool-CRUD + Affiliate-Filter
+│       ├── kategorien/                  Kategorie-CRUD
+│       ├── artikel/                     Artikel-CRUD
+│       ├── vergleiche/                  Vergleich-CRUD
+│       ├── stacks/                      Stack-CRUD
+│       ├── tags/                        Tag-CRUD
+│       └── vendors/                     Vendor-CRUD
 ├── components/
-│   ├── layout/             # Header, Footer, PageShell
-│   ├── tool/               # ToolCard, ToolGrid, ToolFinder
-│   ├── category/           # CategoryCard, CategoryGrid
-│   ├── comparison/         # ComparisonCard, ComparisonTable
-│   ├── ui/                 # Button, Badge, SearchBar, FilterPill etc.
-│   └── shared/             # CTABox, AffiliateNotice, FAQAccordion
+│   ├── SearchInput.tsx                  Autocomplete (Client Component)
+│   ├── admin/                           ToolForm, FaqEditor, AffiliateLinkManager, etc.
+│   ├── category/CategoryFilter.tsx      Live-Filter (Client Component)
+│   └── layout/                          Header, Footer
 ├── lib/
-│   ├── types/              # TypeScript-Typen
-│   ├── mock-data/          # Mock-Daten (klar als solche markiert)
-│   └── utils/
-├── styles/
-│   └── globals.css         # Design Tokens als CSS Variables
-├── design-refs/            # Design-Screenshots (Referenz)
-├── agents/                 # Agent-Prompt-Dateien
-└── docs/                   # Entscheidungen, Architektur
+│   ├── prisma.ts                        Singleton mit Driver Adapter
+│   ├── auth/require-admin.ts            Auth-Helper (prüft app_metadata.role)
+│   ├── data/                            Data-Access-Layer (React cache)
+│   ├── seo/json-ld.ts                   JSON-LD Helper
+│   ├── utils/format.ts                  formatPreis(cents, {hasFreePlan})
+│   ├── utils/pagination.ts              Pagination-Helper
+│   ├── utils/form.ts                    toSlug(), parseStr(), parseLines()
+│   └── supabase/                        server.ts, client.ts, admin.ts
+├── scripts/                             Import/Update-Scripts (mit --dry-run)
+├── proxy.ts                             Auth-Middleware (schützt /admin)
+├── CLAUDE.md                            ← DU BIST HIER
+├── ARCHITECTURE.md                      Code-Konventionen
+└── prisma/schema.prisma                 DB-Schema (28 Tabellen)
 ```
 
 ---
 
 ## 💬 Kommentar-Standard
 
-Jede wichtige Datei beginnt mit:
+Jede neue Datei beginnt mit:
 
 ```typescript
 /**
- * Datei: components/tool/ToolCard.tsx
+ * Datei: components/admin/PricingPlanManager.tsx
  *
  * Zweck: [Was macht diese Datei?]
  *
- * Design-Referenz:
- * - design-refs/1_Landing_Page.png
- * - design-refs/4_Alle_Kategorien.png
- *
- * Produkt-Kontext:
- * [Warum existiert diese Komponente? Was ist ihr Zweck im Produkt?]
+ * Wird aufgerufen von:
+ * - app/admin/tools/[id]/page.tsx
  *
  * Wichtig:
  * [Was darf nicht leichtfertig geändert werden?]
  */
 ```
+
+Jede neue Funktion bekommt JSDoc:
+
+```typescript
+/**
+ * Formatiert einen Preis in Cent auf deutsches Euro-Format.
+ * @param cents - Preis in Cent (null = kostenlos oder auf Anfrage)
+ * @param opts.hasFreePlan - true → "Kostenlos" statt "Auf Anfrage"
+ * @returns Formatierter Preis-String (z.B. "9,90 €")
+ */
+```
+
+---
+
+## 🔧 Bestehende Helper (NUTZEN, nicht neu schreiben)
+
+| Helper | Datei | Zweck |
+|--------|-------|-------|
+| `requireAdmin()` | `lib/auth/require-admin.ts` | Auth-Guard für Admin-Actions |
+| `formatPreis()` | `lib/utils/format.ts` | Preisformatierung Cent → Euro |
+| `parsePageParams()` | `lib/utils/pagination.ts` | Prisma-Pagination (25 pro Seite) |
+| `toSlug()` | `lib/utils/form.ts` | Slug-Generierung |
+| `parseStr()` / `parseLines()` | `lib/utils/form.ts` | FormData-Parsing |
+| `captureException()` | `@sentry/nextjs` | Error-Reporting |
+| `createSupabaseAdmin()` | `lib/supabase/admin.ts` | Supabase Admin-Client |
+
+### Bestehende Admin-Blaupausen (als Muster verwenden):
+- `AffiliateLinkManager.tsx` → Inline-CRUD pro Tool
+- `FaqEditor.tsx` → Dynamische Zeilen + Hidden-JSON-Field
+- `app/admin/vendors/` → Einfachstes CRUD-Muster (3 Actions, AdminTable, Pagination)
 
 ---
 
@@ -188,11 +252,9 @@ Mehrere Rollen können gleichzeitig aktiv sein (z. B. Builder + Guardian bei UI-
 
 ### Pflicht-Reviews nach jeder UI-Aufgabe
 
-Nach dem Erstellen oder Ändern von UI-Komponenten und Seiten **immer** kurz prüfen:
-
 **Frontend Reviewer** (`agents/frontend-reviewer.md`):
 - [ ] Kein `any` in TypeScript
-- [ ] `<button>` für Aktionen, `<a>` für Navigation
+- [ ] `<button>` für Aktionen, `<a>` / `<Link>` für Navigation
 - [ ] Empty State vorhanden
 - [ ] Layout bricht bei langen Texten nicht
 
@@ -207,7 +269,7 @@ Nach dem Erstellen oder Ändern von UI-Komponenten und Seiten **immer** kurz pr�
 ## 🔄 Entscheidungsregel bei Unsicherheit
 
 1. Design-Screenshot respektieren
-2. MVP-Scope einhalten
+2. Aktuellen Phase-4-Scope einhalten
 3. Wartbarkeit bevorzugen
 4. Komplexität reduzieren
 5. Entscheidung dokumentieren — niemals stillschweigend in Code verwandeln

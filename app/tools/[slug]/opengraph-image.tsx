@@ -6,7 +6,7 @@
  */
 
 import { ImageResponse } from 'next/og'
-import { prisma } from '@/lib/prisma'
+import { getToolBySlug } from '@/lib/data/tools'
 
 export const runtime = 'nodejs'
 export const size = { width: 1200, height: 630 }
@@ -18,10 +18,7 @@ export default async function Image({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const tool = await prisma.tool.findUnique({
-    where: { slug },
-    include: { translations: { where: { locale: 'de' } } },
-  })
+  const tool = await getToolBySlug(slug)
 
   const name = tool?.translations[0]?.name ?? slug
   const desc = tool?.translations[0]?.shortDescription ?? ''

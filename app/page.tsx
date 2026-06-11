@@ -24,7 +24,6 @@ import SearchInput from '@/components/SearchInput'
 import styles from './page.module.css'
 
 export const dynamic = 'force-dynamic'
-export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'ToolSucher — Digitale Business-Tools entdecken & vergleichen',

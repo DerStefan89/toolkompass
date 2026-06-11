@@ -13,7 +13,6 @@ import { prisma } from '@/lib/prisma'
 import styles from './page.module.css'
 
 export const dynamic = 'force-dynamic'
-export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Tool-Vergleiche — ToolSucher',

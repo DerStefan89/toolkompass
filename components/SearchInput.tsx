@@ -46,6 +46,7 @@ export default function SearchInput({
   const [activeIndex, setActiveIndex] = useState(-1)
   const router = useRouter()
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const abortRef = useRef<AbortController | null>(null)
   const listboxId = useId()
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -53,6 +54,8 @@ export default function SearchInput({
     setValue(newValue)
 
     if (debounceRef.current) clearTimeout(debounceRef.current)
+    // Laufende Requests abbrechen — verhindert Race Condition bei schnellem Tippen
+    if (abortRef.current) abortRef.current.abort()
 
     const trimmed = newValue.trim()
     if (trimmed.length < 2) {
@@ -63,17 +66,23 @@ export default function SearchInput({
     }
 
     debounceRef.current = setTimeout(async () => {
+      const controller = new AbortController()
+      abortRef.current = controller
       setLoading(true)
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`)
+        const res = await fetch(
+          `/api/search?q=${encodeURIComponent(trimmed)}`,
+          { signal: controller.signal }
+        )
         if (res.ok) {
           const data: SearchSuggestion[] = await res.json()
           setSuggestions(data)
           setShowDropdown(true)
           setActiveIndex(-1)
         }
-      } catch {
-        // Netzwerkfehler — Dropdown leer lassen
+      } catch (err) {
+        // AbortError ist normal (neuer Tastendruck), alles andere ignorieren
+        if (err instanceof DOMException && err.name === 'AbortError') return
       } finally {
         setLoading(false)
       }

@@ -10,6 +10,7 @@
 - Alle Farben/Abstände über CSS-Variablen aus `globals.css`
 - Breakpoints: `640px` · `768px` · `1024px` · `1280px`
 - Mobile-First: Default für 375 px, `@media (min-width: X)` für größere
+- Jeder Container mit `max-width` braucht auch `width: 100%`
 
 ---
 
@@ -24,18 +25,27 @@
 ### 3. Auth
 
 - Erste Zeile jeder Admin-Server-Action: `await requireAdmin()`
+- Erste Zeile jeder User-Server-Action: `await requireUser()`
 - Kein direktes `createClient()` + `getUser()` in Actions
-- `requireAdmin()` wirft `AuthError` wenn nicht eingeloggt
+- `requireAdmin()` wirft `AuthError` wenn nicht eingeloggt oder nicht Admin
+- `requireUser()` wirft `AuthError` wenn nicht eingeloggt (ab Phase 4.3)
 
 ```ts
-// Korrekt:
+// Admin-Action:
 try {
   await requireAdmin()
 } catch {
   return { error: 'Nicht autorisiert.' }
 }
 
-// Falsch:
+// User-Action (ab Phase 4.3):
+try {
+  const { userId } = await requireUser()
+} catch {
+  return { error: 'Bitte einloggen.' }
+}
+
+// Falsch (NIEMALS in Actions):
 const supabase = await createClient()
 const { data: { user } } = await supabase.auth.getUser()
 if (!user) return { error: 'Nicht autorisiert.' }
@@ -57,6 +67,8 @@ if (!user) return { error: 'Nicht autorisiert.' }
 - Slugs via `toSlug()` aus `lib/utils/form.ts`
 - `revalidatePath` nach jeder Mutation auf Admin- UND public Pfad
 - `Promise.all` für parallele Queries
+- DB-Migrationen: SQL-Datei erstellen → MANUELL im Supabase SQL Editor ausführen → `npx prisma generate`. NICHT `prisma migrate` (crasht auf Vercel)
+- Data-Access-Layer: wiederverwendbare Queries in `lib/data/*.ts` mit `React.cache()` — keine Prisma-Calls direkt in Page-Dateien duplizieren
 
 ---
 
@@ -77,4 +89,12 @@ if (!user) return { error: 'Nicht autorisiert.' }
 | `SUPABASE_SERVICE_ROLE_KEY` außerhalb `lib/supabase/admin.ts` | Nur in `admin.ts` |
 | Direkter Prisma-Call in Client Components | Server Action / Route Handler |
 | `take` ohne `skip` | Immer beide setzen |
-| `createClient()` + `getUser()` in Actions | `requireAdmin()` |
+| `createClient()` + `getUser()` in Actions | `requireAdmin()` / `requireUser()` |
+| `prisma migrate` | SQL manuell in Supabase ausführen |
+| Nutzergenerierter Content durch `rehypeRaw` / `dangerouslySetInnerHTML` | Plain Text rendern (XSS-Schutz) |
+
+**Zur letzten Regel:** `react-markdown` mit `rehypeRaw` wird aktuell für Admin-Content verwendet
+(Tool-Beschreibungen). Das ist vertretbar, weil der Inhalt nur von Admins stammt.
+Ab Phase 4.4 (Bewertungssystem) kommt nutzergenerierter Content dazu —
+Kommentare und Bewertungen werden **ausschließlich als Plain Text** gerendert.
+Kein Markdown, kein HTML, kein `dangerouslySetInnerHTML` für User-Input.

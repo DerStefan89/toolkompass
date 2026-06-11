@@ -43,16 +43,16 @@ export default async function SuchSeite({
   searchParams: Promise<{ q?: string }>
 }) {
   const { q } = await searchParams
-  const query = q?.trim() ?? ''
+  const query = (q?.trim() ?? '').slice(0, 100)
 
   const tools = query
     ? await prisma.tool.findMany({
         where: {
           published: true,
           OR: [
-            { translations: { some: { name: { contains: query, mode: 'insensitive' } } } },
-            { translations: { some: { shortDescription: { contains: query, mode: 'insensitive' } } } },
-            { categories: { some: { category: { translations: { some: { name: { contains: query, mode: 'insensitive' } } } } } } },
+            { translations: { some: { locale: 'de', name: { contains: query, mode: 'insensitive' } } } },
+            { translations: { some: { locale: 'de', shortDescription: { contains: query, mode: 'insensitive' } } } },
+            { categories: { some: { category: { translations: { some: { locale: 'de', name: { contains: query, mode: 'insensitive' } } } } } } },
           ],
         },
         include: {
