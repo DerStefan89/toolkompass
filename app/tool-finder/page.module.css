@@ -1,11 +1,13 @@
 /**
  * Datei: app/tool-finder/page.module.css
  *
- * Zweck: Styles für die Tool-Finder Coming-Soon-Seite — Mobile-First, CSS Variables.
+ * Zweck: Styles für die Tool-Finder-Seite (Chrome: Breadcrumb, Titel, Intro).
+ * Der eigentliche Wizard bringt sein eigenes Stylesheet mit
+ * (components/tool-finder/ToolFinder.module.css).
  *
  * Breakpoints:
- * - Default  → Mobile (375px): einspaltig, Vorschau-Box ausgeblendet
- * - ≥ 768px  → Desktop: 2-spaltig mit 340px Vorschau-Box sticky
+ * - Default → Mobile (375px)
+ * - ≥ 768px → größeres Padding
  */
 
 /* ─── Wrapper ─────────────────────────────────────────────── */
@@ -37,360 +39,26 @@
   text-decoration: none;
 }
 
-/* ─── Layout: Content + Sidebar ──────────────────────────── */
+/* ─── Titel + Intro ───────────────────────────────────────── */
 
-/* Mobile: einspaltig */
-.contentArea {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  align-items: flex-start;
-  width: 100%;
-  overflow: hidden;
-}
-
-@media (min-width: 768px) {
-  .contentArea {
-    flex-direction: row;
-    gap: 48px;
-  }
-}
-
-/* ─── Linke Seite ─────────────────────────────────────────── */
-
-.leftCol {
-  flex: 1;
-  min-width: 0;
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-.statusBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background-color: var(--color-warning-bg);
-  color: var(--color-warning-text);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 14px;
-  border-radius: 20px;
-  margin-bottom: 20px;
-}
-
-/* !important auf font-family + font-size: überschreibt Tailwind v4 Preflight */
 .pageTitle {
-  font-family: var(--font-playfair) !important;
-  font-size: 36px !important;
-  font-weight: 700;
+  font-family: var(--font-headline), serif;
+  font-size: 30px;
   color: var(--color-text-primary);
-  line-height: 1.2;
-  margin-bottom: 16px;
+  margin: 0 0 8px;
 }
 
 @media (min-width: 768px) {
   .pageTitle {
-    font-size: 52px !important;
+    font-size: 38px;
   }
 }
 
 .pageDesc {
-  font-size: 18px;
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-  margin-bottom: 32px;
-}
-
-/* ─── Feature-Pills ───────────────────────────────────────── */
-
-.featurePills {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 40px;
-}
-
-.featurePill {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-/* ─── Schritte ────────────────────────────────────────────── */
-
-/* !important auf font-family: überschreibt Tailwind v4 Preflight auf h2 */
-.sectionTitle {
-  font-family: var(--font-playfair) !important;
-  font-size: 22px !important;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: var(--color-text-primary);
-}
-
-.stepsList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 40px;
-}
-
-.stepCard {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  padding: 16px;
-}
-
-.stepNr {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: var(--color-cta);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
-.stepTitle {
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 2px;
-}
-
-.stepDesc {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-/* ─── Ergebnis-Hinweis ────────────────────────────────────── */
-
-.resultHint {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-.resultHintIcon {
-  font-size: 32px;
-  flex-shrink: 0;
-}
-
-.resultHintText {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-}
-
-/* ─── CTA-Card ────────────────────────────────────────────── */
-
-.ctaCard {
-  background-color: var(--color-bg-card);
-  border: 2px solid var(--color-cta);
-  border-radius: var(--radius-card);
-  padding: 32px;
-  text-align: center;
-}
-
-/* !important auf font-family: überschreibt Tailwind v4 Preflight auf h3 */
-.ctaTitle {
-  font-family: var(--font-playfair) !important;
-  font-size: 22px !important;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-.ctaDesc {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  margin-bottom: 24px;
-  line-height: 1.6;
-}
-
-.ctaBtns {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.ctaBtnPrimary {
-  background-color: var(--color-cta);
-  color: white;
-  padding: 14px 28px;
-  border-radius: var(--radius-btn);
-  text-decoration: none;
   font-size: 15px;
-  font-weight: 600;
-}
-
-.ctaBtnSecondary {
-  background-color: transparent;
-  color: var(--color-text-primary);
-  padding: 14px 28px;
-  border-radius: var(--radius-btn);
-  text-decoration: none;
-  font-size: 15px;
-  border: 1px solid var(--color-border);
-}
-
-/* ─── Rechte Seite (Vorschau) ─────────────────────────────── */
-
-/* Mobile: ausgeblendet */
-.previewCol {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .previewCol {
-    display: block;
-    width: 340px;
-    flex-shrink: 0;
-  }
-}
-
-.previewBox {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  padding: 24px;
-  position: sticky;
-  top: 24px;
-}
-
-.previewHeader {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.previewHeaderIcon {
-  font-size: 16px;
-}
-
-.previewHeaderTitle {
-  font-weight: 700;
-  font-size: 14px;
-}
-
-/* Schritt-Zeile */
-.previewStepRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: var(--radius-card);
-  background-color: transparent;
-  margin-bottom: 4px;
-}
-
-.previewStepRowActive {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: var(--radius-card);
-  background-color: var(--color-bg);
-  margin-bottom: 4px;
-}
-
-.previewStepNr {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background-color: var(--color-badge-bg);
-  color: var(--color-text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
-.previewStepNrActive {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background-color: var(--color-cta);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
-.previewStepLabel {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--color-text-secondary);
-}
-
-.previewStepLabelActive {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-/* Ergebnis-Vorschau */
-.previewResult {
-  margin-top: 20px;
-  padding: 16px;
-  background-color: var(--color-bg);
-  border-radius: var(--radius-card);
-  text-align: center;
-}
-
-.previewResultIcon {
-  font-size: 28px;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.previewResultText {
-  font-size: 13px;
   color: var(--color-text-secondary);
   line-height: 1.5;
-}
-
-/* Datenschutz-Hinweis */
-.previewPrivacy {
-  margin-top: 16px;
-  padding: 12px;
-  background-color: var(--color-bg);
-  border-radius: var(--radius-card);
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-}
-
-.previewPrivacyIcon {
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
-.previewPrivacyText {
-  font-size: 11px;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
+  margin: 0 0 32px;
+  max-width: 640px;
+  width: 100%;
 }
