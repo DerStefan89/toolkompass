@@ -149,6 +149,7 @@ model Tool {
   pageViews            PageView[]
   ratings              Rating[]
   userTools            UserTool[]
+  ratingCriteria       ToolRatingCriterion[]
 
   @@index([slug])
   @@index([published])
@@ -580,16 +581,56 @@ model Payout {
 model Rating {
   id         String   @id @default(cuid())
   toolId     String
-  score      Int
-  comment    String?
+  userId     String   // jetzt PFLICHT (nur eingeloggte bewerten)
+  score      Int      // Gesamteindruck 1-5 ("alles in allem")
+  comment    String?  // Plain Text! Wird NIE als Markdown gerendert (ARCHITECTURE §7)
   isApproved Boolean  @default(false)
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  userId     String?
-  user       User?    @relation(fields: [userId], references: [id])
-  tool       Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tool   Tool   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  scores RatingScore[]
 
+  @@unique([toolId, userId])  // ein Nutzer bewertet ein Tool nur einmal
   @@index([toolId])
   @@index([isApproved])
   @@index([userId])
+}
+
+model RatingCriterion {
+  id        String   @id @default(cuid())
+  name      String   // z.B. "DATEV-Anbindung"
+  slug      String   @unique
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tools  ToolRatingCriterion[]
+  scores RatingScore[]
+}
+
+model ToolRatingCriterion {
+  toolId      String
+  criterionId String
+
+  tool      Tool            @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  criterion RatingCriterion @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@id([toolId, criterionId])
+  @@index([toolId])
+  @@index([criterionId])
+}
+
+model RatingScore {
+  id          String @id @default(cuid())
+  ratingId    String
+  criterionId String
+  score       Int    // 1-5 Sterne für dieses Kriterium
+
+  rating    Rating          @relation(fields: [ratingId], references: [id], onDelete: Cascade)
+  criterion RatingCriterion @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@unique([ratingId, criterionId])  // ein Score pro Kriterium pro Bewertung
+  @@index([ratingId])
+  @@index([criterionId])
 }
