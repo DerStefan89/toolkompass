@@ -1,0 +1,70 @@
+/**
+ * Datei: components/rating/StarInput.module.css
+ *
+ * Zweck: Styles für die Sterne-Auswahl. Nur Design-Tokens, Mobile-tauglich.
+ */
+
+.fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.legend {
+  padding: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.required {
+  color: var(--color-error);
+}
+
+.description {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 2px 0 6px;
+}
+
+.stars {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.starLabel {
+  cursor: pointer;
+  line-height: 1;
+}
+
+.star {
+  font-size: 28px;
+  color: var(--color-warning); /* Amber — gefüllte/leere Sterne */
+  transition: transform 0.08s ease;
+  display: inline-block;
+}
+
+.starLabel:hover .star {
+  transform: scale(1.1);
+}
+
+/* Sichtbarer Fokus-Ring für Tastaturbedienung */
+.srOnly:focus-visible + .star {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Visuell versteckt, aber für Screenreader/Tastatur erreichbar */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

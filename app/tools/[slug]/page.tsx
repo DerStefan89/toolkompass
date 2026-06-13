@@ -228,6 +228,9 @@ export default async function ToolDetailSeite({
               initialInStack={initialInStack}
               isLoggedIn={isLoggedIn}
             />
+            <Link href={`/tools/${tool.slug}/bewerten`} className={styles.btnSecondary}>
+              Tool bewerten
+            </Link>
             {tool.isAffiliate && (
               <span className={styles.affiliateBadge}>Partnerlink</span>
             )}

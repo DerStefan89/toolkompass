@@ -1,0 +1,124 @@
+/**
+ * Datei: components/rating/RatingForm.module.css
+ *
+ * Zweck: Styles für das Bewertungsformular. Nur Design-Tokens, Mobile-First.
+ */
+
+.form {
+  width: 100%;
+}
+
+.title {
+  font-family: var(--font-headline), serif;
+  font-size: 20px;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+}
+
+.editHint {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  background-color: var(--color-badge-bg);
+  border-radius: var(--radius-btn);
+  padding: 10px 12px;
+  margin: 0 0 16px;
+}
+
+.error {
+  font-size: 13px;
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-btn);
+  padding: 10px 12px;
+  margin: 0 0 16px;
+}
+
+.row {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-card);
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.counter {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  text-align: right;
+  margin: 4px 0 0;
+}
+
+.moderationHint {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-cta);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background-color: var(--color-cta-hover);
+}
+
+.submitBtn:disabled {
+  background-color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
+/* ─── Erfolgs-Zustand ─────────────────────────────────────── */
+
+.successBox {
+  background-color: var(--color-badge-bg);
+  border-radius: var(--radius-card);
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.successTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-success-text);
+  margin: 0 0 8px;
+}
+
+.successText {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+.backLink {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-cta);
+  text-decoration: none;
+}
