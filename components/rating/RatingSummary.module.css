@@ -2,7 +2,7 @@
  * Datei: components/rating/RatingSummary.module.css
  *
  * Zweck: Styles für die Bewertungs-Anzeige auf der Tool-Detailseite.
- * Nur Design-Tokens, Mobile-First.
+ * Nur Design-Tokens, Mobile-First. Kommentar-Styles liegen in CommentList.module.css.
  */
 
 .section {
@@ -55,86 +55,51 @@
   color: var(--color-text-secondary);
 }
 
-/* ─── Kriterien ───────────────────────────────────────────── */
+/* ─── Kriterien-Balken ────────────────────────────────────── */
 
-.critList {
-  list-style: none;
-  margin: 0 0 24px;
-  padding: 0;
+.criteriaList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-width: 480px;
+  gap: 10px;
+  max-width: 520px;
+  margin-bottom: 28px;
 }
 
-.critItem {
-  display: flex;
-  justify-content: space-between;
+/* 3 Spalten: Name | Balken | Zahl — gleich ausgerichtet */
+.criteriaRow {
+  display: grid;
+  grid-template-columns: minmax(90px, 150px) 1fr 34px;
   align-items: center;
-  gap: 12px;
-  font-size: 14px;
+  gap: 10px;
 }
 
-.critName {
+.criteriaName {
+  font-size: 13px;
   color: var(--color-text-primary);
-}
-
-.critValue {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.critNum {
+.barTrack {
+  height: 8px;
+  width: 100%;
+  background-color: var(--color-badge-bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background-color: var(--color-cta);
+  border-radius: 4px;
+}
+
+.criteriaValue {
   font-size: 13px;
   font-weight: 600;
   color: var(--color-text-secondary);
-}
-
-/* ─── Kommentare ──────────────────────────────────────────── */
-
-.comments {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.comment {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  padding: 16px 18px;
-}
-
-.commentHead {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.commentName {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.commentDate {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-}
-
-.commentText {
-  font-size: 14px;
-  color: var(--color-text-primary);
-  line-height: 1.6;
-  margin: 0;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+  text-align: right;
 }
 
 /* ─── CTA ─────────────────────────────────────────────────── */

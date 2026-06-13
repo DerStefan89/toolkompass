@@ -2,19 +2,20 @@
  * Datei: components/rating/RatingSummary.tsx
  *
  * Zweck: Zeigt die freigegebenen Bewertungen eines Tools — Gesamtdurchschnitt,
- * Durchschnitt pro Kriterium und die Kommentare. Server Component.
+ * Durchschnitt pro Kriterium (als kompakte Balken) und die Kommentare
+ * (aufklappbar über CommentList). Server Component.
  *
  * Wird aufgerufen von:
  * - app/tools/[slug]/page.tsx
  *
  * Wichtig (ARCHITECTURE §7):
- * - Kommentare sind nutzergenerierter Content und werden als PLAIN TEXT
- *   gerendert ({comment}) — niemals Markdown/rehypeRaw/dangerouslySetInnerHTML.
+ * - Kommentare werden als PLAIN TEXT gerendert (in CommentList) — niemals
+ *   Markdown/rehypeRaw/dangerouslySetInnerHTML.
  * - Es wird nie die E-Mail gezeigt, nur der Anzeigename (firstName / "Nutzer").
  */
 
 import Link from 'next/link'
-import StarDisplay from './StarDisplay'
+import CommentList from './CommentList'
 import type { ToolRatingSummary } from '@/lib/data/ratings'
 import styles from './RatingSummary.module.css'
 
@@ -22,8 +23,6 @@ interface RatingSummaryProps {
   summary: ToolRatingSummary
   slug: string
 }
-
-const dateFmt = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
 
 function formatNum(n: number): string {
   return n.toFixed(1).replace('.', ',')
@@ -54,36 +53,35 @@ export default function RatingSummary({ summary, slug }: RatingSummaryProps) {
             </span>
           </div>
 
-          {/* Kriterien-Durchschnitte */}
+          {/* Kriterien-Durchschnitte als Balken */}
           {criteriaAverages.length > 0 && (
-            <ul className={styles.critList}>
+            <div className={styles.criteriaList}>
               {criteriaAverages.map((c) => (
-                <li key={c.criterionId} className={styles.critItem}>
-                  <span className={styles.critName}>{c.criterionName}</span>
-                  <span className={styles.critValue}>
-                    <StarDisplay value={c.average} size={14} />
-                    <span className={styles.critNum}>{formatNum(c.average)}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {/* Kommentare */}
-          {comments.length > 0 && (
-            <div className={styles.comments}>
-              {comments.map((comment) => (
-                <div key={comment.id} className={styles.comment}>
-                  <div className={styles.commentHead}>
-                    <StarDisplay value={comment.score} size={14} />
-                    <span className={styles.commentName}>{comment.userName}</span>
-                    <span className={styles.commentDate}>{dateFmt.format(comment.createdAt)}</span>
+                <div key={c.criterionId} className={styles.criteriaRow}>
+                  <span className={styles.criteriaName}>{c.criterionName}</span>
+                  <div className={styles.barTrack}>
+                    <div
+                      className={styles.barFill}
+                      style={{ width: `${(c.average / 5) * 100}%` }}
+                    />
                   </div>
-                  {/* PLAIN TEXT — React escaped automatisch, kein Markdown */}
-                  <p className={styles.commentText}>{comment.comment}</p>
+                  <span className={styles.criteriaValue}>{formatNum(c.average)}</span>
                 </div>
               ))}
             </div>
+          )}
+
+          {/* Kommentare (Server → Client: createdAt als ISO-String) */}
+          {comments.length > 0 && (
+            <CommentList
+              comments={comments.map((c) => ({
+                id: c.id,
+                score: c.score,
+                comment: c.comment,
+                createdAt: c.createdAt.toISOString(),
+                userName: c.userName,
+              }))}
+            />
           )}
 
           <Link href={`/tools/${slug}/bewerten`} className={styles.ctaBtn}>
