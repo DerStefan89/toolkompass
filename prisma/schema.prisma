@@ -148,6 +148,7 @@ model Tool {
   stackItems           ToolStackItem[]
   pageViews            PageView[]
   ratings              Rating[]
+  userTools            UserTool[]
 
   @@index([slug])
   @@index([published])
@@ -414,7 +415,8 @@ model PricingPlan {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
-  tool Tool @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  tool      Tool       @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  userTools UserTool[]
 
   @@index([toolId])
 }
@@ -484,9 +486,29 @@ model User {
 
   cashbackAccount CashbackAccount?
   ratings         Rating[]
+  userTools       UserTool[]
 
   @@index([supabaseId])
   @@index([email])
+}
+
+model UserTool {
+  id               String        @id @default(cuid())
+  userId           String
+  toolId           String
+  pricingPlanId    String?       // optional: gewählter Tarif
+  customPriceCents Int?          // optional: selbst eingetragener Preis (Cent)
+  billingCycle     BillingCycle  @default(monthly) // für customPriceCents relevant
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tool        Tool         @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  pricingPlan PricingPlan? @relation(fields: [pricingPlanId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, toolId])  // ein Tool nur einmal pro Nutzer
+  @@index([userId])
+  @@index([toolId])
 }
 
 // ============================================================
