@@ -16,10 +16,13 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { createClient } from '@/lib/supabase/server'
 import { getToolBySlug } from '@/lib/data/tools'
+import { isToolInUserStack } from '@/lib/data/user-tools'
 import { formatPreis } from '@/lib/utils/format'
 import { toolJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
 import PricingSection from '@/components/tools/PricingSection'
+import UseToolButton from '@/components/tools/UseToolButton'
 import type { FaqItem } from '@/components/admin/FaqEditor'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -83,6 +86,23 @@ export default async function ToolDetailSeite({
 
   const t = tool.translations[0]
   if (!t) notFound()
+
+  // Optional-Auth: Gäste sehen die Seite normal, Eingeloggte zusätzlich den
+  // Stack-Status. Kein Redirect — nur ein leichter Zusatz-DB-Call (force-dynamic).
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  let isLoggedIn = false
+  let initialInStack = false
+  if (user) {
+    isLoggedIn = true
+    const dbUser = await prisma.user.findUnique({
+      where: { supabaseId: user.id },
+      select: { id: true },
+    })
+    if (dbUser) {
+      initialInStack = await isToolInUserStack(dbUser.id, tool.id)
+    }
+  }
 
   // Plan & Preisdetails: eigenes Feld — Fallback auf features, solange ältere
   // Tools noch kein planFeatures gepflegt haben.
@@ -202,6 +222,12 @@ export default async function ToolDetailSeite({
             <Link href="/vergleichen" className={styles.btnSecondary}>
               Vergleichen
             </Link>
+            <UseToolButton
+              toolId={tool.id}
+              slug={tool.slug}
+              initialInStack={initialInStack}
+              isLoggedIn={isLoggedIn}
+            />
             {tool.isAffiliate && (
               <span className={styles.affiliateBadge}>Partnerlink</span>
             )}

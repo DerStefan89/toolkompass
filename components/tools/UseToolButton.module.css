@@ -1,0 +1,49 @@
+/**
+ * Datei: components/tools/UseToolButton.module.css
+ *
+ * Zweck: Styles für den "Ich nutze das"-Button — Sekundär-Stil, konsistent
+ * mit .btnSecondary der Tool-Detailseite. Aktiv-Zustand dezent getönt.
+ * Nur Design-Tokens aus globals.css.
+ */
+
+/* Default / Gast / "nicht im Stack" — Sekundär-Button (wie .btnSecondary) */
+.btn {
+  display: inline-block;
+  background-color: transparent;
+  color: var(--color-text-primary);
+  padding: 10px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: var(--color-cta);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* "Du nutzt das" — dezent gefüllt/getönt, abgesetzt vom Default */
+.btnActive {
+  display: inline-block;
+  background-color: var(--color-badge-bg);
+  color: var(--color-cta);
+  padding: 10px 16px;
+  border: 1px solid var(--color-cta);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btnActive:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
