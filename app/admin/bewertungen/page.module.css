@@ -1,0 +1,163 @@
+/**
+ * Datei: app/admin/bewertungen/page.module.css
+ *
+ * Zweck: Styles für die Bewertungs-Moderationsqueue. Nur Design-Tokens.
+ */
+
+/* ─── Filter-Tabs ─────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  background-color: var(--color-bg-card);
+}
+
+.tabActive {
+  color: #ffffff;
+  background-color: var(--color-cta);
+  border-color: var(--color-cta);
+}
+
+/* ─── Liste ───────────────────────────────────────────────── */
+
+.empty {
+  padding: 32px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-card);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 18px 20px;
+}
+
+.cardHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.toolLink {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.toolLink:hover {
+  text-decoration: underline;
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.badgePending,
+.badgeApproved {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.badgePending {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.badgeApproved {
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+/* ─── Bewertung ───────────────────────────────────────────── */
+
+.overallRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.overallNum {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.critList {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.critItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.critName {
+  color: var(--color-text-secondary);
+}
+
+.critScore {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.comment {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  padding: 10px 12px;
+  margin: 0 0 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}

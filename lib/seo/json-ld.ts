@@ -14,6 +14,9 @@ export function toolJsonLd(
     logoUrl: string | null
     startingPriceCents: number | null
     hasFreePlan: boolean
+    // Nur setzen wenn mindestens eine freigegebene Bewertung existiert —
+    // ein leeres aggregateRating wäre invalides Schema.
+    rating?: { average: number; count: number }
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _siteUrl: string,
@@ -33,6 +36,17 @@ export function toolJsonLd(
       priceCurrency: 'EUR',
       availability: 'https://schema.org/OnlineOnly',
     },
+    ...(tool.rating && tool.rating.count >= 1
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: tool.rating.average,
+            ratingCount: tool.rating.count,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
   })
 }
 

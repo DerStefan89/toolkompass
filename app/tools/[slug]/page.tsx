@@ -19,9 +19,11 @@ import { prisma } from '@/lib/prisma'
 import { createClient } from '@/lib/supabase/server'
 import { getToolBySlug } from '@/lib/data/tools'
 import { isToolInUserStack } from '@/lib/data/user-tools'
+import { getToolRatingSummary } from '@/lib/data/ratings'
 import { formatPreis } from '@/lib/utils/format'
 import { toolJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
 import PricingSection from '@/components/tools/PricingSection'
+import RatingSummary from '@/components/rating/RatingSummary'
 import UseToolButton from '@/components/tools/UseToolButton'
 import type { FaqItem } from '@/components/admin/FaqEditor'
 import ReactMarkdown from 'react-markdown'
@@ -139,6 +141,9 @@ export default async function ToolDetailSeite({
 
   const tabs = ['Überblick', 'Funktionen', 'Preise', 'Vergleich', 'Alternativen', 'FAQ']
 
+  // Freigegebene Bewertungen (Durchschnitte + Kommentare) — separate Query
+  const ratingSummary = await getToolRatingSummary(tool.id)
+
   const jsonLd = toolJsonLd({
     name: t.name,
     description: t.shortDescription,
@@ -146,6 +151,10 @@ export default async function ToolDetailSeite({
     logoUrl: tool.logoUrl,
     startingPriceCents: tool.startingPriceCents,
     hasFreePlan: tool.hasFreePlan,
+    // aggregateRating nur wenn mindestens eine freigegebene Bewertung existiert
+    ...(ratingSummary.count >= 1 && ratingSummary.averageOverall !== null
+      ? { rating: { average: ratingSummary.averageOverall, count: ratingSummary.count } }
+      : {}),
   }, SITE_URL)
 
   const crumbLd = breadcrumbJsonLd([
@@ -351,6 +360,9 @@ export default async function ToolDetailSeite({
           ))}
         </div>
       </div>
+
+      {/* ─── BEWERTUNGEN ─────────────────────────────────────── */}
+      <RatingSummary summary={ratingSummary} slug={tool.slug} />
 
       {/* ─── ALTERNATIVEN ────────────────────────────────────── */}
       {alternatives.length > 0 && (
