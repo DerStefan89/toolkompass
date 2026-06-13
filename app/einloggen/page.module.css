@@ -1,7 +1,8 @@
 /**
  * Datei: app/einloggen/page.module.css
  *
- * Zweck: Styles für die Einloggen-Platzhalterseite — Mobile-First.
+ * Zweck: Styles für die Magic-Link-Login-Seite — Mobile-First.
+ * Wird von app/einloggen/page.tsx UND components/auth/LoginForm.tsx genutzt.
  *
  * Breakpoints: keine spezifischen — zentrierte Karte funktioniert auf allen Breiten.
  */
@@ -29,10 +30,11 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   padding: 40px 24px;
-  max-width: 400px;
+  max-width: 440px;
   width: 100%;
   text-align: center;
   box-shadow: var(--shadow-card);
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -66,4 +68,145 @@
   font-size: 13px;
   color: var(--color-text-secondary);
   text-decoration: none;
+}
+
+/* ─── Fehlermeldung ───────────────────────────────────────── */
+
+.fehler {
+  font-size: 13px;
+  color: var(--color-error);
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-btn);
+  text-align: left;
+}
+
+/* ─── Formular ────────────────────────────────────────────── */
+
+.form {
+  text-align: left;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.checkboxLabel {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.link {
+  color: var(--color-cta);
+  text-decoration: underline;
+}
+
+.submitBtn {
+  width: 100%;
+  background-color: var(--color-cta);
+  color: #ffffff;
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background-color: var(--color-cta-hover);
+}
+
+.submitBtn:disabled {
+  background-color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
+/* ─── Gesendet-Zustand ────────────────────────────────────── */
+
+.successBox {
+  background-color: var(--color-badge-bg);
+  border-radius: var(--radius-card);
+  padding: 24px 20px;
+  text-align: left;
+}
+
+.successTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 10px;
+}
+
+.successText {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.resendBtn {
+  width: 100%;
+  background-color: transparent;
+  color: var(--color-cta);
+  padding: 10px 12px;
+  border: 1px solid var(--color-cta);
+  border-radius: var(--radius-btn);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.resendBtn:disabled {
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+  cursor: not-allowed;
+}
+
+/* ─── Cooldown-Hinweis ────────────────────────────────────── */
+
+.countdown {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 8px;
+  text-align: center;
 }
