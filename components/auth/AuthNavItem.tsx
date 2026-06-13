@@ -2,7 +2,8 @@
  * Datei: components/auth/AuthNavItem.tsx
  *
  * Zweck: Header-Navigations-Eintrag, der je nach Session-Zustand
- * "Mein Konto" (eingeloggt) oder "Einloggen" (ausgeloggt) zeigt.
+ * "Meine Tools" (eingeloggt) oder "Einloggen" (ausgeloggt) zeigt.
+ * /konto bleibt von /meine-tools aus erreichbar.
  * Client-Island — prüft die Supabase-Session im Browser und reagiert
  * live auf Auth-Änderungen (onAuthStateChange).
  *
@@ -46,8 +47,8 @@ export function AuthNavItem({ className, onClick }: AuthNavItemProps) {
   if (loading) return null // kurzes Flackern vermeiden
 
   return isLoggedIn ? (
-    <Link href="/konto" className={className} onClick={onClick}>
-      Mein Konto
+    <Link href="/meine-tools" className={className} onClick={onClick}>
+      Meine Tools
     </Link>
   ) : (
     <Link href="/einloggen" className={className} onClick={onClick}>
