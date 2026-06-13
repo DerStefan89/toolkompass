@@ -1,0 +1,178 @@
+/**
+ * Datei: app/konto/page.module.css
+ *
+ * Zweck: Styles für die Konto-Seite — Mobile-First.
+ * Wird von app/konto/page.tsx UND components/auth/ProfileForm.tsx genutzt.
+ */
+
+/* ─── Wrapper ─────────────────────────────────────────────── */
+
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 40px 24px;
+  }
+}
+
+/* ─── Breadcrumb + Titel ──────────────────────────────────── */
+
+.breadcrumb {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.breadcrumbLink {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.title {
+  font-family: var(--font-headline), serif;
+  font-size: 28px;
+  color: var(--color-text-primary);
+  margin: 0 0 24px;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 34px;
+  }
+}
+
+/* ─── Card ────────────────────────────────────────────────── */
+
+.card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: 32px;
+  }
+}
+
+/* ─── Felder ──────────────────────────────────────────────── */
+
+.field {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+.emailValue {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  padding: 10px 12px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* ─── Form / Speichern ────────────────────────────────────── */
+
+.form {
+  width: 100%;
+}
+
+.fehler {
+  font-size: 13px;
+  color: var(--color-error);
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-btn);
+}
+
+.saveRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.submitBtn {
+  background-color: var(--color-cta);
+  color: #ffffff;
+  padding: 10px 24px;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background-color: var(--color-cta-hover);
+}
+
+.submitBtn:disabled {
+  background-color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
+.saved {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+/* ─── Trennlinie + Abmelden ───────────────────────────────── */
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 24px 0;
+}
+
+.logoutBtn {
+  background-color: transparent;
+  color: var(--color-error);
+  padding: 10px 24px;
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.logoutBtn:hover {
+  background-color: var(--color-error-bg);
+}

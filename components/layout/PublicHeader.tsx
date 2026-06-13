@@ -24,6 +24,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Heart, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { AuthNavItem } from '@/components/auth/AuthNavItem';
 import styles from './PublicHeader.module.css';
 
 const navLinks = [
@@ -106,10 +107,8 @@ export default function PublicHeader() {
               <Heart size={20} />
             </button>
 
-            {/* Einloggen — nur auf Desktop sichtbar */}
-            <Link href="/einloggen" className={styles.loginBtn}>
-              Einloggen
-            </Link>
+            {/* Einloggen / Mein Konto — nur auf Desktop sichtbar */}
+            <AuthNavItem className={styles.loginBtn} />
 
           </div>
         </div>
@@ -140,13 +139,10 @@ export default function PublicHeader() {
                 </Link>
               );
             })}
-            <Link
-              href="/einloggen"
-              onClick={() => setMenuOpen(false)}
+            <AuthNavItem
               className={styles.mobileLoginBtn}
-            >
-              Einloggen
-            </Link>
+              onClick={() => setMenuOpen(false)}
+            />
           </nav>
         </>
       )}
