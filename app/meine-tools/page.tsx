@@ -22,6 +22,7 @@ import { getUserTools } from '@/lib/data/user-tools'
 import { formatPreis } from '@/lib/utils/format'
 import { calculateStackCosts, getEffectivePrice } from '@/lib/utils/stack-costs'
 import RemoveToolButton from '@/components/tools/RemoveToolButton'
+import ToolPriceEditor from '@/components/tools/ToolPriceEditor'
 import styles from './page.module.css'
 
 export const dynamic = 'force-dynamic'
@@ -103,37 +104,56 @@ export default async function MeineToolsSeite() {
                   ? 'Eigener Preis'
                   : 'Standardpreis'
 
+              const availablePlans = ut.tool.pricingPlans.map((p) => ({
+                id: p.id,
+                name: p.name,
+                priceCents: p.priceCents,
+                billingCycle: p.billingCycle,
+              }))
+
               return (
                 <div key={ut.id} className={styles.toolRow}>
-                  {/* Logo */}
-                  <div
-                    className={styles.toolLogoWrap}
-                    style={{
-                      backgroundColor: ut.tool.logoUrl ? 'transparent' : 'var(--color-cta)',
-                      border: ut.tool.logoUrl ? '1px solid var(--color-border)' : 'none',
-                    }}
-                  >
-                    {ut.tool.logoUrl ? (
-                      <Image src={ut.tool.logoUrl} alt={name} width={40} height={40} className={styles.toolLogoImg} />
-                    ) : (
-                      <span className={styles.toolLogoInitial}>{name.charAt(0).toUpperCase()}</span>
-                    )}
+                  <div className={styles.toolRowMain}>
+                    {/* Logo */}
+                    <div
+                      className={styles.toolLogoWrap}
+                      style={{
+                        backgroundColor: ut.tool.logoUrl ? 'transparent' : 'var(--color-cta)',
+                        border: ut.tool.logoUrl ? '1px solid var(--color-border)' : 'none',
+                      }}
+                    >
+                      {ut.tool.logoUrl ? (
+                        <Image src={ut.tool.logoUrl} alt={name} width={40} height={40} className={styles.toolLogoImg} />
+                      ) : (
+                        <span className={styles.toolLogoInitial}>{name.charAt(0).toUpperCase()}</span>
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className={styles.toolInfo}>
+                      <Link href={`/tools/${ut.tool.slug}`} className={styles.toolName}>{name}</Link>
+                      <p className={styles.toolPlan}>{planLabel}</p>
+                    </div>
+
+                    {/* Preis */}
+                    <div className={styles.toolPrice}>
+                      <span className={styles.toolPriceAmount}>{priceStr}</span>
+                      {suffix && <span className={styles.toolPriceCycle}>{suffix}</span>}
+                    </div>
+
+                    {/* Entfernen */}
+                    <RemoveToolButton userToolId={ut.id} toolName={name} />
                   </div>
 
-                  {/* Info */}
-                  <div className={styles.toolInfo}>
-                    <Link href={`/tools/${ut.tool.slug}`} className={styles.toolName}>{name}</Link>
-                    <p className={styles.toolPlan}>{planLabel}</p>
-                  </div>
-
-                  {/* Preis */}
-                  <div className={styles.toolPrice}>
-                    <span className={styles.toolPriceAmount}>{priceStr}</span>
-                    {suffix && <span className={styles.toolPriceCycle}>{suffix}</span>}
-                  </div>
-
-                  {/* Entfernen */}
-                  <RemoveToolButton userToolId={ut.id} toolName={name} />
+                  {/* Preis anpassen (einklappbar) */}
+                  <ToolPriceEditor
+                    userToolId={ut.id}
+                    toolId={ut.tool.id}
+                    availablePlans={availablePlans}
+                    currentPricingPlanId={ut.pricingPlanId}
+                    currentCustomPriceCents={ut.customPriceCents}
+                    currentBillingCycle={ut.billingCycle}
+                  />
                 </div>
               )
             })}

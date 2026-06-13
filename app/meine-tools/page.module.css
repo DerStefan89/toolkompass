@@ -124,8 +124,7 @@
 
 .toolRow {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  flex-direction: column;
   padding: 14px 16px;
   background-color: var(--color-bg-card);
   border: 1px solid var(--color-border);
@@ -133,6 +132,13 @@
   box-shadow: var(--shadow-card);
   width: 100%;
   box-sizing: border-box;
+}
+
+.toolRowMain {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
 }
 
 .toolLogoWrap {
@@ -279,7 +285,7 @@
 /* ─── Mobile: Tool-Zeile umbrechen ────────────────────────── */
 
 @media (max-width: 480px) {
-  .toolRow {
+  .toolRowMain {
     flex-wrap: wrap;
   }
   .toolPrice {

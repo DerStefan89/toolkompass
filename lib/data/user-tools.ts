@@ -29,6 +29,7 @@ export const getUserTools = cache(async (userId: string) => {
       tool: {
         include: {
           translations: { where: { locale: 'de' } },
+          pricingPlans: { orderBy: { sortOrder: 'asc' } },
         },
       },
       pricingPlan: true,
