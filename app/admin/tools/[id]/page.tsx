@@ -21,6 +21,8 @@ import type { FaqItem } from '@/components/admin/FaqEditor'
 import DeleteButton from '@/components/admin/DeleteButton'
 import AffiliateLinkManager from '@/components/admin/AffiliateLinkManager'
 import type { AffiliateLinkData } from '@/components/admin/AffiliateLinkManager'
+import PricingPlanManager from '@/components/admin/PricingPlanManager'
+import type { PricingPlanData } from '@/components/admin/PricingPlanManager'
 import LogoUpload from '@/components/admin/LogoUpload'
 import { updateTool, deleteTool } from '@/app/admin/tools/actions'
 
@@ -39,6 +41,7 @@ export default async function EditToolPage({ params }: Props) {
         categories: true,
         tags: true,
         affiliateLinks: { orderBy: { createdAt: 'asc' } },
+        pricingPlans: { orderBy: { sortOrder: 'asc' } },
       },
     }),
     prisma.vendor.findMany({
@@ -99,6 +102,16 @@ export default async function EditToolPage({ params }: Props) {
     isPrimary:    l.isPrimary,
   }))
 
+  const pricingPlans: PricingPlanData[] = tool.pricingPlans.map(p => ({
+    id:            p.id,
+    name:          p.name,
+    priceCents:    p.priceCents,
+    billingCycle:  p.billingCycle,
+    features:      p.features,
+    isHighlighted: p.isHighlighted,
+    sortOrder:     p.sortOrder,
+  }))
+
   // Die Tool-ID wird vorab eingebunden, damit ToolForm die generische Signatur
   // (prev, formData) => Promise<ActionState> erhält
   const boundUpdateTool = updateTool.bind(null, id)
@@ -150,6 +163,8 @@ export default async function EditToolPage({ params }: Props) {
       <LogoUpload toolId={id} currentLogoUrl={tool.logoUrl ?? null} />
 
       <AffiliateLinkManager toolId={id} toolSlug={tool.slug} links={affiliateLinks} />
+
+      <PricingPlanManager toolId={id} toolSlug={tool.slug} plans={pricingPlans} />
 
       {/* Gefahrenzone */}
       <div style={{
