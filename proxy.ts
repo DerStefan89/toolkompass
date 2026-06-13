@@ -1,9 +1,10 @@
 /**
  * Datei: proxy.ts
  *
- * Zweck: Schützt alle /admin-Routen.
- * Nicht eingeloggte Nutzer werden auf /admin/login weitergeleitet.
- * Eingeloggte Nutzer auf /admin/login werden auf /admin weitergeleitet.
+ * Zweck: Schützt /admin-Routen UND eingeloggte User-Bereiche (/konto, /meine-tools).
+ * - Admin: Nicht eingeloggt → /admin/login; eingeloggt auf /admin/login → /admin (bzw. /).
+ * - User: Nicht eingeloggt auf /konto oder /meine-tools → /einloggen (mit next-Rücksprung).
+ *         Eingeloggt auf /einloggen → /konto.
  *
  * Hinweis: Diese Datei heißt proxy.ts (vormals middleware.ts).
  * Next.js 16 hat die "middleware"-Konvention zugunsten von "proxy" abgelöst.
@@ -56,9 +57,28 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL(isAdmin ? '/admin' : '/', request.url))
   }
 
+  // ─── User-Bereiche (nach der Admin-Logik — Admin-Verhalten bleibt unverändert) ───
+
+  const isUserRoute =
+    request.nextUrl.pathname.startsWith('/konto') ||
+    request.nextUrl.pathname.startsWith('/meine-tools')
+  const isEinloggenPage = request.nextUrl.pathname === '/einloggen'
+
+  // Geschützte User-Bereiche: ohne Login → /einloggen mit Rücksprung-Ziel
+  if (isUserRoute && !user) {
+    const loginUrl = new URL('/einloggen', request.url)
+    loginUrl.searchParams.set('next', request.nextUrl.pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Eingeloggt auf /einloggen → direkt zum Konto
+  if (isEinloggenPage && user) {
+    return NextResponse.redirect(new URL('/konto', request.url))
+  }
+
   return supabaseResponse
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/konto/:path*', '/meine-tools/:path*', '/einloggen'],
 }
