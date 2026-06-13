@@ -64,6 +64,20 @@
   margin-bottom: 24px;
 }
 
+/* Nummerierte Magic-Link-Erklärung — linksbündig, gut lesbar */
+.steps {
+  text-align: left;
+  margin: 16px 0 24px;
+  padding-left: 20px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.steps li {
+  margin-bottom: 4px;
+}
+
 .backLink {
   font-size: 13px;
   color: var(--color-text-secondary);

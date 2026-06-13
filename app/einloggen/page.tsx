@@ -43,8 +43,13 @@ export default async function EinloggenSeite({
         <div className={styles.cardIcon}>🧭</div>
         <h1 className={styles.cardTitle}>Einloggen</h1>
         <p className={styles.cardDesc}>
-          Melde dich mit einem Magic Link an — kein Passwort nötig.
+          Bei ToolSucher meldest du dich ohne Passwort an. So funktioniert&apos;s:
         </p>
+        <ol className={styles.steps}>
+          <li>E-Mail-Adresse eingeben</li>
+          <li>Wir senden dir einen Login-Link per E-Mail</li>
+          <li>Auf den Link klicken — fertig, du bist eingeloggt</li>
+        </ol>
 
         {fehlerText && <p className={styles.fehler}>{fehlerText}</p>}
 
