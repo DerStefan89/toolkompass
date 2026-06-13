@@ -153,7 +153,7 @@ export default async function Home() {
       {/* ─── TOOL-CARDS ───────────────────────────────────── */}
       <section className={styles.toolSection}>
         <div className={styles.toolGrid}>
-          {tools.map((tool) => {
+          {tools.map((tool, index) => {
             const t = tool.translations[0]
             const name = t?.name ?? tool.slug
             const preis = formatPreis(tool.startingPriceCents, { prefix: 'ab', hasFreePlan: tool.hasFreePlan })
@@ -171,7 +171,9 @@ export default async function Home() {
                       }}
                     >
                       {tool.logoUrl ? (
-                        <Image src={tool.logoUrl} alt={name} width={36} height={36} className={styles.toolLogoImg} />
+                        // priority nur fürs erste (oberste) Logo — verbessert LCP,
+                        // ohne alle Bilder eager zu laden (Rest bleibt lazy).
+                        <Image src={tool.logoUrl} alt={name} width={36} height={36} className={styles.toolLogoImg} priority={index === 0} />
                       ) : (
                         <span className={styles.toolLogoInitial}>
                           {name.charAt(0).toUpperCase()}
