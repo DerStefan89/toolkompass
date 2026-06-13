@@ -21,6 +21,7 @@ const navItems = [
   { href: '/admin/vergleiche', label: 'Vergleiche', icon: '⇄'  },
   { href: '/admin/stacks',     label: 'Tool-Stacks',icon: '⊕'  },
   { href: '/admin/tags',       label: 'Tags',       icon: '◎'  },
+  { href: '/admin/bewertungskriterien', label: 'Bewertungskriterien', icon: '★' },
 ]
 
 export default function AdminSidebar({ user }: { user: User }) {
