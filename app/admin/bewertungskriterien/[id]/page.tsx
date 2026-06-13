@@ -15,6 +15,7 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth/require-admin'
 import CriterionForm from '@/components/admin/CriterionForm'
+import CriterionAssigner from '@/components/admin/CriterionAssigner'
 import DeleteButton from '@/components/admin/DeleteButton'
 import { updateCriterion, deleteCriterion } from '@/app/admin/bewertungskriterien/actions'
 
@@ -35,6 +36,38 @@ export default async function EditCriterionPage({ params }: Props) {
   })
 
   if (!criterion) notFound()
+
+  // Alle publizierten Kategorien mit Tools + ob das Tool dieses Kriterium schon hat.
+  // Kleine Datenmenge (≈17 Kategorien / ≈98 Tools) → vorab laden, Client filtert.
+  const categories = await prisma.category.findMany({
+    where: { published: true },
+    include: {
+      translations: { where: { locale: 'de' } },
+      tools: {
+        include: {
+          tool: {
+            include: {
+              translations: { where: { locale: 'de' } },
+              ratingCriteria: { where: { criterionId: id } },
+            },
+          },
+        },
+      },
+    },
+    orderBy: { slug: 'asc' },
+  })
+
+  const toolsByCategory = categories.map((cat) => ({
+    categoryId: cat.id,
+    categoryName: cat.translations[0]?.name ?? cat.slug,
+    tools: cat.tools
+      .map((tc) => ({
+        id: tc.tool.id,
+        name: tc.tool.translations[0]?.name ?? tc.tool.slug,
+        isAssigned: tc.tool.ratingCriteria.length > 0,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name, 'de')),
+  }))
 
   const defaultValues = {
     name:      criterion.name,
@@ -85,6 +118,30 @@ export default async function EditCriterionPage({ params }: Props) {
           action={boundUpdate}
           defaultValues={defaultValues}
         />
+      </div>
+
+      {/* Tools zuweisen */}
+      <div style={{
+        marginTop: '24px',
+        backgroundColor: 'var(--color-bg-card)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-card)',
+        padding: '32px',
+        boxShadow: 'var(--shadow-card)',
+      }}>
+        <h2 style={{
+          fontSize: '16px',
+          fontWeight: '700',
+          color: 'var(--color-text-primary)',
+          marginBottom: '4px',
+        }}>
+          Tools zuweisen
+        </h2>
+        <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
+          Kategorie wählen und festlegen, welche Tools dieses Kriterium bewerten lassen.
+          Gespeichert wird nur die gewählte Kategorie — andere bleiben unberührt.
+        </p>
+        <CriterionAssigner criterionId={id} toolsByCategory={toolsByCategory} />
       </div>
 
       {/* Gefahrenzone */}
