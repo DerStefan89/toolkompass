@@ -43,6 +43,9 @@ export const getToolBySlug = cache(async (slug: string) => {
         skip: 0,
       },
       tags: { include: { tag: true } },
+      pricingPlans: {
+        orderBy: { sortOrder: 'asc' },
+      },
     },
   })
 })

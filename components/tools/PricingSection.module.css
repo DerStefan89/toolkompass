@@ -1,0 +1,134 @@
+/**
+ * Datei: components/tools/PricingSection.module.css
+ *
+ * Zweck: Styles für die Preistarif-Sektion auf der Tool-Detailseite.
+ * Mobile-First, ausschließlich CSS-Variablen aus globals.css.
+ *
+ * Spaltenlogik (max. so viele Spalten wie Tarife):
+ * - .cols1 → immer 1 Spalte
+ * - .cols2 → 1 Spalte mobil, 2 Spalten ab 768px
+ * - .cols3 → 1 Spalte mobil, 2 ab 768px, 3 ab 1024px (auch bei 4+ Tarifen)
+ */
+
+.section {
+  width: 100%;
+  margin-top: 40px;
+}
+
+.title {
+  font-family: var(--font-headline), serif;
+  font-size: 24px;
+  color: var(--color-text-primary);
+  margin: 0 0 20px;
+}
+
+/* ─── Grid ──────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .cols2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cols3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .cols3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ─── Card ──────────────────────────────────────────────────── */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Hervorgehobener Tarif: kräftigerer Rahmen in der CTA-Farbe (kein neues Token) */
+.cardHighlighted {
+  border: 2px solid var(--color-cta);
+}
+
+.badge {
+  position: absolute;
+  top: -11px;
+  left: 24px;
+  padding: 3px 10px;
+  background: var(--color-cta);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 20px;
+}
+
+.planName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 10px;
+}
+
+/* ─── Preis ─────────────────────────────────────────────────── */
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 16px;
+}
+
+.price {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+}
+
+.cycle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* ─── Feature-Liste ─────────────────────────────────────────── */
+
+.featureList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.featureCheck {
+  flex-shrink: 0;
+  color: var(--color-success);
+  font-weight: 700;
+}

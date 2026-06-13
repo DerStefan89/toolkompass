@@ -19,6 +19,7 @@ import { prisma } from '@/lib/prisma'
 import { getToolBySlug } from '@/lib/data/tools'
 import { formatPreis } from '@/lib/utils/format'
 import { toolJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
+import PricingSection from '@/components/tools/PricingSection'
 import type { FaqItem } from '@/components/admin/FaqEditor'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -277,6 +278,12 @@ export default async function ToolDetailSeite({
             ))}
           </div>
         </div>
+
+        {/* Preise & Tarife — nur wenn PricingPlans gepflegt sind (sonst bleibt
+            die Einstiegspreis-Anzeige im Hero die einzige Preisangabe) */}
+        {tool.pricingPlans.length > 0 && (
+          <PricingSection plans={tool.pricingPlans} toolName={t.name} />
+        )}
 
         {/* Für wen geeignet / nicht geeignet — zwei Boxen nebeneinander */}
         <div className={styles.fitGrid}>
