@@ -35,6 +35,7 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],  // nur lateinische Zeichen (kein Arabisch etc.)
   display: "swap",     // Seite lädt erst, Schrift kommt nach — kein Flackern
+  weight: ["400", "500", "600", "700"],  // nur die genutzten Gewichte
 });
 
 // Dasselbe für Inter
@@ -42,6 +43,7 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 
