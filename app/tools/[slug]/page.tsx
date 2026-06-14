@@ -16,9 +16,7 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import { createClient } from '@/lib/supabase/server'
 import { getToolBySlug } from '@/lib/data/tools'
-import { isToolInUserStack } from '@/lib/data/user-tools'
 import { getToolRatingSummary } from '@/lib/data/ratings'
 import { formatPreis } from '@/lib/utils/format'
 import { toolJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
@@ -51,7 +49,10 @@ function InlineMarkdown({ text }: { text: string }) {
   )
 }
 
-export const dynamic = 'force-dynamic'
+// ISR: gecacht, alle 5 Minuten im Hintergrund aufgefrischt (Admin-Mutationen
+// invalidieren zusätzlich sofort via revalidatePath). Der User-spezifische
+// Stack-Status lädt clientseitig im UseToolButton — die Seite bleibt cachebar.
+export const revalidate = 300
 
 export async function generateMetadata({
   params,
@@ -89,22 +90,27 @@ export default async function ToolDetailSeite({
   const t = tool.translations[0]
   if (!t) notFound()
 
-  // Optional-Auth: Gäste sehen die Seite normal, Eingeloggte zusätzlich den
-  // Stack-Status. Kein Redirect — nur ein leichter Zusatz-DB-Call (force-dynamic).
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  let isLoggedIn = false
-  let initialInStack = false
-  if (user) {
-    isLoggedIn = true
-    const dbUser = await prisma.user.findUnique({
-      where: { supabaseId: user.id },
-      select: { id: true },
-    })
-    if (dbUser) {
-      initialInStack = await isToolInUserStack(dbUser.id, tool.id)
-    }
-  }
+  // Alternativen und Bewertungen hängen nicht voneinander ab → parallel.
+  // KEIN Auth-Zugriff hier — der Stack-Status lädt clientseitig (ISR-cachebar).
+  const [alternatives, ratingSummary] = await Promise.all([
+    prisma.tool.findMany({
+      where: {
+        categories: { some: { categoryId: tool.categories[0]?.categoryId } },
+        slug: { not: slug },
+        published: true,
+      },
+      take: 3,
+      select: {
+        slug: true,
+        logoUrl: true,
+        translations: {
+          where: { locale: 'de' },
+          select: { name: true, shortDescription: true },
+        },
+      },
+    }),
+    getToolRatingSummary(tool.id),
+  ])
 
   // Plan & Preisdetails: eigenes Feld — Fallback auf features, solange ältere
   // Tools noch kein planFeatures gepflegt haben.
@@ -122,27 +128,7 @@ export default async function ToolDetailSeite({
 
   const preisFormatted = formatPreis(tool.startingPriceCents, { hasFreePlan: tool.hasFreePlan })
 
-  const alternatives = await prisma.tool.findMany({
-    where: {
-      categories: { some: { categoryId: tool.categories[0]?.categoryId } },
-      slug: { not: slug },
-      published: true,
-    },
-    take: 3,
-    select: {
-      slug: true,
-      logoUrl: true,
-      translations: {
-        where: { locale: 'de' },
-        select: { name: true, shortDescription: true },
-      },
-    },
-  })
-
   const tabs = ['Überblick', 'Funktionen', 'Preise', 'Vergleich', 'Alternativen', 'FAQ']
-
-  // Freigegebene Bewertungen (Durchschnitte + Kommentare) — separate Query
-  const ratingSummary = await getToolRatingSummary(tool.id)
 
   const jsonLd = toolJsonLd({
     name: t.name,
@@ -231,12 +217,7 @@ export default async function ToolDetailSeite({
             <Link href="/vergleichen" className={styles.btnSecondary}>
               Vergleichen
             </Link>
-            <UseToolButton
-              toolId={tool.id}
-              slug={tool.slug}
-              initialInStack={initialInStack}
-              isLoggedIn={isLoggedIn}
-            />
+            <UseToolButton toolId={tool.id} slug={tool.slug} />
             <Link href={`/tools/${tool.slug}/bewerten`} className={styles.btnSecondary}>
               Tool bewerten
             </Link>

@@ -20,7 +20,7 @@ import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 import styles from './page.module.css'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 
 const LOGO_FARBEN = [

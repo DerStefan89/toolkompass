@@ -2,7 +2,7 @@
  * Datei: app/page.tsx
  *
  * Zweck: Startseite von ToolSucher.
- * Aufbau: Hero (2 Spalten) → Aufgaben-Pills → Tool-Cards → Kategorien-Scroll
+ * Aufbau: Hero (2 Spalten) â†’ Aufgaben-Pills â†’ Tool-Cards â†’ Kategorien-Scroll
  *
  * Design-Referenz:
  * - design-refs/1_Landing_Page.png
@@ -11,7 +11,7 @@
  * Tool-Cards zeigen die 6 neuesten publizierten Tools aus der DB.
  * Kategorien-Scroll zeigt alle publizierten Kategorien sortiert nach sortOrder.
  * Erlaubte Inline-Styles: backgroundColor + border auf .toolLogoWrap,
- * da sie von tool.logoUrl (Laufzeitwert) abhängen.
+ * da sie von tool.logoUrl (Laufzeitwert) abhÃ¤ngen.
  */
 
 import Link from 'next/link'
@@ -23,14 +23,14 @@ import IconRenderer from '@/components/ui/IconRenderer'
 import SearchInput from '@/components/SearchInput'
 import styles from './page.module.css'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'ToolSucher — Digitale Business-Tools entdecken & vergleichen',
-  description: 'Finde die besten digitalen Tools für dein Business.',
+  title: 'ToolSucher â€” Digitale Business-Tools entdecken & vergleichen',
+  description: 'Finde die besten digitalen Tools fÃ¼r dein Business.',
   openGraph: {
-    title: 'ToolSucher — Digitale Business-Tools entdecken & vergleichen',
-    description: 'Finde die besten digitalen Tools für dein Business.',
+    title: 'ToolSucher â€” Digitale Business-Tools entdecken & vergleichen',
+    description: 'Finde die besten digitalen Tools fÃ¼r dein Business.',
   },
 }
 
@@ -56,18 +56,18 @@ export default async function Home() {
   return (
     <main>
 
-      {/* ─── HERO ─────────────────────────────────────────── */}
+      {/* â”€â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className={styles.heroSection}>
 
         {/* Linke Spalte */}
         <div className={styles.heroLeft}>
 
           <h1 className={styles.heroHeadline}>
-            Finde und vergleiche die besten Tools für dein Business.
+            Finde und vergleiche die besten Tools fÃ¼r dein Business.
           </h1>
 
           <p className={styles.heroCopy}>
-            ToolSucher hilft Gründern, Selbstständigen und kleinen Teams in
+            ToolSucher hilft GrÃ¼ndern, SelbststÃ¤ndigen und kleinen Teams in
             Deutschland, passende Software zu finden und zu vergleichen.
           </p>
 
@@ -79,7 +79,7 @@ export default async function Home() {
           {/* Buttons */}
           <div className={styles.heroButtons}>
             <Link href="/tool-finder" className={styles.btnPrimary}>
-              Tool-Finder starten →
+              Tool-Finder starten â†’
             </Link>
             <Link href="/kategorien" className={styles.btnSecondary}>
               Kategorien ansehen
@@ -87,17 +87,17 @@ export default async function Home() {
           </div>
 
           {/* Aufgaben-Pills */}
-          <p className={styles.pillsLabel}>Was möchtest du erledigen?</p>
+          <p className={styles.pillsLabel}>Was mÃ¶chtest du erledigen?</p>
 
           <div className={styles.pillsRow}>
             {[
-              { icon: '🧾', label: 'Unternehmen verwalten' },
-              { icon: '📅', label: 'Termine buchen' },
-              { icon: '🎙', label: 'KI Tools einbinden' },
-              { icon: '🎬', label: 'Videos erstellen' },
-              { icon: '✍️', label: 'Social Media Kampagnen' },
-              { icon: '💼', label: 'Sales Funnel aufbauen' },
-              { icon: '📊', label: 'Präsentation erstellen' },
+              { icon: 'ðŸ§¾', label: 'Unternehmen verwalten' },
+              { icon: 'ðŸ“…', label: 'Termine buchen' },
+              { icon: 'ðŸŽ™', label: 'KI Tools einbinden' },
+              { icon: 'ðŸŽ¬', label: 'Videos erstellen' },
+              { icon: 'âœï¸', label: 'Social Media Kampagnen' },
+              { icon: 'ðŸ’¼', label: 'Sales Funnel aufbauen' },
+              { icon: 'ðŸ“Š', label: 'PrÃ¤sentation erstellen' },
             ].map((aufgabe) => (
               <Link key={aufgabe.label} href="/tool-finder" className={styles.pill}>
                 <span>{aufgabe.icon}</span>
@@ -108,12 +108,12 @@ export default async function Home() {
 
         </div>
 
-        {/* Rechte Spalte — Tool-Stack Box */}
+        {/* Rechte Spalte â€” Tool-Stack Box */}
         <div className={styles.heroRight}>
 
           <div className={styles.stackHeader}>
             <span className={styles.stackTitle}>Vorschau: Dein Tool-Stack</span>
-            <span className={styles.badge}>Bald verfügbar</span>
+            <span className={styles.badge}>Bald verfÃ¼gbar</span>
           </div>
 
           <p className={styles.stackCopy}>
@@ -122,7 +122,7 @@ export default async function Home() {
 
           {['Tools speichern', 'Kosten im Blick behalten', 'Alternativen entdecken'].map((feature) => (
             <div key={feature} className={styles.featureRow}>
-              <span className={styles.featureCheck}>✓</span>
+              <span className={styles.featureCheck}>âœ“</span>
               {feature}
             </div>
           ))}
@@ -132,11 +132,11 @@ export default async function Home() {
             {['Notion', 'sevdesk', 'Calendly'].map((tool) => (
               <div key={tool} className={styles.stackToolRow}>
                 <span>{tool}</span>
-                <span className={styles.stackToolDash}>– –</span>
+                <span className={styles.stackToolDash}>â€“ â€“</span>
               </div>
             ))}
             <p className={styles.stackPreviewNote}>
-              Monatliche Kosten (Beispiel): – – € / Monat
+              Monatliche Kosten (Beispiel): â€“ â€“ â‚¬ / Monat
             </p>
           </div>
 
@@ -144,13 +144,13 @@ export default async function Home() {
             Stack-Vorschau ansehen
           </Link>
 
-          <p className={styles.stackNotify}>🔔 Benachrichtigen lassen</p>
+          <p className={styles.stackNotify}>ðŸ”” Benachrichtigen lassen</p>
 
         </div>
 
       </section>
 
-      {/* ─── TOOL-CARDS ───────────────────────────────────── */}
+      {/* â”€â”€â”€ TOOL-CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className={styles.toolSection}>
         <div className={styles.toolGrid}>
           {tools.map((tool, index) => {
@@ -162,7 +162,7 @@ export default async function Home() {
               <div key={tool.id} className={styles.toolCard}>
                 <div className={styles.toolCardHeader}>
                   <div className={styles.toolCardLeft}>
-                    {/* backgroundColor + border: conditional auf logoUrl — erlaubte Inline-Styles */}
+                    {/* backgroundColor + border: conditional auf logoUrl â€” erlaubte Inline-Styles */}
                     <div
                       className={styles.toolLogoWrap}
                       style={{
@@ -171,7 +171,7 @@ export default async function Home() {
                       }}
                     >
                       {tool.logoUrl ? (
-                        // priority nur fürs erste (oberste) Logo — verbessert LCP,
+                        // priority nur fÃ¼rs erste (oberste) Logo â€” verbessert LCP,
                         // ohne alle Bilder eager zu laden (Rest bleibt lazy).
                         <Image src={tool.logoUrl} alt={name} width={36} height={36} className={styles.toolLogoImg} priority={index === 0} />
                       ) : (
@@ -187,7 +187,7 @@ export default async function Home() {
                       </p>
                     </div>
                   </div>
-                  <span className={styles.toolHeart}>♡</span>
+                  <span className={styles.toolHeart}>â™¡</span>
                 </div>
 
                 <p className={styles.toolDesc}>
@@ -210,12 +210,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── KATEGORIEN ───────────────────────────────────── */}
+      {/* â”€â”€â”€ KATEGORIEN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className={styles.catSection}>
         <div className={styles.catHeader}>
           <h2 className={styles.catTitle}>Entdecke Tools nach Kategorie</h2>
           <Link href="/kategorien" className={styles.catAllLink}>
-            Alle Kategorien ansehen →
+            Alle Kategorien ansehen â†’
           </Link>
         </div>
         <div className={styles.catScroll}>
@@ -227,7 +227,7 @@ export default async function Home() {
               <a
                 key={cat.id}
                 href={`/kategorien/${cat.slug}`}
-                // category-card aus globals.css liefert den Hover-Effekt (Grün)
+                // category-card aus globals.css liefert den Hover-Effekt (GrÃ¼n)
                 className={`category-card ${styles.catCard}`}
               >
                 <div className={`category-card-icon ${styles.catIcon}`}>

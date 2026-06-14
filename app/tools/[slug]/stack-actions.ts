@@ -17,6 +17,7 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { requireUser } from '@/lib/auth/require-user'
+import { isToolInUserStack } from '@/lib/data/user-tools'
 
 export type ToggleUserToolResult =
   | { success: true; inStack: boolean }
@@ -68,4 +69,25 @@ export async function toggleUserTool(
     }
     return { success: false, error: 'Es ist ein Fehler aufgetreten. Bitte versuche es erneut.' }
   }
+}
+
+/**
+ * Liefert den Stack-Status des aktuellen Nutzers für ein Tool.
+ * Wird vom (clientseitigen) UseToolButton beim Mounten aufgerufen, damit die
+ * Tool-Detailseite selbst keinen Pro-User-State hat und per ISR cachebar bleibt.
+ *
+ * @param toolId - ID des Tools
+ * @returns { isLoggedIn, inStack } — beides false, wenn nicht eingeloggt
+ */
+export async function getMyStackStatus(
+  toolId: string
+): Promise<{ isLoggedIn: boolean; inStack: boolean }> {
+  let session
+  try {
+    session = await requireUser()
+  } catch {
+    return { isLoggedIn: false, inStack: false }
+  }
+  const inStack = await isToolInUserStack(session.userId, toolId)
+  return { isLoggedIn: true, inStack }
 }
