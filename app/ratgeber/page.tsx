@@ -1,14 +1,14 @@
 /**
  * Datei: app/ratgeber/page.tsx
  *
- * Zweck: Ãœbersicht aller publizierten Ratgeber-Artikel â€” lÃ¤dt echte Daten aus Prisma.
- * Aufbau: Featured Guide â†’ Beliebte Guides Grid â†’ Tool-Vergleiche Grid
+ * Zweck: Übersicht aller publizierten Ratgeber-Artikel — lädt echte Daten aus Prisma.
+ * Aufbau: Featured Guide → Beliebte Guides Grid → Tool-Vergleiche Grid
  *
  * Design-Referenz:
- * - Kein eigener Screenshot â€” Layout bleibt identisch zur statischen VorgÃ¤ngerversion.
+ * - Kein eigener Screenshot — Layout bleibt identisch zur statischen Vorgängerversion.
  *
  * Wichtig:
- * - Filter-Pills sind vorerst dekorativ (InteraktivitÃ¤t ist Phase 5).
+ * - Filter-Pills sind vorerst dekorativ (Interaktivität ist Phase 5).
  * - Featured = neuester Artikel vom Typ guide oder top_list.
  * - Vergleiche werden separat unten angezeigt.
  */
@@ -21,16 +21,16 @@ import styles from './page.module.css'
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'Ratgeber & Guides â€” ToolSucher',
-  description: 'Praxisnahe Guides, Vergleiche und Anleitungen rund um digitale Tools fÃ¼r GrÃ¼nder, SelbststÃ¤ndige und kleine Teams.',
+  title: 'Ratgeber & Guides — ToolSucher',
+  description: 'Praxisnahe Guides, Vergleiche und Anleitungen rund um digitale Tools für Gründer, Selbstständige und kleine Teams.',
   alternates: { canonical: '/ratgeber' },
   openGraph: {
-    title: 'Ratgeber & Guides â€” ToolSucher',
-    description: 'Praxisnahe Guides, Vergleiche und Anleitungen rund um digitale Tools fÃ¼r GrÃ¼nder, SelbststÃ¤ndige und kleine Teams.',
+    title: 'Ratgeber & Guides — ToolSucher',
+    description: 'Praxisnahe Guides, Vergleiche und Anleitungen rund um digitale Tools für Gründer, Selbstständige und kleine Teams.',
   },
 }
 
-// Lesbare Bezeichnungen fÃ¼r jeden Artikel-Typ
+// Lesbare Bezeichnungen für jeden Artikel-Typ
 const typLabels: Record<string, string> = {
   guide:      'Guide',
   top_list:   'Top-Liste',
@@ -38,12 +38,12 @@ const typLabels: Record<string, string> = {
   tutorial:   'Anleitung',
 }
 
-// Statische Filter-Labels fÃ¼r die Pills (InteraktivitÃ¤t folgt in Phase 5)
+// Statische Filter-Labels für die Pills (Interaktivität folgt in Phase 5)
 const filterPills = ['Alle', 'Tool-Guides', 'Top-Listen', 'Vergleiche', 'Anleitungen', 'KI', 'Buchhaltung', 'Projektmanagement', 'Freelancer', 'Teams']
 
 export default async function RatgeberSeite() {
   // Alle publizierten Artikel laden, neueste zuerst
-  // Tools werden fÃ¼r die Featured-Box (Logo-Vorschau) mitgeladen
+  // Tools werden für die Featured-Box (Logo-Vorschau) mitgeladen
   const articles = await prisma.article.findMany({
     where: { published: true },
     include: {
@@ -64,7 +64,7 @@ export default async function RatgeberSeite() {
 
   // Aufteilung: Featured ist der neueste Guide oder Top-Liste
   const featured   = articles.find(a => a.type === 'guide' || a.type === 'top_list') ?? null
-  // Beliebte Guides: alle nicht-Vergleiche auÃŸer dem Featured
+  // Beliebte Guides: alle nicht-Vergleiche außer dem Featured
   const guides     = articles.filter(a => a.type !== 'comparison' && a.id !== featured?.id)
   // Vergleiche: nur Artikel vom Typ comparison
   const comparisons = articles.filter(a => a.type === 'comparison')
@@ -75,7 +75,7 @@ export default async function RatgeberSeite() {
       {/* Breadcrumb */}
       <p className={styles.breadcrumb}>
         <Link href="/" className={styles.breadcrumbLink}>Startseite</Link>
-        {' â€º '}
+        {' › '}
         Ratgeber
       </p>
 
@@ -84,17 +84,17 @@ export default async function RatgeberSeite() {
 
       <p className={styles.pageDesc}>
         Praxisnahe Guides, Vergleiche und Anleitungen rund um digitale Tools
-        fÃ¼r GrÃ¼nder, SelbststÃ¤ndige und kleine Teams.
+        für Gründer, Selbstständige und kleine Teams.
       </p>
 
-      {/* Suchfeld (dekorativ â€” InteraktivitÃ¤t Phase 5) */}
+      {/* Suchfeld (dekorativ — Interaktivität Phase 5) */}
       <input
         type="text"
         placeholder="Artikel, Tool oder Thema suchen ..."
         className={styles.searchInput}
       />
 
-      {/* Filter-Pills (dekorativ â€” InteraktivitÃ¤t Phase 5) */}
+      {/* Filter-Pills (dekorativ — Interaktivität Phase 5) */}
       <div className={styles.pillsRow}>
         {filterPills.map((filter, index) => (
           <span key={filter} className={index === 0 ? styles.pillActive : styles.pill}>
@@ -103,17 +103,17 @@ export default async function RatgeberSeite() {
         ))}
       </div>
 
-      {/* â”€â”€â”€ Empty State: Keine Artikel vorhanden â”€â”€â”€ */}
+      {/* ─── Empty State: Keine Artikel vorhanden ─── */}
       {articles.length === 0 && (
         <div className={styles.emptyCard}>
-          <p className={styles.emptyTitle}>Noch keine Artikel verÃ¶ffentlicht.</p>
+          <p className={styles.emptyTitle}>Noch keine Artikel veröffentlicht.</p>
           <p className={styles.emptyDesc}>
-            Guides, Top-Listen und Vergleiche erscheinen hier, sobald sie verÃ¶ffentlicht werden.
+            Guides, Top-Listen und Vergleiche erscheinen hier, sobald sie veröffentlicht werden.
           </p>
         </div>
       )}
 
-      {/* â”€â”€â”€ Featured Guide â”€â”€â”€ */}
+      {/* ─── Featured Guide ─── */}
       {featured && (() => {
         const dateStr = (featured.publishedAt ?? featured.createdAt).toLocaleDateString('de-DE', {
           day: 'numeric', month: 'long', year: 'numeric',
@@ -134,7 +134,7 @@ export default async function RatgeberSeite() {
               <p className={styles.featuredSubtitle}>{featured.subtitle}</p>
 
               <p className={styles.featuredMeta}>
-                {typLabels[featured.type] ?? featured.type} Â· {dateStr}
+                {typLabels[featured.type] ?? featured.type} · {dateStr}
               </p>
 
               <a href={`/ratgeber/${featured.slug}`} className={styles.featuredBtn}>
@@ -142,7 +142,7 @@ export default async function RatgeberSeite() {
               </a>
             </div>
 
-            {/* Tool-Logos: nur anzeigen wenn Artikel Tools enthÃ¤lt */}
+            {/* Tool-Logos: nur anzeigen wenn Artikel Tools enthält */}
             {toolLogos.length > 0 && (
               <div className={styles.featuredLogos}>
                 {toolLogos.map((t) => (
@@ -157,7 +157,7 @@ export default async function RatgeberSeite() {
         )
       })()}
 
-      {/* â”€â”€â”€ Beliebte Guides â”€â”€â”€ */}
+      {/* ─── Beliebte Guides ─── */}
       {guides.length > 0 && (
         <>
           <h2 className={styles.sectionTitle}>Beliebte Guides</h2>
@@ -179,7 +179,7 @@ export default async function RatgeberSeite() {
 
                   <div className={styles.cardFooter}>
                     <span className={styles.cardDate}>{dateStr}</span>
-                    <span className={styles.cardReadLink}>Artikel lesen â†’</span>
+                    <span className={styles.cardReadLink}>Artikel lesen →</span>
                   </div>
                 </a>
               )
@@ -188,7 +188,7 @@ export default async function RatgeberSeite() {
         </>
       )}
 
-      {/* â”€â”€â”€ Tool-Vergleiche â”€â”€â”€ */}
+      {/* ─── Tool-Vergleiche ─── */}
       {comparisons.length > 0 && (
         <>
           <h2 className={styles.sectionTitle}>Tool-Vergleiche</h2>
@@ -208,7 +208,7 @@ export default async function RatgeberSeite() {
 
                   <div className={styles.cardFooter}>
                     <span className={styles.cardDate}>{dateStr}</span>
-                    <span className={styles.cardReadLink}>Artikel lesen â†’</span>
+                    <span className={styles.cardReadLink}>Artikel lesen →</span>
                   </div>
                 </a>
               )

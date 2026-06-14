@@ -1,7 +1,7 @@
 /**
  * Datei: app/tool-stacks/page.tsx
  *
- * Zweck: Ãœbersicht aller publizierten Tool-Stacks â€” lÃ¤dt echte Daten aus Prisma.
+ * Zweck: Übersicht aller publizierten Tool-Stacks — lädt echte Daten aus Prisma.
  * Zeigt Tool-Anzahl und Zielgruppe pro Stack.
  *
  * Design-Referenz:
@@ -16,12 +16,12 @@ import styles from './page.module.css'
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'Tool-Stacks â€” ToolSucher',
-  description: 'Entdecke bewÃ¤hrte Tool-Kombinationen fÃ¼r Freelancer, Agenturen und kleine Teams.',
+  title: 'Tool-Stacks — ToolSucher',
+  description: 'Entdecke bewährte Tool-Kombinationen für Freelancer, Agenturen und kleine Teams.',
   alternates: { canonical: '/tool-stacks' },
   openGraph: {
-    title: 'Tool-Stacks â€” ToolSucher',
-    description: 'Entdecke bewÃ¤hrte Tool-Kombinationen fÃ¼r Freelancer, Agenturen und kleine Teams.',
+    title: 'Tool-Stacks — ToolSucher',
+    description: 'Entdecke bewährte Tool-Kombinationen für Freelancer, Agenturen und kleine Teams.',
   },
 }
 
@@ -39,29 +39,29 @@ export default async function ToolStacksSeite() {
   return (
     <main>
 
-      {/* â”€â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── HERO ─────────────────────────────────────────────── */}
       <section className={styles.heroSection}>
 
         {/* Linke Seite */}
         <div className={styles.heroLeft}>
-          <h1 className={styles.heroTitle}>Tool-Stacks fÃ¼r dein Business</h1>
+          <h1 className={styles.heroTitle}>Tool-Stacks für dein Business</h1>
           <p className={styles.heroDesc}>
-            BewÃ¤hrte Tool-Stacks und Tool-Kombinationen fÃ¼r Freelancer,
-            GrÃ¼nder, Creator und kleine Teams entdecken und speichern.
+            Bewährte Tool-Stacks und Tool-Kombinationen für Freelancer,
+            Gründer, Creator und kleine Teams entdecken und speichern.
           </p>
 
           {stacks.length === 0 && (
-            <span className={styles.emptyBadge}>Im Aufbau ðŸ› </span>
+            <span className={styles.emptyBadge}>Im Aufbau 🛠</span>
           )}
         </div>
 
-        {/* Rechte Seite â€” Info Box */}
+        {/* Rechte Seite — Info Box */}
         <div className={styles.infoBox}>
-          <div className={styles.infoBoxIcon}>ðŸš€</div>
+          <div className={styles.infoBoxIcon}>🚀</div>
           <h2 className={styles.infoBoxTitle}>Kuratierte Stacks</h2>
           <p className={styles.infoBoxDesc}>
-            Jeder Stack ist ein durchdachtes Tool-Set fÃ¼r einen bestimmten
-            Anwendungsfall â€” keine zufÃ¤lligen Listen.
+            Jeder Stack ist ein durchdachtes Tool-Set für einen bestimmten
+            Anwendungsfall — keine zufälligen Listen.
           </p>
           <Link href="/kategorien" className={styles.infoBoxBtn}>
             Alle Kategorien ansehen
@@ -70,7 +70,7 @@ export default async function ToolStacksSeite() {
 
       </section>
 
-      {/* â”€â”€â”€ STACKS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── STACKS ───────────────────────────────────────────── */}
       <section className={styles.stacksSection}>
 
         <h2 className={styles.sectionTitle}>
@@ -78,14 +78,14 @@ export default async function ToolStacksSeite() {
         </h2>
 
         {stacks.length === 0 ? (
-          <p className={styles.empty}>Noch keine Stacks verÃ¶ffentlicht.</p>
+          <p className={styles.empty}>Noch keine Stacks veröffentlicht.</p>
         ) : (
           <div className={styles.stackGrid}>
             {stacks.map((stack) => {
               const t = stack.translations[0]
               const name = t?.name ?? stack.slug
               const tagLine = stack.tags.length > 0
-                ? stack.tags.map((st) => st.tag.name).join(' Â· ')
+                ? stack.tags.map((st) => st.tag.name).join(' · ')
                 : t?.targetAudience ?? ''
 
               return (
@@ -95,7 +95,7 @@ export default async function ToolStacksSeite() {
                   className={styles.stackCard}
                 >
                   {/* Icon */}
-                  <div className={styles.stackIcon}>âŠ•</div>
+                  <div className={styles.stackIcon}>⊕</div>
 
                   {/* Name */}
                   <p className={styles.stackName}>{name}</p>
@@ -117,11 +117,11 @@ export default async function ToolStacksSeite() {
 
         {/* CTA Box unten */}
         <div className={styles.ctaBox}>
-          <div className={styles.ctaIcon}>ðŸ§­</div>
+          <div className={styles.ctaIcon}>🧭</div>
           <div className={styles.ctaContent}>
             <h3 className={styles.ctaTitle}>Nicht sicher, welche Tools du brauchst?</h3>
             <p className={styles.ctaDesc}>
-              Starte Ã¼ber die Tool-Suche und Vergleiche.
+              Starte über die Tool-Suche und Vergleiche.
               Der Tool-Finder hilft dir bei der Auswahl.
             </p>
           </div>

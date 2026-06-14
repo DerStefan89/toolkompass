@@ -1,7 +1,7 @@
 /**
  * Datei: app/kategorien/page.tsx
  *
- * Zweck: Ãœbersicht aller publizierten Kategorien â€” lÃ¤dt echte Daten aus Prisma.
+ * Zweck: Übersicht aller publizierten Kategorien — lädt echte Daten aus Prisma.
  * Zeigt Tool-Anzahl und die ersten 3 Tool-Namen pro Kategorie.
  *
  * Design-Referenz:
@@ -17,11 +17,11 @@ import styles from './page.module.css'
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'Alle Kategorien â€” ToolSucher',
+  title: 'Alle Kategorien — ToolSucher',
   description: 'Entdecke digitale Business-Tools nach Kategorie: Buchhaltung, CRM, Projektmanagement und mehr.',
   alternates: { canonical: '/kategorien' },
   openGraph: {
-    title: 'Alle Kategorien â€” ToolSucher',
+    title: 'Alle Kategorien — ToolSucher',
     description: 'Entdecke digitale Business-Tools nach Kategorie: Buchhaltung, CRM, Projektmanagement und mehr.',
   },
 }
@@ -49,7 +49,7 @@ export default async function KategorienSeite() {
       {/* Breadcrumb */}
       <p className={styles.breadcrumb}>
         <Link href="/" className={styles.breadcrumbLink}>Startseite</Link>
-        {' â€º '}
+        {' › '}
         Kategorien
       </p>
 
@@ -57,11 +57,11 @@ export default async function KategorienSeite() {
       <h1 className={styles.pageTitle}>Alle Tool-Kategorien</h1>
 
       <p className={styles.pageDesc}>
-        Entdecke Tools nach Bereich und finde passende Software fÃ¼r deine Aufgaben â€”
-        kuratiert fÃ¼r Solo-SelbststÃ¤ndige und kleine Teams in Deutschland.
+        Entdecke Tools nach Bereich und finde passende Software für deine Aufgaben —
+        kuratiert für Solo-Selbstständige und kleine Teams in Deutschland.
       </p>
 
-      {/* Suchfeld + Kategorien-Raster â€” Client-seitig gefiltert */}
+      {/* Suchfeld + Kategorien-Raster — Client-seitig gefiltert */}
       {categories.length === 0 ? (
         <p className={styles.empty}>Noch keine Kategorien vorhanden.</p>
       ) : (
