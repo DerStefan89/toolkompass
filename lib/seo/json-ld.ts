@@ -6,6 +6,19 @@
  * in <script type="application/ld+json"> eingesetzt werden kann.
  */
 
+/**
+ * Serialisiert ein Objekt als JSON-LD und escaped die Zeichen, mit denen
+ * nutzergenerierte/redaktionelle Inhalte (z. B. ein "</script>" im Tool-Namen)
+ * aus dem <script>-Tag ausbrechen könnten. Die \uXXXX-Escapes sind im
+ * JSON-String-Kontext gültig — das Ergebnis bleibt valides JSON-LD.
+ */
+function safeJsonLd(obj: unknown): string {
+  return JSON.stringify(obj)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+}
+
 export function toolJsonLd(
   tool: {
     name: string
@@ -21,7 +34,7 @@ export function toolJsonLd(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _siteUrl: string,
 ): string {
-  return JSON.stringify({
+  return safeJsonLd({
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: tool.name,
@@ -60,7 +73,7 @@ export function articleJsonLd(
   },
   siteUrl: string,
 ): string {
-  return JSON.stringify({
+  return safeJsonLd({
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: article.title,
@@ -86,7 +99,7 @@ export function comparisonJsonLd(
   },
   siteUrl: string,
 ): string {
-  return JSON.stringify({
+  return safeJsonLd({
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: `${comparison.toolAName} vs ${comparison.toolBName} — Vergleich`,
@@ -102,7 +115,7 @@ export function comparisonJsonLd(
 }
 
 export function breadcrumbJsonLd(items: { name: string; url: string }[]): string {
-  return JSON.stringify({
+  return safeJsonLd({
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: items.map((item, index) => ({
@@ -115,7 +128,7 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]): string
 }
 
 export function organizationJsonLd(siteUrl: string): string {
-  return JSON.stringify({
+  return safeJsonLd({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'ToolSucher',

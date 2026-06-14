@@ -16,6 +16,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+// Such-API: Node-Runtime (Prisma) und nie cachen.
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 // ─── Rate-Limit (gleiche Architektur wie app/api/track/[linkId]/route.ts) ────
 
 const RATE_LIMIT_MAX       = 30
@@ -74,10 +78,17 @@ export async function GET(request: NextRequest) {
     const tools = await prisma.tool.findMany({
       where: {
         published: true,
-        OR: [
-          { translations: { some: { locale: 'de', name: { contains: q, mode: 'insensitive' } } } },
-          { translations: { some: { locale: 'de', shortDescription: { contains: q, mode: 'insensitive' } } } },
-        ],
+        // Eine kombinierte Subquery: Postgres joint die Translation-Tabelle nur
+        // einmal (statt zweimal über zwei OR-Zweige).
+        translations: {
+          some: {
+            locale: 'de',
+            OR: [
+              { name: { contains: q, mode: 'insensitive' } },
+              { shortDescription: { contains: q, mode: 'insensitive' } },
+            ],
+          },
+        },
       },
       include: {
         translations: { where: { locale: 'de' } },
