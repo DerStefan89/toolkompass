@@ -90,18 +90,28 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-      include: {
-        translations: { where: { locale: 'de' } },
+      // select statt include: nur die fürs Dropdown nötigen Felder laden
+      // (weniger DB-Last + kleinere JSON-Antwort).
+      select: {
+        slug: true,
+        logoUrl: true,
+        translations: {
+          where: { locale: 'de' },
+          select: { name: true, shortDescription: true },
+        },
         categories: {
-          include: {
+          take: 1,
+          skip: 0,
+          select: {
             category: {
-              include: {
-                translations: { where: { locale: 'de' } },
+              select: {
+                translations: {
+                  where: { locale: 'de' },
+                  select: { name: true },
+                },
               },
             },
           },
-          take: 1,
-          skip: 0,
         },
       },
       take: 5,

@@ -2,7 +2,7 @@
  * Datei: components/SearchInput.tsx
  *
  * Zweck: Suchfeld mit Autocomplete-Dropdown.
- * - Tippen (≥ 2 Zeichen, 300 ms Debounce) → GET /api/search?q=... → Vorschläge
+ * - Tippen (≥ 2 Zeichen, 150 ms Debounce) → GET /api/search?q=... → Vorschläge
  * - Klick auf Vorschlag → /tools/[slug]
  * - ArrowUp/Down navigiert im Dropdown, Enter auf Auswahl → /tools/[slug]
  * - Enter ohne Auswahl → /suche?q=...
@@ -86,7 +86,7 @@ export default function SearchInput({
       } finally {
         setLoading(false)
       }
-    }, 300)
+    }, 150) // war 300 — AbortController bricht ältere Requests ab, kein Stau
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
