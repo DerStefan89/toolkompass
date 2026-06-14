@@ -21,6 +21,7 @@ import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 import IconRenderer from '@/components/ui/IconRenderer'
 import SearchInput from '@/components/SearchInput'
+import StackWidget from '@/components/home/StackWidget'
 import styles from './page.module.css'
 
 export const revalidate = 300
@@ -108,44 +109,9 @@ export default async function Home() {
 
         </div>
 
-        {/* Rechte Spalte — Tool-Stack Box */}
+        {/* Rechte Spalte — echter Tool-Stack (lädt clientseitig, cache-sicher) */}
         <div className={styles.heroRight}>
-
-          <div className={styles.stackHeader}>
-            <span className={styles.stackTitle}>Vorschau: Dein Tool-Stack</span>
-            <span className={styles.badge}>Bald verfügbar</span>
-          </div>
-
-          <p className={styles.stackCopy}>
-            Verwalte dein Tool-Stack an einem Ort
-          </p>
-
-          {['Tools speichern', 'Kosten im Blick behalten', 'Alternativen entdecken'].map((feature) => (
-            <div key={feature} className={styles.featureRow}>
-              <span className={styles.featureCheck}>✓</span>
-              {feature}
-            </div>
-          ))}
-
-          <div className={styles.stackPreview}>
-            <p className={styles.stackPreviewLabel}>Dein Stack (Vorschau)</p>
-            {['Notion', 'sevdesk', 'Calendly'].map((tool) => (
-              <div key={tool} className={styles.stackToolRow}>
-                <span>{tool}</span>
-                <span className={styles.stackToolDash}>– –</span>
-              </div>
-            ))}
-            <p className={styles.stackPreviewNote}>
-              Monatliche Kosten (Beispiel): – – € / Monat
-            </p>
-          </div>
-
-          <Link href="/tool-stacks" className={styles.stackCta}>
-            Stack-Vorschau ansehen
-          </Link>
-
-          <p className={styles.stackNotify}>🔔 Benachrichtigen lassen</p>
-
+          <StackWidget />
         </div>
 
       </section>
