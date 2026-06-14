@@ -54,6 +54,28 @@ export default async function Home() {
     }),
   ])
 
+  // Aufgaben-Pills → echte Kategorie-Seite. Slugs werden über den Kategorie-NAMEN
+  // aus der DB aufgelöst (nicht hartkodiert). Pills ohne Treffer werden
+  // ausgeblendet — besser als ein toter Link.
+  const pills = [
+    { icon: '🧾', label: 'Unternehmen verwalten', kategorie: 'Buchhaltung & Rechnungen' },
+    { icon: '📅', label: 'Termine buchen', kategorie: 'Kalender & Calls' },
+    { icon: '🎙', label: 'KI Tools einbinden', kategorie: 'KI & Coding' },
+    { icon: '🎬', label: 'Videos erstellen', kategorie: 'Design & Video' },
+    { icon: '✍️', label: 'Social Media Kampagnen', kategorie: 'Social Media' },
+    { icon: '💼', label: 'Sales Funnel aufbauen', kategorie: 'CRM & Marketing' },
+    { icon: '💳', label: 'Finanzen verwalten', kategorie: 'Geschäftskonto & Finanzen' },
+  ]
+
+  // Map: Kategoriename (de) → Slug, aus den bereits geladenen Kategorien
+  const slugByName = new Map(
+    categories.map((c) => [c.translations[0]?.name ?? '', c.slug]),
+  )
+
+  const pillsMitSlug = pills
+    .map((p) => ({ ...p, slug: slugByName.get(p.kategorie) }))
+    .filter((p): p is typeof p & { slug: string } => Boolean(p.slug))
+
   return (
     <main>
 
@@ -91,18 +113,10 @@ export default async function Home() {
           <p className={styles.pillsLabel}>Was möchtest du erledigen?</p>
 
           <div className={styles.pillsRow}>
-            {[
-              { icon: '🧾', label: 'Unternehmen verwalten' },
-              { icon: '📅', label: 'Termine buchen' },
-              { icon: '🎙', label: 'KI Tools einbinden' },
-              { icon: '🎬', label: 'Videos erstellen' },
-              { icon: '✍️', label: 'Social Media Kampagnen' },
-              { icon: '💼', label: 'Sales Funnel aufbauen' },
-              { icon: '📊', label: 'Präsentation erstellen' },
-            ].map((aufgabe) => (
-              <Link key={aufgabe.label} href="/tool-finder" className={styles.pill}>
-                <span>{aufgabe.icon}</span>
-                <span>{aufgabe.label}</span>
+            {pillsMitSlug.map((pill) => (
+              <Link key={pill.label} href={`/kategorien/${pill.slug}`} className={styles.pill}>
+                <span>{pill.icon}</span>
+                <span>{pill.label}</span>
               </Link>
             ))}
           </div>
