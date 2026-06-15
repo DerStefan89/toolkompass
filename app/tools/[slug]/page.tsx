@@ -26,9 +26,8 @@ import UseToolButton from '@/components/tools/UseToolButton'
 import type { FaqItem } from '@/components/admin/FaqEditor'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
+import { SITE_URL } from '@/lib/config/site'
 import styles from './page.module.css'
-
-const SITE_URL = 'https://toolsucher.de'
 
 // Rendert Markdown (fett/kursiv/unterstrichen) aus dem Admin-Formular inline,
 // ohne den Block-Wrapper <p>, den react-markdown standardmäßig erzeugt —

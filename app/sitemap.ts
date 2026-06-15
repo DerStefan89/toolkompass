@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { prisma } from '@/lib/prisma'
+import { SITE_URL } from '@/lib/config/site'
 
-const BASE_URL = 'https://toolsucher.de'
+const BASE_URL = SITE_URL
 
 const staticRoutes: MetadataRoute.Sitemap = [
   { url: BASE_URL,                        changeFrequency: 'weekly',  priority: 1.0 },

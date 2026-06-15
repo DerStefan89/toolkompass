@@ -6,8 +6,8 @@
 // für Google und Browser-Tab zu setzen
 import type { Metadata, Viewport } from "next";
 import { organizationJsonLd } from '@/lib/seo/json-ld'
+import { SITE_URL } from '@/lib/config/site'
 
-const SITE_URL = 'https://toolsucher.de'
 const orgLd = organizationJsonLd(SITE_URL)
 
 // Die zwei Schriften die wir von Google laden
@@ -57,7 +57,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://toolsucher.de'),
+  metadataBase: new URL(SITE_URL),
   title: "ToolSucher — Digitale Business-Tools entdecken & vergleichen",
   description: "ToolSucher hilft Gründern...",
   alternates: { canonical: '/' },

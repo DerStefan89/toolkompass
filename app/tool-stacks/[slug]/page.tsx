@@ -15,12 +15,39 @@
  */
 
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
+import { SITE_URL } from '@/lib/config/site'
 import styles from './page.module.css'
 
 export const revalidate = 300
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const stack = await prisma.toolStack.findUnique({
+    where: { slug },
+    include: { translations: { where: { locale: 'de' } } },
+  })
+  if (!stack || !stack.published) {
+    return { title: 'Tool-Stack nicht gefunden | ToolSucher' }
+  }
+  const t = stack.translations[0]
+  const title = `${t?.name ?? slug} | ToolSucher`
+  const description = t?.description?.slice(0, 155) ?? 'Kuratierter Tool-Stack auf ToolSucher.'
+  const url = `${SITE_URL}/tool-stacks/${slug}`
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, type: 'website' },
+  }
+}
 
 
 const LOGO_FARBEN = [

@@ -24,9 +24,8 @@ import { getCategoryBySlug } from '@/lib/data/categories'
 import { formatPreis } from '@/lib/utils/format'
 import IconRenderer from '@/components/ui/IconRenderer'
 import { breadcrumbJsonLd } from '@/lib/seo/json-ld'
+import { SITE_URL } from '@/lib/config/site'
 import styles from './page.module.css'
-
-const SITE_URL = 'https://toolsucher.de'
 
 export const revalidate = 300
 

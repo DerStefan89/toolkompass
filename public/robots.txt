@@ -10,4 +10,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-Sitemap: https://toolsucher.de/sitemap.xml
+Sitemap: https://www.toolsucher.de/sitemap.xml
