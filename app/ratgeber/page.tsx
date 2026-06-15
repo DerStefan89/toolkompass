@@ -43,24 +43,34 @@ const filterPills = ['Alle', 'Tool-Guides', 'Top-Listen', 'Vergleiche', 'Anleitu
 
 export default async function RatgeberSeite() {
   // Alle publizierten Artikel laden, neueste zuerst
-  // Tools werden für die Featured-Box (Logo-Vorschau) mitgeladen
-  const articles = await prisma.article.findMany({
-    where: { published: true },
-    include: {
-      tools: {
-        include: {
-          tool: {
-            include: { translations: { where: { locale: 'de' } } },
+  // Tools werden für die Featured-Box (Logo-Vorschau) mitgeladen.
+  // Build-sicher: bei DB-Ausfall zur Build-Zeit leere Defaults statt Crash.
+  async function ladeArtikel() {
+    return prisma.article.findMany({
+      where: { published: true },
+      include: {
+        tools: {
+          include: {
+            tool: {
+              include: { translations: { where: { locale: 'de' } } },
+            },
           },
+          take: 5,
         },
-        take: 5,
       },
-    },
-    orderBy: [
-      { publishedAt: 'desc' },
-      { createdAt: 'desc' },
-    ],
-  })
+      orderBy: [
+        { publishedAt: 'desc' },
+        { createdAt: 'desc' },
+      ],
+    })
+  }
+
+  let articles: Awaited<ReturnType<typeof ladeArtikel>> = []
+  try {
+    articles = await ladeArtikel()
+  } catch (error) {
+    console.error('[Ratgeber] DB-Query fehlgeschlagen:', error)
+  }
 
   // Aufteilung: Featured ist der neueste Guide oder Top-Liste
   const featured   = articles.find(a => a.type === 'guide' || a.type === 'top_list') ?? null

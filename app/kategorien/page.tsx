@@ -27,21 +27,31 @@ export const metadata: Metadata = {
 }
 
 export default async function KategorienSeite() {
-  const categories = await prisma.category.findMany({
-    where: { published: true },
-    include: {
-      translations: { where: { locale: 'de' } },
-      _count: { select: { tools: true } },
-      tools: {
-        where: { tool: { published: true } },
-        include: {
-          tool: { include: { translations: { where: { locale: 'de' } } } },
+  // Build-sicher: bei DB-Ausfall zur Build-Zeit leere Defaults statt Crash.
+  async function ladeKategorien() {
+    return prisma.category.findMany({
+      where: { published: true },
+      include: {
+        translations: { where: { locale: 'de' } },
+        _count: { select: { tools: true } },
+        tools: {
+          where: { tool: { published: true } },
+          include: {
+            tool: { include: { translations: { where: { locale: 'de' } } } },
+          },
+          take: 3,
         },
-        take: 3,
       },
-    },
-    orderBy: { sortOrder: 'asc' },
-  })
+      orderBy: { sortOrder: 'asc' },
+    })
+  }
+
+  let categories: Awaited<ReturnType<typeof ladeKategorien>> = []
+  try {
+    categories = await ladeKategorien()
+  } catch (error) {
+    console.error('[Kategorien] DB-Query fehlgeschlagen:', error)
+  }
 
   return (
     <main className={styles.main}>

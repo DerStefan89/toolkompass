@@ -26,15 +26,25 @@ export const metadata: Metadata = {
 }
 
 export default async function ToolStacksSeite() {
-  const stacks = await prisma.toolStack.findMany({
-    where: { published: true },
-    include: {
-      translations: { where: { locale: 'de' } },
-      tags: { include: { tag: true } },
-      _count: { select: { tools: true } },
-    },
-    orderBy: { createdAt: 'asc' },
-  })
+  // Build-sicher: bei DB-Ausfall zur Build-Zeit leere Defaults statt Crash.
+  async function ladeStacks() {
+    return prisma.toolStack.findMany({
+      where: { published: true },
+      include: {
+        translations: { where: { locale: 'de' } },
+        tags: { include: { tag: true } },
+        _count: { select: { tools: true } },
+      },
+      orderBy: { createdAt: 'asc' },
+    })
+  }
+
+  let stacks: Awaited<ReturnType<typeof ladeStacks>> = []
+  try {
+    stacks = await ladeStacks()
+  } catch (error) {
+    console.error('[Tool-Stacks] DB-Query fehlgeschlagen:', error)
+  }
 
   return (
     <main>

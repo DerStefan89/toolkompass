@@ -36,23 +36,34 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-  // Promise.all: beide Queries laufen parallel
-  const [tools, categories] = await Promise.all([
-    prisma.tool.findMany({
-      where: { published: true },
-      take: 6,
-      orderBy: { publishedAt: 'desc' },
-      include: { translations: { where: { locale: 'de' } } },
-    }),
-    prisma.category.findMany({
-      where: { published: true },
-      orderBy: { sortOrder: 'asc' },
-      include: {
-        translations: { where: { locale: 'de' } },
-        _count: { select: { tools: true } },
-      },
-    }),
-  ])
+  // Build-sicher: bei DB-Ausfall zur Build-Zeit leere Defaults statt Crash.
+  // ISR füllt die Seite beim ersten echten Request (DB erreichbar) normal.
+  async function ladeStartseitenDaten() {
+    return Promise.all([
+      prisma.tool.findMany({
+        where: { published: true },
+        take: 6,
+        orderBy: { publishedAt: 'desc' },
+        include: { translations: { where: { locale: 'de' } } },
+      }),
+      prisma.category.findMany({
+        where: { published: true },
+        orderBy: { sortOrder: 'asc' },
+        include: {
+          translations: { where: { locale: 'de' } },
+          _count: { select: { tools: true } },
+        },
+      }),
+    ])
+  }
+
+  let tools: Awaited<ReturnType<typeof ladeStartseitenDaten>>[0] = []
+  let categories: Awaited<ReturnType<typeof ladeStartseitenDaten>>[1] = []
+  try {
+    ;[tools, categories] = await ladeStartseitenDaten()
+  } catch (error) {
+    console.error('[Startseite] DB-Query fehlgeschlagen:', error)
+  }
 
   // Aufgaben-Pills → echte Kategorie-Seite. Slugs werden über den Kategorie-NAMEN
   // aus der DB aufgelöst (nicht hartkodiert). Pills ohne Treffer werden
