@@ -136,3 +136,29 @@ export function organizationJsonLd(siteUrl: string): string {
     description: 'Deutsche Plattform für digitale Business-Tools',
   })
 }
+
+/**
+ * FAQPage-JSON-LD für Rich Snippets.
+ * NUR mit echten FAQ-Items aufrufen (nicht mit Platzhaltern) — sonst riskiert
+ * man eine Google-Abstrafung wegen nicht dem sichtbaren Inhalt entsprechendem Markup.
+ *
+ * @param items - echte FAQ-Items aus der DB ({question, answer})
+ * @returns JSON-LD-String oder null wenn keine Items (dann nicht einbinden)
+ */
+export function faqPageJsonLd(
+  items: { question: string; answer: string }[],
+): string | null {
+  if (!items || items.length === 0) return null
+  return safeJsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  })
+}

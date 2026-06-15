@@ -19,7 +19,7 @@ import { prisma } from '@/lib/prisma'
 import { getToolBySlug } from '@/lib/data/tools'
 import { getToolRatingSummary } from '@/lib/data/ratings'
 import { formatPreis } from '@/lib/utils/format'
-import { toolJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
+import { toolJsonLd, breadcrumbJsonLd, faqPageJsonLd } from '@/lib/seo/json-ld'
 import PricingSection from '@/components/tools/PricingSection'
 import RatingSummary from '@/components/rating/RatingSummary'
 import UseToolButton from '@/components/tools/UseToolButton'
@@ -148,10 +148,18 @@ export default async function ToolDetailSeite({
     { name: t.name, url: `${SITE_URL}/tools/${tool.slug}` },
   ])
 
+  // FAQPage-JSON-LD NUR aus echten faqItems — niemals aus dem Platzhalter-Fallback
+  // (der unten nur für die sichtbare Anzeige greift). Kein Markup ohne echten Inhalt.
+  const echteFaqItems = (t.faqItems as FaqItem[] | null) ?? []
+  const faqLd = echteFaqItems.length > 0 ? faqPageJsonLd(echteFaqItems) : null
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: crumbLd }} />
+      {faqLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqLd }} />
+      )}
       <main className={styles.main}>
 
       {/* Breadcrumb */}
