@@ -272,6 +272,8 @@ model ArticleSection {
 
   articleId String
   article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
 }
 
 model Comparison {
@@ -294,6 +296,8 @@ model Comparison {
   @@index([slug])
   @@index([published])
   @@index([locale])
+  @@index([toolAId])
+  @@index([toolBId])
 }
 
 model ComparisonRow {
@@ -305,6 +309,8 @@ model ComparisonRow {
 
   comparisonId String
   comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+
+  @@index([comparisonId])
 }
 
 // ============================================================
@@ -318,6 +324,7 @@ model ToolCategory {
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([toolId, categoryId])
+  @@index([categoryId])
 }
 
 model ToolTag {
@@ -369,6 +376,7 @@ model ToolStackItem {
   tool        Tool      @relation(fields: [toolId], references: [id], onDelete: Cascade)
 
   @@id([toolStackId, toolId])
+  @@index([toolId])
 }
 
 model ArticleTool {
@@ -378,6 +386,7 @@ model ArticleTool {
   tool      Tool    @relation(fields: [toolId], references: [id], onDelete: Cascade)
 
   @@id([articleId, toolId])
+  @@index([toolId])
 }
 
 // ============================================================
@@ -451,6 +460,9 @@ model PageView {
   @@index([toolId])
   @@index([categoryId])
   @@index([locale])
+  @@index([stackId])
+  @@index([articleId])
+  @@index([comparisonId])
 }
 
 model AffiliateClick {
@@ -510,6 +522,7 @@ model UserTool {
   @@unique([userId, toolId])  // ein Tool nur einmal pro Nutzer
   @@index([userId])
   @@index([toolId])
+  @@index([pricingPlanId])
 }
 
 // ============================================================
