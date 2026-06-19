@@ -144,6 +144,7 @@ model Tool {
   pricingPlans         PricingPlan[]
   comparisonsAsToolA   Comparison[]      @relation("ComparisonToolA")
   comparisonsAsToolB   Comparison[]      @relation("ComparisonToolB")
+  comparisonAlternatives ComparisonAlternative[] @relation("ToolAsComparisonAlternative")
   articleMentions      ArticleTool[]
   stackItems           ToolStackItem[]
   pageViews            PageView[]
@@ -285,13 +286,31 @@ model Comparison {
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
 
+  // Titel/Intro (für Vergleichs-Artikel)
+  title       String?   // z.B. "Lexware Office vs sevdesk: Welche Buchhaltung passt besser?"
+  subtitle    String?   // kurzer Untertitel/Teaser
+
+  // "Schnelle Entscheidung" — drei Entscheidungs-Blöcke als JSON
+  // Format: { toolA: string[], toolB: string[], alternatives: string[] }
+  decisionGuide Json?
+
+  // "Für wen ist X die bessere Wahl" — Zielgruppen-Listen als JSON
+  // Format: { toolA: string[], toolB: string[] }
+  targetGroups Json?
+
+  // Wichtigster Unterschied (ein hervorgehobener Callout-Text)
+  keyDifference String?
+
   toolAId   String
   toolBId   String
   toolA     Tool            @relation("ComparisonToolA", fields: [toolAId], references: [id])
   toolB     Tool            @relation("ComparisonToolB", fields: [toolBId], references: [id])
 
-  rows      ComparisonRow[]
-  pageViews PageView[]
+  rows         ComparisonRow[]
+  sections     ComparisonSection[]
+  features     ComparisonFeature[]
+  alternatives ComparisonAlternative[]
+  pageViews    PageView[]
 
   @@index([slug])
   @@index([published])
@@ -311,6 +330,46 @@ model ComparisonRow {
   comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
 
   @@index([comparisonId])
+}
+
+model ComparisonSection {
+  id           String     @id @default(cuid())
+  heading      String     // z.B. "Wann Lexware Office besser passt"
+  content      String     // Fließtext (Markdown möglich, wie Article-content gerendert)
+  sortOrder    Int        @default(0)
+
+  comparisonId String
+  comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+
+  @@index([comparisonId])
+}
+
+model ComparisonFeature {
+  id           String     @id @default(cuid())
+  feature      String     // z.B. "E-Rechnungen erstellen"
+  toolAValue   String     // z.B. "Ja" / "Nein" / "Ja, eingeschränkt"
+  toolBValue   String
+  sortOrder    Int        @default(0)
+
+  comparisonId String
+  comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+
+  @@index([comparisonId])
+}
+
+model ComparisonAlternative {
+  id           String     @id @default(cuid())
+  comparisonId String
+  toolId       String     // verknüpftes echtes Tool (für Logo, Name, Affiliate-Link)
+  reason       String     // ein Satz: warum diese Alternative
+  sortOrder    Int        @default(0)
+
+  comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+  tool         Tool       @relation("ToolAsComparisonAlternative", fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@unique([comparisonId, toolId])  // ein Tool nur einmal pro Vergleich als Alternative
+  @@index([comparisonId])
+  @@index([toolId])
 }
 
 // ============================================================
