@@ -6,11 +6,13 @@
  * Wichtig:
  * - Tool A und Tool B sind kontrollierte Selects, weil der Slug auto-generiert wird
  *   und Tool B die gewählte Tool-A-Option ausfiltert.
- * - Rows werden in React-State verwaltet (dynamisch hinzufügen/entfernen).
- *   Beim Submit überträgt FormData die row-Inputs als parallele Arrays
- *   (name="criterion", name="toolAValue", name="toolBValue") — gleicher Index = gleiche Zeile.
+ * - Dynamische Listen (rows, decisionGuide, targetGroups, features, sections,
+ *   alternatives) werden in React-State verwaltet und beim Submit als parallele
+ *   Arrays übertragen (gleicher name = eine Spalte; gleicher Index = eine Zeile).
  * - published ist kontrolliert (Checkbox-Reset-Bug nach Validation-Fehler).
- * - verdict ist unkontrolliert (defaultValue), da kein programmatischer Zugriff nötig.
+ * - Einfache Textfelder (verdict, title, subtitle, keyDifference) sind unkontrolliert
+ *   (defaultValue) — kein programmatischer Zugriff nötig.
+ * - Kein Prisma-Import — Daten kommen via Props.
  */
 
 'use client'
@@ -34,6 +36,27 @@ type RowData = {
   toolBValue: string
 }
 
+type FeatureData = {
+  key: string
+  feature: string
+  toolAValue: string
+  toolBValue: string
+}
+
+type SectionData = {
+  key: string
+  heading: string
+  content: string
+}
+
+type AlternativeData = {
+  key: string
+  toolId: string
+  reason: string
+}
+
+type KStr = { key: string; value: string }
+
 export type VergleichFormDefaults = {
   toolAId: string
   toolBId: string
@@ -41,6 +64,15 @@ export type VergleichFormDefaults = {
   verdict: string
   published: boolean
   rows: Array<{ criterion: string; toolAValue: string; toolBValue: string }>
+  // V2 — neue, optionale Felder
+  title?: string | null
+  subtitle?: string | null
+  keyDifference?: string | null
+  decisionGuide?: { toolA: string[]; toolB: string[]; alternatives: string[] } | null
+  targetGroups?: { toolA: string[]; toolB: string[] } | null
+  sections?: Array<{ heading: string; content: string }>
+  features?: Array<{ feature: string; toolAValue: string; toolBValue: string }>
+  alternatives?: Array<{ toolId: string; reason: string }>
 }
 
 type Props = {
@@ -55,6 +87,16 @@ function genSlug(toolAId: string, toolBId: string, tools: ToolOption[]): string 
   const a = tools.find(t => t.id === toolAId)?.slug ?? ''
   const b = tools.find(t => t.id === toolBId)?.slug ?? ''
   return a && b ? `${a}-vs-${b}` : ''
+}
+
+let keyCounter = 0
+function nextKey(): string {
+  keyCounter += 1
+  return `k${keyCounter}-${Date.now()}`
+}
+
+function toKStr(values?: string[]): KStr[] {
+  return (values ?? []).map(value => ({ key: nextKey(), value }))
 }
 
 // ─── Unterkomponenten ────────────────────────────────────────────────────────
@@ -126,6 +168,69 @@ function inputStyle(hasError: boolean): React.CSSProperties {
   }
 }
 
+const removeBtnStyle: React.CSSProperties = {
+  width: '36px',
+  height: '36px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: 'transparent',
+  border: '1px solid var(--color-error)',
+  borderRadius: 'var(--radius-btn)',
+  color: 'var(--color-error)',
+  fontSize: '16px',
+  cursor: 'pointer',
+  flexShrink: 0,
+}
+
+const addBtnStyle: React.CSSProperties = {
+  alignSelf: 'flex-start',
+  padding: '7px 16px',
+  backgroundColor: 'transparent',
+  color: 'var(--color-text-secondary)',
+  border: '1px solid var(--color-border)',
+  borderRadius: 'var(--radius-btn)',
+  fontSize: '13px',
+  cursor: 'pointer',
+}
+
+/** Dynamische Liste einfacher Strings — alle Inputs teilen denselben name. */
+function StringList({
+  label, name, items, setItems, placeholder,
+}: {
+  label: string
+  name: string
+  items: KStr[]
+  setItems: React.Dispatch<React.SetStateAction<KStr[]>>
+  placeholder: string
+}) {
+  return (
+    <div>
+      <p style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
+        {label}
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {items.map(it => (
+          <div key={it.key} style={{ display: 'flex', gap: '8px' }}>
+            <input
+              type="text"
+              name={name}
+              value={it.value}
+              onChange={e => setItems(prev => prev.map(x => x.key === it.key ? { ...x, value: e.target.value } : x))}
+              placeholder={placeholder}
+              style={inputStyle(false)}
+            />
+            <button type="button" onClick={() => setItems(prev => prev.filter(x => x.key !== it.key))} title="Entfernen" style={removeBtnStyle}>×</button>
+          </div>
+        ))}
+        <button type="button" onClick={() => setItems(prev => [...prev, { key: nextKey(), value: '' }])} style={addBtnStyle}>
+          + Eintrag hinzufügen
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // ─── Haupt-Komponente ────────────────────────────────────────────────────────
 
 export default function VergleichForm({ action, tools, defaultValues }: Props) {
@@ -140,6 +245,23 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
     defaultValues?.rows.map((r, i) => ({ key: String(i), ...r })) ?? []
   )
 
+  // V2-State
+  const [dgToolA, setDgToolA] = useState<KStr[]>(toKStr(defaultValues?.decisionGuide?.toolA))
+  const [dgToolB, setDgToolB] = useState<KStr[]>(toKStr(defaultValues?.decisionGuide?.toolB))
+  const [dgAlt, setDgAlt]     = useState<KStr[]>(toKStr(defaultValues?.decisionGuide?.alternatives))
+  const [tgToolA, setTgToolA] = useState<KStr[]>(toKStr(defaultValues?.targetGroups?.toolA))
+  const [tgToolB, setTgToolB] = useState<KStr[]>(toKStr(defaultValues?.targetGroups?.toolB))
+
+  const [features, setFeatures] = useState<FeatureData[]>(
+    defaultValues?.features?.map((f, i) => ({ key: `f${i}`, ...f })) ?? []
+  )
+  const [sections, setSections] = useState<SectionData[]>(
+    defaultValues?.sections?.map((s, i) => ({ key: `s${i}`, ...s })) ?? []
+  )
+  const [alternatives, setAlternatives] = useState<AlternativeData[]>(
+    defaultValues?.alternatives?.map((a, i) => ({ key: `a${i}`, ...a })) ?? []
+  )
+
   function handleToolAChange(id: string) {
     setToolAId(id)
     if (!slugIsManual) setSlug(genSlug(id, toolBId, tools))
@@ -151,24 +273,54 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
   }
 
   function addRow() {
-    setRows(prev => [
-      ...prev,
-      { key: String(Date.now()), criterion: '', toolAValue: '', toolBValue: '' },
-    ])
+    setRows(prev => [...prev, { key: nextKey(), criterion: '', toolAValue: '', toolBValue: '' }])
   }
-
   function removeRow(key: string) {
     setRows(prev => prev.filter(r => r.key !== key))
   }
-
   function updateRow(key: string, field: keyof Omit<RowData, 'key'>, value: string) {
     setRows(prev => prev.map(r => r.key === key ? { ...r, [field]: value } : r))
+  }
+
+  function addFeature() {
+    setFeatures(prev => [...prev, { key: nextKey(), feature: '', toolAValue: '', toolBValue: '' }])
+  }
+  function removeFeature(key: string) {
+    setFeatures(prev => prev.filter(f => f.key !== key))
+  }
+  function updateFeature(key: string, field: keyof Omit<FeatureData, 'key'>, value: string) {
+    setFeatures(prev => prev.map(f => f.key === key ? { ...f, [field]: value } : f))
+  }
+
+  function addSection() {
+    setSections(prev => [...prev, { key: nextKey(), heading: '', content: '' }])
+  }
+  function removeSection(key: string) {
+    setSections(prev => prev.filter(s => s.key !== key))
+  }
+  function updateSection(key: string, field: keyof Omit<SectionData, 'key'>, value: string) {
+    setSections(prev => prev.map(s => s.key === key ? { ...s, [field]: value } : s))
+  }
+
+  function addAlternative() {
+    setAlternatives(prev => [...prev, { key: nextKey(), toolId: '', reason: '' }])
+  }
+  function removeAlternative(key: string) {
+    setAlternatives(prev => prev.filter(a => a.key !== key))
+  }
+  function updateAlternative(key: string, field: keyof Omit<AlternativeData, 'key'>, value: string) {
+    setAlternatives(prev => prev.map(a => a.key === key ? { ...a, [field]: value } : a))
   }
 
   const fe = state.fieldErrors ?? {}
 
   const toolAName = tools.find(t => t.id === toolAId)?.name ?? 'Tool A'
   const toolBName = tools.find(t => t.id === toolBId)?.name ?? 'Tool B'
+
+  const headerCellStyle: React.CSSProperties = {
+    fontSize: '12px', fontWeight: '600', color: 'var(--color-text-secondary)',
+    textTransform: 'uppercase', letterSpacing: '0.04em',
+  }
 
   return (
     <form action={formAction}>
@@ -214,7 +366,6 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
               style={inputStyle(!!fe.toolBId)}
             >
               <option value="">— Tool wählen —</option>
-              {/* Tool A wird aus der Tool-B-Auswahl ausgefiltert */}
               {tools.filter(t => t.id !== toolAId).map(t => (
                 <option key={t.id} value={t.id}>{t.name}</option>
               ))}
@@ -243,8 +394,33 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
           />
         </Field>
 
+        <Field label="Titel" hint="Artikel-Titel (optional), z. B. „Lexware Office vs sevdesk“">
+          <input
+            type="text"
+            name="title"
+            defaultValue={defaultValues?.title ?? ''}
+            placeholder="z. B. Lexware Office vs sevdesk: Welche Buchhaltung passt besser?"
+            style={inputStyle(false)}
+          />
+        </Field>
+
+        <Field label="Untertitel" hint="Kurzer Teaser (optional)">
+          <input
+            type="text"
+            name="subtitle"
+            defaultValue={defaultValues?.subtitle ?? ''}
+            placeholder="z. B. Zwei beliebte Buchhaltungstools im direkten Vergleich"
+            style={inputStyle(false)}
+          />
+        </Field>
+
+      </Section>
+
+      {/* ── Fazit & Kernunterschied ── */}
+      <Section title="Fazit & Kernunterschied">
+
         <Field
-          label="Fazit (Verdict)"
+          label="Kurzfazit (Verdict)"
           required
           hint="Markdown erlaubt — abschließende Empfehlung für den Leser"
           error={fe.verdict}
@@ -258,106 +434,121 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
           />
         </Field>
 
+        <Field
+          label="Der wichtigste Unterschied"
+          hint="Ein hervorgehobener Callout (optional)"
+        >
+          <textarea
+            name="keyDifference"
+            defaultValue={defaultValues?.keyDifference ?? ''}
+            placeholder="z. B. Lexware Office punktet bei DATEV-Anbindung, sevdesk bei der Bedienung."
+            rows={3}
+            style={{ ...inputStyle(false), resize: 'vertical' }}
+          />
+        </Field>
+
+      </Section>
+
+      {/* ── Schnelle Entscheidung ── */}
+      <Section title="Schnelle Entscheidung">
+        <StringList label={`Nimm ${toolAName}, wenn …`} name="dgToolA" items={dgToolA} setItems={setDgToolA} placeholder="z. B. du DATEV-Export brauchst" />
+        <StringList label={`Nimm ${toolBName}, wenn …`} name="dgToolB" items={dgToolB} setItems={setDgToolB} placeholder="z. B. dir einfache Bedienung wichtig ist" />
+        <StringList label="Schau dir Alternativen an, wenn …" name="dgAlt" items={dgAlt} setItems={setDgAlt} placeholder="z. B. du Zeiterfassung brauchst" />
       </Section>
 
       {/* ── Vergleichszeilen ── */}
       <Section title="Vergleichszeilen">
 
         {rows.length > 0 && (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr 36px',
-            gap: '8px',
-            alignItems: 'center',
-            marginBottom: '4px',
-          }}>
-            <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Kriterium
-            </span>
-            <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              {toolAName}
-            </span>
-            <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              {toolBName}
-            </span>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 36px', gap: '8px', alignItems: 'center', marginBottom: '4px' }}>
+            <span style={headerCellStyle}>Kriterium</span>
+            <span style={headerCellStyle}>{toolAName}</span>
+            <span style={headerCellStyle}>{toolBName}</span>
             <span />
           </div>
         )}
 
         {rows.map(row => (
-          <div
-            key={row.key}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr 36px',
-              gap: '8px',
-              alignItems: 'center',
-            }}
-          >
-            <input
-              type="text"
-              name="criterion"
-              value={row.criterion}
-              onChange={e => updateRow(row.key, 'criterion', e.target.value)}
-              placeholder="z. B. Preis, Benutzerfreundlichkeit"
-              style={inputStyle(false)}
-            />
-            <input
-              type="text"
-              name="toolAValue"
-              value={row.toolAValue}
-              onChange={e => updateRow(row.key, 'toolAValue', e.target.value)}
-              placeholder="Wert für Tool A"
-              style={inputStyle(false)}
-            />
-            <input
-              type="text"
-              name="toolBValue"
-              value={row.toolBValue}
-              onChange={e => updateRow(row.key, 'toolBValue', e.target.value)}
-              placeholder="Wert für Tool B"
-              style={inputStyle(false)}
-            />
-            <button
-              type="button"
-              onClick={() => removeRow(row.key)}
-              title="Zeile entfernen"
-              style={{
-                width: '36px',
-                height: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'transparent',
-                border: '1px solid var(--color-error)',
-                borderRadius: 'var(--radius-btn)',
-                color: 'var(--color-error)',
-                fontSize: '16px',
-                cursor: 'pointer',
-                flexShrink: 0,
-              }}
-            >
-              ×
-            </button>
+          <div key={row.key} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 36px', gap: '8px', alignItems: 'center' }}>
+            <input type="text" name="criterion" value={row.criterion} onChange={e => updateRow(row.key, 'criterion', e.target.value)} placeholder="z. B. Preis" style={inputStyle(false)} />
+            <input type="text" name="toolAValue" value={row.toolAValue} onChange={e => updateRow(row.key, 'toolAValue', e.target.value)} placeholder="Wert für Tool A" style={inputStyle(false)} />
+            <input type="text" name="toolBValue" value={row.toolBValue} onChange={e => updateRow(row.key, 'toolBValue', e.target.value)} placeholder="Wert für Tool B" style={inputStyle(false)} />
+            <button type="button" onClick={() => removeRow(row.key)} title="Zeile entfernen" style={removeBtnStyle}>×</button>
           </div>
         ))}
 
-        <button
-          type="button"
-          onClick={addRow}
-          style={{
-            alignSelf: 'flex-start',
-            padding: '7px 16px',
-            backgroundColor: 'transparent',
-            color: 'var(--color-text-secondary)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-btn)',
-            fontSize: '13px',
-            cursor: 'pointer',
-          }}
-        >
-          + Zeile hinzufügen
-        </button>
+        <button type="button" onClick={addRow} style={addBtnStyle}>+ Zeile hinzufügen</button>
+
+      </Section>
+
+      {/* ── Funktionscheck ── */}
+      <Section title="Funktionscheck (Ja / Nein / Einschränkung)">
+
+        {features.length > 0 && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 36px', gap: '8px', alignItems: 'center', marginBottom: '4px' }}>
+            <span style={headerCellStyle}>Funktion</span>
+            <span style={headerCellStyle}>{toolAName}</span>
+            <span style={headerCellStyle}>{toolBName}</span>
+            <span />
+          </div>
+        )}
+
+        {features.map(f => (
+          <div key={f.key} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 36px', gap: '8px', alignItems: 'center' }}>
+            <input type="text" name="featureName" value={f.feature} onChange={e => updateFeature(f.key, 'feature', e.target.value)} placeholder="z. B. E-Rechnungen erstellen" style={inputStyle(false)} />
+            <input type="text" name="featureToolA" value={f.toolAValue} onChange={e => updateFeature(f.key, 'toolAValue', e.target.value)} placeholder="z. B. Ja" style={inputStyle(false)} />
+            <input type="text" name="featureToolB" value={f.toolBValue} onChange={e => updateFeature(f.key, 'toolBValue', e.target.value)} placeholder="z. B. Ja, eingeschränkt" style={inputStyle(false)} />
+            <button type="button" onClick={() => removeFeature(f.key)} title="Zeile entfernen" style={removeBtnStyle}>×</button>
+          </div>
+        ))}
+
+        <button type="button" onClick={addFeature} style={addBtnStyle}>+ Funktion hinzufügen</button>
+
+      </Section>
+
+      {/* ── Textabschnitte ── */}
+      <Section title="Textabschnitte">
+
+        {sections.map(s => (
+          <div key={s.key} style={{
+            display: 'flex', flexDirection: 'column', gap: '8px',
+            padding: '12px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-btn)',
+          }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input type="text" name="sectionHeading" value={s.heading} onChange={e => updateSection(s.key, 'heading', e.target.value)} placeholder="Überschrift, z. B. „Wann Lexware Office besser passt“" style={inputStyle(false)} />
+              <button type="button" onClick={() => removeSection(s.key)} title="Abschnitt entfernen" style={removeBtnStyle}>×</button>
+            </div>
+            <textarea name="sectionContent" value={s.content} onChange={e => updateSection(s.key, 'content', e.target.value)} placeholder="Fließtext (Markdown erlaubt) …" rows={4} style={{ ...inputStyle(false), resize: 'vertical' }} />
+          </div>
+        ))}
+
+        <button type="button" onClick={addSection} style={addBtnStyle}>+ Abschnitt hinzufügen</button>
+
+      </Section>
+
+      {/* ── Für wen ── */}
+      <Section title="Für wen ist welches Tool die bessere Wahl?">
+        <StringList label={`${toolAName} ist ideal für …`} name="tgToolA" items={tgToolA} setItems={setTgToolA} placeholder="z. B. Steuerberater-affine Selbstständige" />
+        <StringList label={`${toolBName} ist ideal für …`} name="tgToolB" items={tgToolB} setItems={setTgToolB} placeholder="z. B. Gründer ohne Buchhaltungs-Vorkenntnisse" />
+      </Section>
+
+      {/* ── Alternativen ── */}
+      <Section title="Alternativen">
+
+        {alternatives.map(a => (
+          <div key={a.key} style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 36px', gap: '8px', alignItems: 'center' }}>
+            <select name="altToolId" value={a.toolId} onChange={e => updateAlternative(a.key, 'toolId', e.target.value)} style={inputStyle(false)}>
+              <option value="">— Tool wählen —</option>
+              {tools.map(t => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
+            <input type="text" name="altReason" value={a.reason} onChange={e => updateAlternative(a.key, 'reason', e.target.value)} placeholder="z. B. wenn du Zeiterfassung brauchst" style={inputStyle(false)} />
+            <button type="button" onClick={() => removeAlternative(a.key)} title="Alternative entfernen" style={removeBtnStyle}>×</button>
+          </div>
+        ))}
+
+        <button type="button" onClick={addAlternative} style={addBtnStyle}>+ Alternative hinzufügen</button>
 
       </Section>
 
@@ -376,12 +567,7 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
       </Section>
 
       {/* ── Submit ── */}
-      <div style={{
-        display: 'flex',
-        gap: '12px',
-        paddingTop: '24px',
-        borderTop: '1px solid var(--color-border)',
-      }}>
+      <div style={{ display: 'flex', gap: '12px', paddingTop: '24px', borderTop: '1px solid var(--color-border)' }}>
         <button
           type="submit"
           disabled={isPending}

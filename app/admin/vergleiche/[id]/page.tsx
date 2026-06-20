@@ -32,6 +32,12 @@ export default async function EditVergleichPage({ params }: Props) {
         toolA: { include: { translations: { where: { locale: 'de' } } } },
         toolB: { include: { translations: { where: { locale: 'de' } } } },
         rows: { orderBy: { sortOrder: 'asc' } },
+        sections: { orderBy: { sortOrder: 'asc' } },
+        features: { orderBy: { sortOrder: 'asc' } },
+        alternatives: {
+          orderBy: { sortOrder: 'asc' },
+          include: { tool: { include: { translations: { where: { locale: 'de' } } } } },
+        },
       },
     }),
     prisma.tool.findMany({
@@ -48,6 +54,12 @@ export default async function EditVergleichPage({ params }: Props) {
     slug: t.slug,
   }))
 
+  // JSON-Felder typisiert durchreichen (Prisma.JsonValue → erwartete Form)
+  const dgRaw = vergleich.decisionGuide as unknown as
+    { toolA?: string[]; toolB?: string[]; alternatives?: string[] } | null
+  const tgRaw = vergleich.targetGroups as unknown as
+    { toolA?: string[]; toolB?: string[] } | null
+
   const defaultValues: VergleichFormDefaults = {
     toolAId:   vergleich.toolAId,
     toolBId:   vergleich.toolBId,
@@ -59,6 +71,22 @@ export default async function EditVergleichPage({ params }: Props) {
       toolAValue: r.toolAValue,
       toolBValue: r.toolBValue,
     })),
+    title:         vergleich.title,
+    subtitle:      vergleich.subtitle,
+    keyDifference: vergleich.keyDifference,
+    decisionGuide: dgRaw
+      ? { toolA: dgRaw.toolA ?? [], toolB: dgRaw.toolB ?? [], alternatives: dgRaw.alternatives ?? [] }
+      : null,
+    targetGroups: tgRaw
+      ? { toolA: tgRaw.toolA ?? [], toolB: tgRaw.toolB ?? [] }
+      : null,
+    sections: vergleich.sections.map(s => ({ heading: s.heading, content: s.content })),
+    features: vergleich.features.map(f => ({
+      feature:    f.feature,
+      toolAValue: f.toolAValue,
+      toolBValue: f.toolBValue,
+    })),
+    alternatives: vergleich.alternatives.map(a => ({ toolId: a.toolId, reason: a.reason })),
   }
 
   const nameA = vergleich.toolA.translations[0]?.name ?? vergleich.toolA.slug
