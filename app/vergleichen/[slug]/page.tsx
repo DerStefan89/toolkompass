@@ -13,12 +13,14 @@
  */
 
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
 import { comparisonJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
 import { SITE_URL } from '@/lib/config/site'
+import InlineMarkdown from '@/components/ui/InlineMarkdown'
 import styles from './page.module.css'
 
 export const revalidate = 300
@@ -53,6 +55,19 @@ export async function generateMetadata({
 
 const TOOL_FARBEN = ['var(--color-cta)', '#c8a96e'] as const
 
+/** Funktionscheck-Zelle: "Ja" → grünes ✓, "Nein" → graues –, sonst gelber Punkt + Text. */
+function FeatureValue({ value }: { value: string }) {
+  const v = value.trim().toLowerCase()
+  if (v === 'ja') return <span className={styles.featYes} aria-label="Ja">✓</span>
+  if (v === 'nein') return <span className={styles.featNo} aria-label="Nein">–</span>
+  return (
+    <span className={styles.featPartial}>
+      <span className={styles.featDot} aria-hidden="true" />
+      {value}
+    </span>
+  )
+}
+
 export default async function VergleichDetailSeite({
   params,
 }: {
@@ -80,6 +95,19 @@ export default async function VergleichDetailSeite({
         },
       },
       rows: { orderBy: { sortOrder: 'asc' } },
+      sections: { orderBy: { sortOrder: 'asc' } },
+      features: { orderBy: { sortOrder: 'asc' } },
+      alternatives: {
+        orderBy: { sortOrder: 'asc' },
+        include: {
+          tool: {
+            include: {
+              translations: { where: { locale: 'de' } },
+              affiliateLinks: { where: { isActive: true, isPrimary: true }, take: 1 },
+            },
+          },
+        },
+      },
     },
   })
 
@@ -118,6 +146,27 @@ export default async function VergleichDetailSeite({
 
   const [toolA, toolB] = tools
 
+  // ── V3: neue Artikel-Felder (alle optional) ──
+  const decisionGuide = comparison.decisionGuide as unknown as
+    { toolA?: string[]; toolB?: string[]; alternatives?: string[] } | null
+  const targetGroups = comparison.targetGroups as unknown as
+    { toolA?: string[]; toolB?: string[] } | null
+
+  const dgA = decisionGuide?.toolA ?? []
+  const dgB = decisionGuide?.toolB ?? []
+  const dgAlt = decisionGuide?.alternatives ?? []
+  const hasDecision = dgA.length + dgB.length + dgAlt.length > 0
+
+  const tgA = targetGroups?.toolA ?? []
+  const tgB = targetGroups?.toolB ?? []
+  const hasTargetGroups = tgA.length + tgB.length > 0
+
+  // Affiliate-Tracking: aktiver Primär-Link → /api/track/[id], sonst Tool-Detailseite
+  const altLink = (alt: (typeof comparison.alternatives)[number]) => {
+    const link = alt.tool.affiliateLinks[0]
+    return link ? `/api/track/${link.id}` : `/tools/${alt.tool.slug}`
+  }
+
   const jsonLd = comparisonJsonLd({
     slug: comparison.slug,
     verdict: comparison.verdict,
@@ -150,9 +199,12 @@ export default async function VergleichDetailSeite({
       {/* ─── HERO ─────────────────────────────────────────────── */}
       <div className={styles.heroRow}>
         <div className={styles.heroLeft}>
-          <h1 className={styles.heroTitle}>{toolA.name} vs {toolB.name}</h1>
+          <h1 className={styles.heroTitle}>
+            {comparison.title ?? `${toolA.name} vs ${toolB.name}`}
+          </h1>
           <p className={styles.heroDesc}>
-            {kategorieName}-Tools im Vergleich: Welche Lösung passt besser zu Selbstständigen, Freelancern und kleinen Teams?
+            {comparison.subtitle ??
+              `${kategorieName}-Tools im Vergleich: Welche Lösung passt besser zu Selbstständigen, Freelancern und kleinen Teams?`}
           </p>
         </div>
 
@@ -188,6 +240,50 @@ export default async function VergleichDetailSeite({
           <span className={styles.affiliateNote}>Affiliate-Link · Für dich keine Mehrkosten</span>
         </div>
       </div>
+
+      {/* ─── SCHNELLE ENTSCHEIDUNG ────────────────────────────── */}
+      {hasDecision && (
+        <div className={styles.decisionCards}>
+          {dgA.length > 0 && (
+            <div className={`${styles.decisionCard} ${styles.decisionCardA}`}>
+              <p className={styles.decisionCardTitle}>Nimm {toolA.name}, wenn …</p>
+              <ul className={styles.decisionList}>
+                {dgA.map((p) => (
+                  <li key={p} className={styles.decisionItem}><span className={styles.decisionCheck}>✓</span>{p}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {dgB.length > 0 && (
+            <div className={`${styles.decisionCard} ${styles.decisionCardB}`}>
+              <p className={styles.decisionCardTitle}>Nimm {toolB.name}, wenn …</p>
+              <ul className={styles.decisionList}>
+                {dgB.map((p) => (
+                  <li key={p} className={styles.decisionItem}><span className={styles.decisionCheck}>✓</span>{p}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {dgAlt.length > 0 && (
+            <div className={`${styles.decisionCard} ${styles.decisionCardAlt}`}>
+              <p className={styles.decisionCardTitle}>Schau dir Alternativen an, wenn …</p>
+              <ul className={styles.decisionList}>
+                {dgAlt.map((p) => (
+                  <li key={p} className={styles.decisionItem}><span className={styles.decisionCheck}>✓</span>{p}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ─── DER WICHTIGSTE UNTERSCHIED ────────────────────────── */}
+      {comparison.keyDifference && (
+        <div className={styles.keyDiffCallout}>
+          <p className={styles.keyDiffLabel}>Der wichtigste Unterschied</p>
+          <p className={styles.keyDiffText}>{comparison.keyDifference}</p>
+        </div>
+      )}
 
       {/* ─── WELCHES TOOL PASST BESSER? ───────────────────────── */}
       <h2 className={styles.sectionTitle}>Welches Tool passt besser zu dir?</h2>
@@ -238,6 +334,35 @@ export default async function VergleichDetailSeite({
           Preisangaben können sich ändern. Bitte prüfe die aktuellen Konditionen beim Anbieter.
         </p>
       </div>
+
+      {/* ─── FUNKTIONSCHECK ───────────────────────────────────── */}
+      {comparison.features.length > 0 && (
+        <>
+          <h2 className={styles.sectionTitle}>Funktionscheck</h2>
+          <div className={styles.tableSection}>
+            <div className={styles.tableWrap}>
+              <table className={styles.table}>
+                <thead>
+                  <tr className={styles.tableHeadRow}>
+                    <th className={styles.thLabel}>Funktion</th>
+                    <th className={styles.thTool}>{toolA.name}</th>
+                    <th className={styles.thToolLast}>{toolB.name}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparison.features.map((f) => (
+                    <tr key={f.id} className={styles.tableRow}>
+                      <td className={styles.tdLabel}>{f.feature}</td>
+                      <td className={styles.tdA}><FeatureValue value={f.toolAValue} /></td>
+                      <td className={styles.tdB}><FeatureValue value={f.toolBValue} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* ─── PREISE ───────────────────────────────────────────── */}
       <h2 className={styles.sectionTitle}>Preise im Vergleich</h2>
@@ -298,6 +423,75 @@ export default async function VergleichDetailSeite({
           </div>
         ))}
       </div>
+
+      {/* ─── TEXTABSCHNITTE ───────────────────────────────────── */}
+      {comparison.sections.map((sec) => (
+        <section key={sec.id} className={styles.textSection}>
+          <h2 className={styles.sectionTitle}>{sec.heading}</h2>
+          <div className={styles.textSectionBody}><InlineMarkdown text={sec.content} /></div>
+        </section>
+      ))}
+
+      {/* ─── FÜR WEN (ZIELGRUPPEN) ─────────────────────────────── */}
+      {hasTargetGroups && (
+        <>
+          <h2 className={styles.sectionTitle}>Für wen ist welches Tool die bessere Wahl?</h2>
+          <div className={styles.twoColGrid}>
+            <div className={styles.targetBox}>
+              <p className={styles.targetTitle}>{toolA.name} ist die bessere Wahl für …</p>
+              {tgA.map((g) => (
+                <div key={g} className={styles.fitItem}><span className={styles.fitCheck}>✓</span>{g}</div>
+              ))}
+            </div>
+            <div className={styles.targetBox}>
+              <p className={styles.targetTitle}>{toolB.name} ist die bessere Wahl für …</p>
+              {tgB.map((g) => (
+                <div key={g} className={styles.fitItem}><span className={styles.fitCheck}>✓</span>{g}</div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ─── ALTERNATIVEN ─────────────────────────────────────── */}
+      {comparison.alternatives.length > 0 && (
+        <>
+          <h2 className={styles.sectionTitle}>Alternativen, die sich lohnen können</h2>
+          <div className={styles.altGrid}>
+            {comparison.alternatives.map((alt) => {
+              const at = alt.tool.translations[0]
+              const name = at?.name ?? alt.tool.slug
+              return (
+                <a
+                  key={alt.id}
+                  href={altLink(alt)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.altCard}
+                >
+                  {/* backgroundColor + border: conditional auf logoUrl — erlaubte Inline-Styles */}
+                  <div
+                    className={styles.altLogoWrap}
+                    style={{
+                      backgroundColor: alt.tool.logoUrl ? 'transparent' : 'var(--color-cta)',
+                      border: alt.tool.logoUrl ? '1px solid var(--color-border)' : 'none',
+                    }}
+                  >
+                    {alt.tool.logoUrl ? (
+                      <Image src={alt.tool.logoUrl} alt={name} width={40} height={40} className={styles.altLogoImg} />
+                    ) : (
+                      <span className={styles.altLogoInitial}>{name.charAt(0).toUpperCase()}</span>
+                    )}
+                  </div>
+                  <p className={styles.altName}>{name}</p>
+                  <p className={styles.altReason}>{alt.reason}</p>
+                  <span className={styles.altLink}>Ansehen →</span>
+                </a>
+              )
+            })}
+          </div>
+        </>
+      )}
 
     </main>
     </>

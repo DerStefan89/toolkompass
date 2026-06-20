@@ -24,29 +24,9 @@ import PricingSection from '@/components/tools/PricingSection'
 import RatingSummary from '@/components/rating/RatingSummary'
 import UseToolButton from '@/components/tools/UseToolButton'
 import type { FaqItem } from '@/components/admin/FaqEditor'
-import ReactMarkdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
+import InlineMarkdown from '@/components/ui/InlineMarkdown'
 import { SITE_URL } from '@/lib/config/site'
 import styles from './page.module.css'
-
-// Rendert Markdown (fett/kursiv/unterstrichen) aus dem Admin-Formular inline,
-// ohne den Block-Wrapper <p>, den react-markdown standardmäßig erzeugt —
-// der würde in Listen-Items und neben Icons zu ungültigem verschachteltem
-// HTML und gebrochenem Inline-Layout führen.
-//
-// rehypeRaw erlaubt rohes HTML (für <u>…</u>, da Markdown kein natives
-// Underline kennt). Das ist hier unbedenklich, weil der Inhalt ausschließlich
-// aus dem eigenen Admin-Bereich stammt — kein nutzergenerierter Content.
-function InlineMarkdown({ text }: { text: string }) {
-  return (
-    <ReactMarkdown
-      rehypePlugins={[rehypeRaw]}
-      components={{ p: ({ children }) => <>{children}</> }}
-    >
-      {text}
-    </ReactMarkdown>
-  )
-}
 
 // ISR: gecacht, alle 5 Minuten im Hintergrund aufgefrischt (Admin-Mutationen
 // invalidieren zusätzlich sofort via revalidatePath). Der User-spezifische

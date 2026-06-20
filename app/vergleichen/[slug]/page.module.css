@@ -458,3 +458,248 @@
 .conCross {
   color: var(--color-error);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   V3 — Vergleichs-Artikel-Sektionen
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Schnelle Entscheidung ───────────────────────────────── */
+
+.decisionCards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .decisionCards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.decisionCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.decisionCardA {
+  border-top-color: var(--color-cta);
+}
+
+.decisionCardB {
+  border-top-color: #c8a96e;
+}
+
+.decisionCardAlt {
+  border-top-color: var(--color-text-secondary);
+}
+
+.decisionCardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+}
+
+.decisionList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.decisionItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+.decisionCheck {
+  flex-shrink: 0;
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+/* ─── Der wichtigste Unterschied ──────────────────────────── */
+
+.keyDiffCallout {
+  background-color: var(--color-badge-bg);
+  border-left: 4px solid var(--color-cta);
+  border-radius: var(--radius-btn);
+  padding: 16px 20px;
+  margin-bottom: 32px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.keyDiffLabel {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-cta);
+  margin: 0 0 6px;
+}
+
+.keyDiffText {
+  font-size: 15px;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ─── Funktionscheck-Zellen ───────────────────────────────── */
+
+.featYes {
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.featNo {
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+.featPartial {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+}
+
+.featDot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--color-warning);
+  flex-shrink: 0;
+}
+
+/* ─── Textabschnitte ──────────────────────────────────────── */
+
+.textSection {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.textSectionBody {
+  font-size: 15px;
+  color: var(--color-text-primary);
+  line-height: 1.7;
+}
+
+/* ─── Zielgruppen-Boxen ───────────────────────────────────── */
+
+.targetBox {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.targetTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+}
+
+/* ─── Alternativen-Karten ─────────────────────────────────── */
+
+.altGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+@media (min-width: 640px) {
+  .altGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .altGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.altCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 18px;
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.altCard:hover {
+  border-color: var(--color-cta);
+}
+
+.altLogoWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-btn);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.altLogoImg {
+  object-fit: contain;
+}
+
+.altLogoInitial {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.altName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 6px;
+}
+
+.altReason {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+
+.altLink {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-cta);
+  margin-top: auto;
+}
