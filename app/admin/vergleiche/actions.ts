@@ -43,6 +43,7 @@ type VergleichFormData = {
   sections: Array<{ heading: string; content: string }>
   features: Array<{ feature: string; toolAValue: string; toolBValue: string }>
   alternatives: Array<{ toolId: string; reason: string }>
+  faqItems: Array<{ question: string; answer: string }> | null
 }
 
 // ─── Hilfsfunktionen ────────────────────────────────────────────────────────
@@ -123,6 +124,14 @@ function parseVergleichForm(formData: FormData): {
     .filter(a => a.toolId)
     .filter((a, i, arr) => arr.findIndex(x => x.toolId === a.toolId) === i)
 
+  // FAQ (parallele Felder) — nur mit Frage UND Antwort
+  const faqQuestions = (formData.getAll('faqQuestion') as string[])
+  const faqAnswers   = (formData.getAll('faqAnswer') as string[])
+  const faqList = faqQuestions
+    .map((question, i) => ({ question: question.trim(), answer: (faqAnswers[i] ?? '').trim() }))
+    .filter(f => f.question && f.answer)
+  const faqItems = faqList.length > 0 ? faqList : null
+
   const errors: Record<string, string> = {}
   if (!toolAId) errors.toolAId = 'Tool A ist erforderlich.'
   if (!toolBId) {
@@ -141,7 +150,7 @@ function parseVergleichForm(formData: FormData): {
     data: {
       toolAId, toolBId, slug, verdict, published, rows,
       title, subtitle, keyDifference, decisionGuide, targetGroups,
-      sections, features, alternatives,
+      sections, features, alternatives, faqItems,
     },
     errors: Object.keys(errors).length > 0 ? errors : null,
   }
@@ -181,6 +190,7 @@ export async function createVergleich(
         keyDifference: data.keyDifference,
         decisionGuide: data.decisionGuide ?? Prisma.DbNull,
         targetGroups:  data.targetGroups ?? Prisma.DbNull,
+        faqItems:      data.faqItems ?? Prisma.DbNull,
         rows: {
           create: data.rows.map((r, i) => ({
             criterion:  r.criterion,
@@ -261,6 +271,7 @@ export async function updateVergleich(
         keyDifference: data.keyDifference,
         decisionGuide: data.decisionGuide ?? Prisma.DbNull,
         targetGroups:  data.targetGroups ?? Prisma.DbNull,
+        faqItems:      data.faqItems ?? Prisma.DbNull,
         // Alle Relationen löschen und neu anlegen (gleiche Strategie wie rows)
         rows: {
           deleteMany: {},

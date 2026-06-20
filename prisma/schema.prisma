@@ -301,6 +301,9 @@ model Comparison {
   // Wichtigster Unterschied (ein hervorgehobener Callout-Text)
   keyDifference String?
 
+  // Häufige Fragen — [{ question: string, answer: string }] (wie ToolTranslation.faqItems)
+  faqItems Json?
+
   toolAId   String
   toolBId   String
   toolA     Tool            @relation("ComparisonToolA", fields: [toolAId], references: [id])

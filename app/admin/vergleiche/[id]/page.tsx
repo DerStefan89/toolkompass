@@ -87,6 +87,7 @@ export default async function EditVergleichPage({ params }: Props) {
       toolBValue: f.toolBValue,
     })),
     alternatives: vergleich.alternatives.map(a => ({ toolId: a.toolId, reason: a.reason })),
+    faqItems: (vergleich.faqItems as unknown as Array<{ question: string; answer: string }> | null) ?? [],
   }
 
   const nameA = vergleich.toolA.translations[0]?.name ?? vergleich.toolA.slug

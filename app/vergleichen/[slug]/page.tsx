@@ -18,7 +18,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { formatPreis } from '@/lib/utils/format'
-import { comparisonJsonLd, breadcrumbJsonLd } from '@/lib/seo/json-ld'
+import { comparisonJsonLd, breadcrumbJsonLd, faqPageJsonLd } from '@/lib/seo/json-ld'
 import { SITE_URL } from '@/lib/config/site'
 import InlineMarkdown from '@/components/ui/InlineMarkdown'
 import styles from './page.module.css'
@@ -181,10 +181,17 @@ export default async function VergleichDetailSeite({
     { name: `${tA.name} vs ${tB.name}`, url: `${SITE_URL}/vergleichen/${comparison.slug}` },
   ])
 
+  // FAQ (optional) — Plain Text; faqPageJsonLd nur bei echten Items für Rich Snippets
+  const faqItems = (comparison.faqItems as unknown as { question: string; answer: string }[] | null) ?? []
+  const faqLd = faqItems.length > 0 ? faqPageJsonLd(faqItems) : null
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: crumbLd }} />
+      {faqLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqLd }} />
+      )}
       <main className={styles.main}>
 
       {/* Breadcrumb */}
@@ -491,6 +498,22 @@ export default async function VergleichDetailSeite({
             })}
           </div>
         </>
+      )}
+
+      {/* ─── HÄUFIGE FRAGEN ───────────────────────────────────── */}
+      {faqItems.length > 0 && (
+        <div className={styles.faqSection}>
+          <h2 className={styles.sectionTitle}>Häufige Fragen</h2>
+          <ul className={styles.faqList}>
+            {faqItems.map((item, i) => (
+              <li key={i} className={styles.faqItem}>
+                {/* Plain Text — keine Markdown-Verarbeitung für FAQ */}
+                <p className={styles.faqQuestion}>{item.question}</p>
+                <p className={styles.faqAnswer}>{item.answer}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
     </main>

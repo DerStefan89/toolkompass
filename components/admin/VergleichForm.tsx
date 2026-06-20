@@ -55,6 +55,12 @@ type AlternativeData = {
   reason: string
 }
 
+type FaqData = {
+  key: string
+  question: string
+  answer: string
+}
+
 type KStr = { key: string; value: string }
 
 export type VergleichFormDefaults = {
@@ -73,6 +79,7 @@ export type VergleichFormDefaults = {
   sections?: Array<{ heading: string; content: string }>
   features?: Array<{ feature: string; toolAValue: string; toolBValue: string }>
   alternatives?: Array<{ toolId: string; reason: string }>
+  faqItems?: Array<{ question: string; answer: string }>
 }
 
 type Props = {
@@ -261,6 +268,9 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
   const [alternatives, setAlternatives] = useState<AlternativeData[]>(
     defaultValues?.alternatives?.map((a, i) => ({ key: `a${i}`, ...a })) ?? []
   )
+  const [faqs, setFaqs] = useState<FaqData[]>(
+    defaultValues?.faqItems?.map((f, i) => ({ key: `q${i}`, ...f })) ?? []
+  )
 
   function handleToolAChange(id: string) {
     setToolAId(id)
@@ -310,6 +320,16 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
   }
   function updateAlternative(key: string, field: keyof Omit<AlternativeData, 'key'>, value: string) {
     setAlternatives(prev => prev.map(a => a.key === key ? { ...a, [field]: value } : a))
+  }
+
+  function addFaq() {
+    setFaqs(prev => [...prev, { key: nextKey(), question: '', answer: '' }])
+  }
+  function removeFaq(key: string) {
+    setFaqs(prev => prev.filter(f => f.key !== key))
+  }
+  function updateFaq(key: string, field: keyof Omit<FaqData, 'key'>, value: string) {
+    setFaqs(prev => prev.map(f => f.key === key ? { ...f, [field]: value } : f))
   }
 
   const fe = state.fieldErrors ?? {}
@@ -549,6 +569,26 @@ export default function VergleichForm({ action, tools, defaultValues }: Props) {
         ))}
 
         <button type="button" onClick={addAlternative} style={addBtnStyle}>+ Alternative hinzufügen</button>
+
+      </Section>
+
+      {/* ── Häufige Fragen ── */}
+      <Section title="Häufige Fragen">
+
+        {faqs.map(f => (
+          <div key={f.key} style={{
+            display: 'flex', flexDirection: 'column', gap: '8px',
+            padding: '12px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-btn)',
+          }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input type="text" name="faqQuestion" value={f.question} onChange={e => updateFaq(f.key, 'question', e.target.value)} placeholder="Frage, z. B. „Welches Tool ist günstiger?“" style={inputStyle(false)} />
+              <button type="button" onClick={() => removeFaq(f.key)} title="Frage entfernen" style={removeBtnStyle}>×</button>
+            </div>
+            <textarea name="faqAnswer" value={f.answer} onChange={e => updateFaq(f.key, 'answer', e.target.value)} placeholder="Antwort (einfacher Text) …" rows={3} style={{ ...inputStyle(false), resize: 'vertical' }} />
+          </div>
+        ))}
+
+        <button type="button" onClick={addFaq} style={addBtnStyle}>+ Frage hinzufügen</button>
 
       </Section>
 
