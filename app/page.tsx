@@ -116,7 +116,10 @@ export default async function Home() {
               Tool-Finder starten →
             </Link>
             <Link href="/kategorien" className={styles.btnSecondary}>
-              Kategorien ansehen
+              Tools entdecken
+            </Link>
+            <Link href="/entwickeln" className={styles.btnSecondary}>
+              Tool entwickeln lassen
             </Link>
           </div>
 

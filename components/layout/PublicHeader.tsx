@@ -30,8 +30,6 @@ import styles from './PublicHeader.module.css';
 const navLinks = [
   { label: 'Entdecken',   href: '/kategorien' },
   { label: 'Vergleichen', href: '/vergleichen' },
-  { label: 'Tool-Stacks', href: '/tool-stacks' },
-  { label: 'Ratgeber',    href: '/ratgeber' },
   { label: 'Entwickeln',  href: '/entwickeln' },
 ];
 

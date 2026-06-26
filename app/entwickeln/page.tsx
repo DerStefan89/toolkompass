@@ -2,8 +2,8 @@
  * Datei: app/entwickeln/page.tsx
  *
  * Zweck: Landingpage für Tool-Entwicklung als Dienstleistung.
- * 10 Abschnitte: Hero, Problem, Für wen, Beispiele, Ablauf,
- * Leistungsumfang, Warum ToolSucher, Preise, Anfrageformular, FAQ.
+ * 8 Abschnitte: Hero, Preise, Beispiele, Ablauf, Leistungsumfang,
+ * Warum ToolSucher, Anfrageformular, FAQ.
  * Server Component — nur das Formular (InquiryForm) ist Client.
  */
 
@@ -37,7 +37,7 @@ const EXAMPLES = [
   { icon: '📋', title: 'Kunden-Onboarding', desc: 'Formulare, Dokumente, Status tracken' },
   { icon: '📅', title: 'Termin-Tool', desc: 'Buchungsformular mit Kalenderlogik' },
   { icon: '📊', title: 'Projekt-Tracker', desc: 'Aufgaben, Deadlines, Teamübersicht' },
-  { icon: '🤖', title: 'KI-Textgenerator', desc: 'Automatisierte Texte für deine Nische' },
+  { icon: '🤖', title: 'Textgenerator', desc: 'Automatisierte Texte für deine Nische' },
   { icon: '📉', title: 'Kunden-Dashboard', desc: 'Login, Reporting, PDF-Export' },
   { icon: '⚡', title: 'Automatisierung', desc: 'Formular → CRM → E-Mail-Sequenz' },
   { icon: '🚀', title: 'MVP für Geschäftsidee', desc: 'Erste Version zum Markttest' },
@@ -61,9 +61,8 @@ const SCOPE = [
 
 const FAQ = [
   { q: 'Kann ich auch ohne technische Erfahrung anfragen?', a: 'Ja. Du musst nur dein Problem beschreiben. Die technische Umsetzung wird daraus abgeleitet.' },
-  { q: 'Was bedeutet Vibe Coding?', a: 'Die Entwicklung wird KI-gestützt und pragmatisch umgesetzt. Dadurch können einfache Tools schneller entstehen als bei klassischen Entwicklungsprozessen. Trotzdem wird geprüft, was technisch sinnvoll und stabil umsetzbar ist.' },
   { q: 'Ist das günstiger als eine Agentur?', a: 'In vielen Fällen ja, weil der Fokus auf kleinen MVPs und klar begrenzten Funktionen liegt. Große Individualsoftware ist nicht das Ziel dieses Angebots.' },
-  { q: 'Kann ich damit ein komplettes SaaS bauen lassen?', a: 'Ein erstes MVP ist möglich. Eine vollständige SaaS-Plattform mit komplexer Skalierung, Sicherheit, Abrechnung und Support ist ein größeres Projekt und muss separat geprüft werden.' },
+  { q: 'Kann ich damit ein komplettes SaaS bauen lassen?', a: 'Ein erstes MVP ist möglich. Eine vollständige SaaS-Plattform mit komplexer Skalierung, Sicherheit und Abrechnung ist ein größeres Projekt und muss separat geprüft werden.' },
   { q: 'Kann das Tool später erweitert werden?', a: 'Ja, wenn das MVP funktioniert und klar ist, welche Funktionen wirklich gebraucht werden.' },
   { q: 'Für welche Projekte ist das nicht geeignet?', a: 'Nicht geeignet sind sehr komplexe, sicherheitskritische oder stark regulierte Anwendungen ohne weitere technische und rechtliche Prüfung.' },
 ]
@@ -104,99 +103,7 @@ export default function EntwickelnSeite() {
           </div>
         </section>
 
-        {/* 2. PROBLEM */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Das Problem</h2>
-          <p className={styles.sectionText}>
-            Viele Selbstständige, Coaches und Agenturen arbeiten mit Excel-Listen,
-            Notion-Workarounds, Formularen und manuellen E-Mails. Oft gibt es kein passendes
-            Standard-Tool — oder es ist zu teuer, zu kompliziert oder kann den eigenen Prozess
-            nicht abbilden. Genau dafür ist dieses Angebot gedacht.
-          </p>
-        </section>
-
-        {/* 3. FÜR WEN */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Für wen ist das Angebot?</h2>
-          <div className={styles.fitGrid}>
-            <div className={styles.fitBox}>
-              <p className={styles.fitBoxTitle}>Geeignet für:</p>
-              {['Freelancer', 'Coaches', 'Berater', 'Agenturen', 'Solo-Selbstständige', 'Kleine Teams', 'Gründer mit MVP-Idee'].map((t) => (
-                <div key={t} className={styles.fitItem}><span className={styles.fitCheck}>✓</span>{t}</div>
-              ))}
-            </div>
-            <div className={styles.fitBox}>
-              <p className={styles.fitBoxTitle}>Nicht ideal für:</p>
-              {['Große Enterprise-Projekte', 'Hochkritische Systeme', 'Umfangreiche Plattformen', 'Projekte ohne klaren Anwendungsfall', 'Stark regulierte Anwendungen'].map((t) => (
-                <div key={t} className={styles.fitItem}><span className={styles.fitCross}>✗</span>{t}</div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 4. BEISPIELE */}
-        <section className={styles.section} id="beispiele">
-          <h2 className={styles.sectionTitle}>Beispiele: Was wir bauen können</h2>
-          <div className={styles.exampleGrid}>
-            {EXAMPLES.map((ex) => (
-              <div key={ex.title} className={styles.exampleCard}>
-                <span className={styles.exampleIcon}>{ex.icon}</span>
-                <p className={styles.exampleTitle}>{ex.title}</p>
-                <p className={styles.exampleDesc}>{ex.desc}</p>
-              </div>
-            ))}
-          </div>
-          <div className={styles.ctaRow}><CtaLink /></div>
-        </section>
-
-        {/* 5. ABLAUF */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>So läuft es ab</h2>
-          <div className={styles.stepsGrid}>
-            {STEPS.map((s) => (
-              <div key={s.nr} className={styles.step}>
-                <div className={styles.stepNr}>{s.nr}</div>
-                <div>
-                  <p className={styles.stepTitle}>{s.title}</p>
-                  <p className={styles.stepDesc}>{s.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 6. LEISTUNGSUMFANG */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Was im Umfang enthalten ist</h2>
-          <div className={styles.scopeList}>
-            {SCOPE.map((s) => (
-              <div key={s} className={styles.scopeItem}><span className={styles.fitCheck}>✓</span>{s}</div>
-            ))}
-          </div>
-        </section>
-
-        {/* 7. WARUM TOOLSUCHER */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Warum ToolSucher?</h2>
-          <p className={styles.sectionText}>
-            Manchmal ist das beste Tool nicht das bekannteste — sondern ein kleines Tool,
-            das genau deinen Prozess abbildet.
-          </p>
-          <div className={styles.scopeList}>
-            {[
-              'KI-gestützte Entwicklung — schneller als klassische Projekte',
-              'Fokus auf kleine, nützliche MVPs statt Feature-Bloat',
-              'Pragmatisch statt perfektionistisch — erst nutzen, dann iterieren',
-              'Transparente Preise, kein Stundenzählen im Hintergrund',
-              'Du bekommst ein funktionierendes Tool, keinen Prototypen',
-            ].map((a) => (
-              <div key={a} className={styles.scopeItem}><span className={styles.fitCheck}>✓</span>{a}</div>
-            ))}
-          </div>
-          <div className={styles.ctaRow}><CtaLink /></div>
-        </section>
-
-        {/* 8. PREISE */}
+        {/* 2. PREISE */}
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Preise</h2>
           <div className={styles.priceGrid}>
@@ -225,7 +132,69 @@ export default function EntwickelnSeite() {
           </p>
         </section>
 
-        {/* 9. ANFRAGEFORMULAR */}
+        {/* 3. BEISPIELE */}
+        <section className={styles.section} id="beispiele">
+          <h2 className={styles.sectionTitle}>Beispiele: Was wir bauen können</h2>
+          <div className={styles.exampleGrid}>
+            {EXAMPLES.map((ex) => (
+              <div key={ex.title} className={styles.exampleCard}>
+                <span className={styles.exampleIcon}>{ex.icon}</span>
+                <p className={styles.exampleTitle}>{ex.title}</p>
+                <p className={styles.exampleDesc}>{ex.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className={styles.ctaRow}><CtaLink /></div>
+        </section>
+
+        {/* 4. ABLAUF */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>So läuft es ab</h2>
+          <div className={styles.stepsGrid}>
+            {STEPS.map((s) => (
+              <div key={s.nr} className={styles.step}>
+                <div className={styles.stepNr}>{s.nr}</div>
+                <div>
+                  <p className={styles.stepTitle}>{s.title}</p>
+                  <p className={styles.stepDesc}>{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 5. LEISTUNGSUMFANG */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Was im Umfang enthalten ist</h2>
+          <div className={styles.scopeList}>
+            {SCOPE.map((s) => (
+              <div key={s} className={styles.scopeItem}><span className={styles.fitCheck}>✓</span>{s}</div>
+            ))}
+          </div>
+        </section>
+
+        {/* 6. WARUM TOOLSUCHER */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Warum ToolSucher?</h2>
+          <p className={styles.sectionText}>
+            Manchmal ist das beste Tool nicht das bekannteste — sondern ein kleines Tool,
+            das genau deinen Prozess abbildet.
+          </p>
+          <div className={styles.scopeList}>
+            {[
+              'Effiziente Entwicklungsmethoden — schneller als klassische Agenturen',
+              'Fokus auf kleine, nützliche MVPs statt Feature-Bloat',
+              'Pragmatisch statt perfektionistisch — erst nutzen, dann iterieren',
+              'Transparente Preise, kein Stundenzählen im Hintergrund',
+              'Du bekommst ein funktionierendes Tool, keinen Prototypen',
+            ].map((a) => (
+              <div key={a} className={styles.scopeItem}><span className={styles.fitCheck}>✓</span>{a}</div>
+            ))}
+          </div>
+          <div className={styles.ctaRow}><CtaLink /></div>
+        </section>
+
+        {/* 7. ANFRAGEFORMULAR */}
         <section className={styles.section} id="anfrage">
           <h2 className={styles.sectionTitle}>Deine Tool-Idee beschreiben</h2>
           <div className={styles.formCard}>
@@ -233,7 +202,7 @@ export default function EntwickelnSeite() {
           </div>
         </section>
 
-        {/* 10. FAQ */}
+        {/* 8. FAQ */}
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Häufige Fragen</h2>
           <div className={styles.faqList}>

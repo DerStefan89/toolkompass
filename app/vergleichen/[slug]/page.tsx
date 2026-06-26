@@ -68,6 +68,20 @@ function FeatureValue({ value }: { value: string }) {
   )
 }
 
+/** Tool-Logo mit Initialen-Fallback. size bestimmt die Dimension (px). */
+function ToolLogo({ logoUrl, name, kuerzel, farbe, size, className }: {
+  logoUrl: string | null; name: string; kuerzel: string; farbe: string; size: number; className?: string
+}) {
+  if (logoUrl) {
+    return <Image src={logoUrl} alt={name} width={size} height={size} className={className} style={{ borderRadius: '8px', objectFit: 'contain' }} />
+  }
+  return (
+    <div className={className} style={{ backgroundColor: farbe, width: size, height: size, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: size * 0.4, flexShrink: 0 }}>
+      {kuerzel}
+    </div>
+  )
+}
+
 export default async function VergleichDetailSeite({
   params,
 }: {
@@ -123,6 +137,7 @@ export default async function VergleichDetailSeite({
     {
       name: tA.name,
       kuerzel: tA.name.charAt(0).toUpperCase(),
+      logoUrl: comparison.toolA.logoUrl,
       farbe: TOOL_FARBEN[0],
       preis: formatPreis(comparison.toolA.startingPriceCents, { prefix: 'ab', suffix: '/ Monat', hasFreePlan: comparison.toolA.hasFreePlan }),
       beschreibung: tA.shortDescription,
@@ -134,6 +149,7 @@ export default async function VergleichDetailSeite({
     {
       name: tB.name,
       kuerzel: tB.name.charAt(0).toUpperCase(),
+      logoUrl: comparison.toolB.logoUrl,
       farbe: TOOL_FARBEN[1],
       preis: formatPreis(comparison.toolB.startingPriceCents, { prefix: 'ab', suffix: '/ Monat', hasFreePlan: comparison.toolB.hasFreePlan }),
       beschreibung: tB.shortDescription,
@@ -217,14 +233,9 @@ export default async function VergleichDetailSeite({
 
         {/* vs-Box: Mobile ausgeblendet */}
         <div className={styles.heroVsBox}>
-          {/* backgroundColor: tool.farbe — erlaubter Inline-Style */}
-          <div className={styles.toolIconLg} style={{ backgroundColor: toolA.farbe }}>
-            {toolA.kuerzel}
-          </div>
+          <ToolLogo logoUrl={toolA.logoUrl} name={toolA.name} kuerzel={toolA.kuerzel} farbe={toolA.farbe} size={48} />
           <span className={styles.vsLabel}>vs</span>
-          <div className={styles.toolIconLg} style={{ backgroundColor: toolB.farbe }}>
-            {toolB.kuerzel}
-          </div>
+          <ToolLogo logoUrl={toolB.logoUrl} name={toolB.name} kuerzel={toolB.kuerzel} farbe={toolB.farbe} size={48} />
           <div>
             <p className={styles.vsKategorie}>{kategorieName}</p>
           </div>
@@ -298,10 +309,7 @@ export default async function VergleichDetailSeite({
         {tools.map((tool) => (
           <div key={tool.name} className={styles.fitCard}>
             <div className={styles.fitCardHeader}>
-              {/* backgroundColor: tool.farbe — erlaubter Inline-Style */}
-              <div className={styles.toolIconMd} style={{ backgroundColor: tool.farbe }}>
-                {tool.kuerzel}
-              </div>
+              <ToolLogo logoUrl={tool.logoUrl} name={tool.name} kuerzel={tool.kuerzel} farbe={tool.farbe} size={36} />
               <p className={styles.fitCardTitle}>{tool.name} passt besser, wenn du ...</p>
             </div>
             {tool.passendeWenn.map((punkt) => (
@@ -377,10 +385,7 @@ export default async function VergleichDetailSeite({
         {tools.map((tool) => (
           <div key={tool.name} className={styles.priceCard}>
             <div className={styles.priceCardLeft}>
-              {/* backgroundColor: tool.farbe — erlaubter Inline-Style */}
-              <div className={styles.toolIconSm} style={{ backgroundColor: tool.farbe }}>
-                {tool.kuerzel}
-              </div>
+              <ToolLogo logoUrl={tool.logoUrl} name={tool.name} kuerzel={tool.kuerzel} farbe={tool.farbe} size={28} />
               <div>
                 <p className={styles.priceCardName}>{tool.name}</p>
                 <p className={styles.priceCardAmount}>{tool.preis}</p>
@@ -403,10 +408,7 @@ export default async function VergleichDetailSeite({
         {tools.map((tool) => (
           <div key={tool.name} className={styles.prosConsCard}>
             <div className={styles.prosConsHeader}>
-              {/* backgroundColor: tool.farbe — erlaubter Inline-Style */}
-              <div className={styles.toolIconMd} style={{ backgroundColor: tool.farbe }}>
-                {tool.kuerzel}
-              </div>
+              <ToolLogo logoUrl={tool.logoUrl} name={tool.name} kuerzel={tool.kuerzel} farbe={tool.farbe} size={36} />
               <p className={styles.prosConsTitle}>{tool.name}</p>
             </div>
             <div className={styles.prosConsGrid}>

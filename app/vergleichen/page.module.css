@@ -115,18 +115,36 @@
   gap: 16px;
 }
 
-.compIcon {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  background-color: var(--color-badge-bg);
+.compLogos {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.compLogoImg {
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.compLogoInitial {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: var(--color-cta);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
   font-weight: 700;
   flex-shrink: 0;
+}
+
+.compVs {
+  font-size: 11px;
   color: var(--color-text-secondary);
+  font-weight: 600;
 }
 
 .compText {
