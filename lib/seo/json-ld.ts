@@ -12,7 +12,7 @@
  * aus dem <script>-Tag ausbrechen könnten. Die \uXXXX-Escapes sind im
  * JSON-String-Kontext gültig — das Ergebnis bleibt valides JSON-LD.
  */
-function safeJsonLd(obj: unknown): string {
+export function safeJsonLd(obj: unknown): string {
   return JSON.stringify(obj)
     .replace(/</g, '\\u003c')
     .replace(/>/g, '\\u003e')

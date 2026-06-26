@@ -709,3 +709,26 @@ model RatingScore {
   @@index([ratingId])
   @@index([criterionId])
 }
+
+// ============================================================
+// ANFRAGEN (Tool-Entwicklung)
+// ============================================================
+
+model Inquiry {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  companyType String?
+  description String
+  targetUsers String?
+  features    String?
+  examples    String?
+  budget      String?
+  timeline    String?
+  status      String   @default("neu")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([status])
+}

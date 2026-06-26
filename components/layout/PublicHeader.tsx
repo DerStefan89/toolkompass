@@ -32,6 +32,7 @@ const navLinks = [
   { label: 'Vergleichen', href: '/vergleichen' },
   { label: 'Tool-Stacks', href: '/tool-stacks' },
   { label: 'Ratgeber',    href: '/ratgeber' },
+  { label: 'Entwickeln',  href: '/entwickeln' },
 ];
 
 export default function PublicHeader() {

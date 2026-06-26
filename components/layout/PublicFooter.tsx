@@ -24,6 +24,7 @@ export default function PublicFooter() {
 
         <nav className={styles.nav}>
           {[
+            { label: 'Entwickeln',        href: '/entwickeln' },
             { label: 'Impressum',         href: '/impressum' },
             { label: 'Datenschutz',       href: '/datenschutz' },
             { label: 'Affiliate-Hinweis', href: '/affiliate-hinweis' },

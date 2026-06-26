@@ -1,0 +1,358 @@
+/**
+ * Datei: app/entwickeln/page.module.css
+ * Zweck: Styles für die Entwickeln-Landingpage. Mobile-First, nur Design-Tokens.
+ */
+
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+  width: 100%;
+  box-sizing: border-box;
+}
+@media (min-width: 768px) {
+  .main { padding: 40px 24px 80px; }
+}
+
+/* ─── Hero ─────────────────────────────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 40px 0 48px;
+}
+.heroTitle {
+  font-family: var(--font-headline), serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+@media (min-width: 768px) {
+  .heroTitle { font-size: 44px; }
+}
+.heroSub {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 680px;
+  width: 100%;
+  margin: 0 auto 28px;
+}
+.heroBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+.btnPrimary {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--color-cta);
+  color: #ffffff;
+  border-radius: var(--radius-btn);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.btnPrimary:hover { background-color: var(--color-cta-hover); }
+.btnSecondary {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.btnSecondary:hover { border-color: var(--color-cta); }
+
+/* ─── Sections ─────────────────────────────────────────────── */
+.section {
+  margin-bottom: 48px;
+  width: 100%;
+}
+.sectionTitle {
+  font-family: var(--font-headline), serif;
+  font-size: 24px;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+}
+@media (min-width: 768px) {
+  .sectionTitle { font-size: 28px; }
+}
+.sectionText {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 720px;
+  width: 100%;
+}
+
+/* ─── Für wen (2 Spalten) ──────────────────────────────────── */
+.fitGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  width: 100%;
+}
+@media (min-width: 640px) {
+  .fitGrid { grid-template-columns: 1fr 1fr; }
+}
+.fitBox {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.fitBoxTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+}
+.fitItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+.fitCheck { color: var(--color-success); font-weight: 700; flex-shrink: 0; }
+.fitCross { color: var(--color-error); font-weight: 700; flex-shrink: 0; }
+
+/* ─── Beispiel-Cards ───────────────────────────────────────── */
+.exampleGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  width: 100%;
+}
+@media (min-width: 640px) {
+  .exampleGrid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .exampleGrid { grid-template-columns: repeat(3, 1fr); }
+}
+.exampleCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.exampleIcon { font-size: 24px; display: block; margin-bottom: 8px; }
+.exampleTitle { font-size: 15px; font-weight: 600; color: var(--color-text-primary); margin: 0 0 4px; }
+.exampleDesc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin: 0; }
+
+/* ─── Ablauf-Steps ─────────────────────────────────────────── */
+.stepsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.stepNr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--color-cta);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.stepTitle { font-size: 15px; font-weight: 600; color: var(--color-text-primary); margin: 0 0 2px; }
+.stepDesc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin: 0; }
+
+/* ─── Leistungsumfang / Argumente ──────────────────────────── */
+.scopeList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  width: 100%;
+}
+@media (min-width: 640px) {
+  .scopeList { grid-template-columns: 1fr 1fr; }
+}
+.scopeItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+/* ─── Preise ───────────────────────────────────────────────── */
+.priceGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .priceGrid { grid-template-columns: repeat(3, 1fr); }
+}
+.priceCard {
+  position: relative;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+.priceCardHighlight {
+  border: 2px solid var(--color-cta);
+}
+.priceBadge {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 12px;
+  background-color: var(--color-cta);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 20px;
+}
+.priceCardTitle { font-size: 17px; font-weight: 700; color: var(--color-text-primary); margin: 0 0 6px; }
+.priceCardDesc { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 14px; line-height: 1.5; }
+.priceCardAmount {
+  font-family: var(--font-headline), serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 4px;
+}
+.priceCardTime { font-size: 13px; color: var(--color-text-secondary); margin: 0; }
+.priceNote { font-size: 13px; color: var(--color-text-secondary); margin-top: 14px; text-align: center; }
+
+/* ─── CTA-Zeile (zwischen Abschnitten) ─────────────────────── */
+.ctaRow { margin-top: 20px; }
+.ctaInline {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--color-cta);
+  color: #ffffff;
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.ctaInline:hover { background-color: var(--color-cta-hover); }
+
+/* ─── Formular ─────────────────────────────────────────────── */
+.formCard {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  max-width: 680px;
+  width: 100%;
+  box-sizing: border-box;
+}
+@media (min-width: 768px) {
+  .formCard { padding: 32px; }
+}
+.form { width: 100%; }
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+@media (min-width: 640px) {
+  .formGrid { grid-template-columns: 1fr 1fr; }
+}
+.formField { margin-bottom: 12px; }
+.formLabel {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 5px;
+}
+.formInput, .formSelect, .formTextarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  box-sizing: border-box;
+  outline: none;
+  font-family: inherit;
+}
+.formTextarea { resize: vertical; }
+.formSubmit {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-cta);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.formSubmit:hover { background-color: var(--color-cta-hover); }
+.formSubmit:disabled { background-color: var(--color-text-secondary); cursor: not-allowed; }
+.formError {
+  font-size: 13px;
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-btn);
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+.formSuccess {
+  background-color: var(--color-badge-bg);
+  border-radius: var(--radius-card);
+  padding: 28px 24px;
+  text-align: center;
+}
+.formSuccessTitle { font-size: 18px; font-weight: 700; color: var(--color-success-text); margin: 0 0 8px; }
+.formSuccessText { font-size: 14px; color: var(--color-text-secondary); margin: 0; line-height: 1.6; }
+
+/* ─── FAQ ──────────────────────────────────────────────────── */
+.faqList { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.faqItem {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 18px 20px;
+}
+.faqQ { font-size: 15px; font-weight: 600; color: var(--color-text-primary); margin: 0 0 6px; }
+.faqA { font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
