@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
 
-  // Risikofreie Security-Header für alle Routen (keine CSP — bewusst separat/später).
+  // Security-Header für alle Routen. CSP im Report-Only-Modus (loggt, blockt nicht).
   async headers() {
     return [
       {
@@ -37,6 +37,22 @@ const nextConfig: NextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()',
+          },
+          {
+            key: 'Content-Security-Policy-Report-Only',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
+              "img-src 'self' data: blob: https://*.supabase.co https://www.google-analytics.com https://www.googletagmanager.com",
+              "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://*.sentry.io https://*.ingest.sentry.io https://formspree.io",
+              "frame-src 'none'",
+              "frame-ancestors 'none'",
+              "form-action 'self' https://formspree.io",
+              "base-uri 'self'",
+              "object-src 'none'",
+            ].join('; '),
           },
         ],
       },
