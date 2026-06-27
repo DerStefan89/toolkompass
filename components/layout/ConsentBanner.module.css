@@ -1,0 +1,79 @@
+/**
+ * Datei: components/layout/ConsentBanner.module.css
+ * Zweck: Styles für den Cookie-Consent-Banner. Nur Design-Tokens.
+ */
+
+.banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  background-color: var(--color-bg-card);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.text {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btnAccept {
+  padding: 9px 18px;
+  background-color: var(--color-cta);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btnAccept:hover {
+  background-color: var(--color-cta-hover);
+}
+
+.btnReject {
+  padding: 9px 18px;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .banner {
+    flex-direction: column;
+    padding: 16px;
+  }
+  .buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+  .btnAccept,
+  .btnReject {
+    width: 100%;
+    text-align: center;
+  }
+}

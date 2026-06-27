@@ -22,6 +22,8 @@ import "./globals.css";
 import PublicHeader from '@/components/layout/PublicHeader';
 import PublicFooter from '@/components/layout/PublicFooter';
 import FeedbackWidget from '@/components/layout/FeedbackWidget';
+import GoogleAnalytics from '@/components/layout/GoogleAnalytics';
+import ConsentBanner from '@/components/layout/ConsentBanner';
 
 
 // ============================================
@@ -81,6 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <body style={{ minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
 
+        <GoogleAnalytics />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: orgLd }} />
 
         {/* Header erscheint auf JEDER Seite oben */}
@@ -91,6 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <FeedbackWidget />
         <PublicFooter />
+        <ConsentBanner />
 
       </body>
     </html>
