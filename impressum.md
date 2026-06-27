@@ -7,7 +7,7 @@ Kolonnenstraße 8
 ## Kontakt
 
 Telefon: +4917625101255  
-E-Mail: toolsucher@gmail.de  
+E-Mail: toolsucher@gmail.com  
 
 ## Redaktionell verantwortlich
 

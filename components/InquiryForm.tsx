@@ -140,7 +140,7 @@ export default function InquiryForm() {
 
       {status === 'error' && (
         <p className={styles.formError}>
-          Etwas ist schiefgelaufen. Bitte versuche es erneut oder schreib direkt an info@toolsucher.de.
+          Etwas ist schiefgelaufen. Bitte versuche es erneut oder schreib direkt an toolsucher@gmail.com.
         </p>
       )}
 

@@ -37,8 +37,8 @@ export default function ImpressumPage() {
         </p>
         <p style={{ marginBottom: '32px' }}>
           E-Mail:{' '}
-          <a href="mailto:toolsucher@gmail.de" className={styles.proseLink}>
-            toolsucher@gmail.de
+          <a href="mailto:toolsucher@gmail.com" className={styles.proseLink}>
+            toolsucher@gmail.com
           </a>
         </p>
 
