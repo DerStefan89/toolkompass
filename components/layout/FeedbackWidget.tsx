@@ -64,6 +64,7 @@ export default function FeedbackWidget() {
         method:  'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
+          _honeypot: '',
           type:    OPTIONS[selected].type,
           email:   email.trim() || undefined,
           message: message.trim(),

@@ -59,6 +59,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Ungültige Anfrage.' }, { status: 400 })
   }
 
+  // Honeypot: befülltes Feld = Bot → still verwerfen (kein Fehler)
+  const honeypot = String(body._honeypot ?? '')
+  if (honeypot.length > 0) {
+    return NextResponse.json({ success: true })
+  }
+
   const name = String(body.name ?? '').trim()
   const email = String(body.email ?? '').trim()
   const description = String(body.description ?? '').trim()

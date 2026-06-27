@@ -28,6 +28,7 @@ export default function InquiryForm() {
 
     const fd = new FormData(e.currentTarget)
     const payload = {
+      _honeypot: fd.get('_honeypot') ?? '',
       type: 'tool-anfrage',
       name: fd.get('name'),
       email: fd.get('email'),
@@ -72,6 +73,7 @@ export default function InquiryForm() {
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
+      <input type="text" name="_honeypot" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" aria-hidden="true" />
       <div className={styles.formGrid}>
         <div className={styles.formField}>
           <label htmlFor="inq-name" className={styles.formLabel}>Name *</label>
