@@ -20,7 +20,7 @@ import { requireAdmin } from '@/lib/auth/require-admin'
 import { revalidatePath } from 'next/cache'
 
 const MAX_BYTES   = 1 * 1024 * 1024
-const ACCEPTED    = ['image/png', 'image/jpeg', 'image/svg+xml']
+const ACCEPTED    = ['image/png', 'image/jpeg']
 const BUCKET_NAME = 'tool-logos'
 
 export type LogoActionState = {
@@ -42,7 +42,7 @@ export async function uploadToolLogo(
   const file = formData.get('logo') as File | null
 
   if (!file || file.size === 0) return { error: 'Keine Datei ausgewählt.' }
-  if (!ACCEPTED.includes(file.type)) return { error: 'Nur PNG, JPG und SVG sind erlaubt.' }
+  if (!ACCEPTED.includes(file.type)) return { error: 'Nur PNG und JPG sind erlaubt.' }
   if (file.size > MAX_BYTES) return { error: 'Die Datei ist größer als 1 MB.' }
 
   const ext  = file.name.split('.').pop()?.toLowerCase() ?? 'png'

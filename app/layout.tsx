@@ -61,7 +61,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "ToolSucher — Digitale Business-Tools entdecken & vergleichen",
-  description: "ToolSucher hilft Gründern...",
+  description: "ToolSucher hilft Gründern, Selbstständigen und kleinen Teams, passende Business-Tools für Buchhaltung, Marketing, Produktivität und mehr zu vergleichen.",
   alternates: { canonical: '/' },
 };
 

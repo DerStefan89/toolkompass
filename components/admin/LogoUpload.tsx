@@ -9,7 +9,7 @@
  * - Kein direkter Supabase-Client im Browser — kein RLS-Problem.
  * - Bucket "tool-logos" muss in Supabase als public markiert sein.
  * - Pfad-Format: {toolId}/logo.{ext} — wird per upsert überschrieben.
- * - Nur PNG, JPG und SVG erlaubt, max. 1 MB.
+ * - Nur PNG und JPG erlaubt, max. 1 MB.
  */
 
 'use client'
@@ -65,7 +65,7 @@ export default function LogoUpload({ toolId, currentLogoUrl }: Props) {
           Logo
         </p>
         <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-          PNG, JPG oder SVG · max. 1 MB · Supabase Bucket: {BUCKET_NAME}
+          PNG oder JPG · max. 1 MB · Supabase Bucket: {BUCKET_NAME}
         </p>
       </div>
 
@@ -110,7 +110,7 @@ export default function LogoUpload({ toolId, currentLogoUrl }: Props) {
               id={`logo-input-${toolId}`}
               type="file"
               name="logo"
-              accept="image/png,image/jpeg,image/svg+xml"
+              accept="image/png,image/jpeg"
               onChange={handleFileChange}
               disabled={isPending}
               style={{ display: 'none' }}
