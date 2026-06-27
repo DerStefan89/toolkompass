@@ -179,7 +179,7 @@ export default async function ToolDetailSeite({
               <h1 className={styles.toolName}>{t.name}</h1>
               <p className={styles.toolCategory}>{categoryNames}</p>
               {tool.published && (
-                <span className={styles.verifiedBadge}>✓ Verifiziertes Tool</span>
+                <span className={styles.verifiedBadge}>✓ Redaktionell geprüft</span>
               )}
             </div>
           </div>
@@ -212,6 +212,11 @@ export default async function ToolDetailSeite({
               <span className={styles.affiliateBadge}>Partnerlink</span>
             )}
           </div>
+          {tool.isAffiliate && (
+            <p className={styles.affiliateHint}>
+              * Affiliate-Link — für dich keine Mehrkosten. Wir können eine Provision erhalten.
+            </p>
+          )}
         </div>
 
         {/* Spalte 2: Preisbox — sticky auf Mobile */}
@@ -237,8 +242,8 @@ export default async function ToolDetailSeite({
             Zum Anbieter ↗
           </a>
           {tool.isAffiliate && (
-            <p className={styles.affiliateNote}>
-              Affiliate-Link · Für dich keine Mehrkosten
+            <p className={styles.affiliateHint}>
+              * Affiliate-Link — für dich keine Mehrkosten. Wir können eine Provision erhalten.
             </p>
           )}
         </div>
@@ -399,6 +404,11 @@ export default async function ToolDetailSeite({
         <a href={primaryUrl} target="_blank" rel="noopener noreferrer" className={styles.priceSectionCta}>
           Alle Preispläne ansehen ↗
         </a>
+        {tool.isAffiliate && (
+          <p className={styles.affiliateHint}>
+            * Affiliate-Link — für dich keine Mehrkosten. Wir können eine Provision erhalten.
+          </p>
+        )}
       </div>
 
     </main>
