@@ -681,3 +681,9 @@
   color: var(--color-text-secondary);
   margin-top: 4px;
 }
+
+.lastChecked {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}

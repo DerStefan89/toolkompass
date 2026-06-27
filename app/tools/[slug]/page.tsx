@@ -181,6 +181,11 @@ export default async function ToolDetailSeite({
               {tool.published && (
                 <span className={styles.verifiedBadge}>✓ Redaktionell geprüft</span>
               )}
+              {tool.lastCheckedAt && (
+                <p className={styles.lastChecked}>
+                  Zuletzt geprüft: {new Date(tool.lastCheckedAt).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                </p>
+              )}
             </div>
           </div>
 
