@@ -47,17 +47,16 @@ export default async function VergleichenSeite() {
     <main className={styles.main}>
 
       {/* Seitentitel */}
-      <h1 className={styles.pageTitle}>Tools vergleichen</h1>
+      <h1 className={styles.pageTitle}>Tool-Vergleiche</h1>
 
       <p className={styles.pageDesc}>
-        Vergleiche beliebte Tools nach Preis, Funktionen, Einsatzbereich und Alternativen.
+        Direkte Gegenüberstellungen beliebter Business-Tools. Mit klaren Unterschieden, Entscheidungshilfen und einer ehrlichen Einschätzung.
       </p>
 
-      {/* Beliebte Vergleiche */}
-      <h2 className={styles.sectionTitle}>Beliebte Vergleiche</h2>
+      <h2 className={styles.sectionTitle}>Alle Vergleiche</h2>
 
       {comparisons.length === 0 ? (
-        <p className={styles.empty}>Noch keine Vergleiche vorhanden.</p>
+        <p className={styles.empty}>Aktuell sind noch keine Vergleiche veröffentlicht.</p>
       ) : (
         <div className={styles.compGrid}>
           {comparisons.map((comp) => {

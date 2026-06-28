@@ -306,7 +306,7 @@ export default async function VergleichDetailSeite({
       )}
 
       {/* ─── WELCHES TOOL PASST BESSER? ───────────────────────── */}
-      <h2 className={styles.sectionTitle}>Welches Tool passt besser zu dir?</h2>
+      <h2 className={styles.sectionTitle}>Für wen ist welches Tool besser geeignet?</h2>
       <div className={styles.twoColGrid}>
         {tools.map((tool) => (
           <div key={tool.name} className={styles.fitCard}>
@@ -324,7 +324,7 @@ export default async function VergleichDetailSeite({
       </div>
 
       {/* ─── DIREKTVERGLEICH TABELLE ──────────────────────────── */}
-      <h2 className={styles.sectionTitle}>Direktvergleich</h2>
+      <h2 className={styles.sectionTitle}>Funktionen im Vergleich</h2>
       <div className={styles.tableSection}>
         {/* overflow-x: auto — horizontale Scrollbar auf Mobile */}
         <div className={styles.tableWrap}>
@@ -348,7 +348,7 @@ export default async function VergleichDetailSeite({
           </table>
         </div>
         <p className={styles.tableNote}>
-          Preisangaben können sich ändern. Bitte prüfe die aktuellen Konditionen beim Anbieter.
+          Preise und Funktionen können sich ändern. Prüfe die aktuellen Angaben auf der Website des Anbieters.
         </p>
       </div>
 
@@ -446,7 +446,7 @@ export default async function VergleichDetailSeite({
       {/* ─── FÜR WEN (ZIELGRUPPEN) ─────────────────────────────── */}
       {hasTargetGroups && (
         <>
-          <h2 className={styles.sectionTitle}>Für wen ist welches Tool die bessere Wahl?</h2>
+          <h2 className={styles.sectionTitle}>Wer sollte eher zu welchem Tool greifen?</h2>
           <div className={styles.twoColGrid}>
             <div className={styles.targetBox}>
               <p className={styles.targetTitle}>{toolA.name} ist die bessere Wahl für …</p>
@@ -467,7 +467,7 @@ export default async function VergleichDetailSeite({
       {/* ─── ALTERNATIVEN ─────────────────────────────────────── */}
       {comparison.alternatives.length > 0 && (
         <>
-          <h2 className={styles.sectionTitle}>Alternativen, die sich lohnen können</h2>
+          <h2 className={styles.sectionTitle}>Alternativen zu beiden Tools</h2>
           <div className={styles.altGrid}>
             {comparison.alternatives.map((alt) => {
               const at = alt.tool.translations[0]
