@@ -95,12 +95,12 @@ export default async function SuchSeite({
 
       {/* Kein Query */}
       {!query && (
-        <p className={styles.empty}>Gib einen Suchbegriff ein.</p>
+        <p className={styles.empty}>Gib ein Tool, eine Kategorie oder eine Aufgabe ein. Zum Beispiel Buchhaltung, KI, CRM oder Termine.</p>
       )}
 
       {/* Query vorhanden, aber keine Ergebnisse */}
       {query && tools.length === 0 && (
-        <p className={styles.empty}>Keine Tools gefunden für &bdquo;{query}&ldquo;.</p>
+        <p className={styles.empty}>Für &bdquo;{query}&ldquo; wurde aktuell kein passendes Tool gefunden.</p>
       )}
 
       {/* Ergebnisse */}

@@ -34,13 +34,13 @@ interface ToolFinderProps {
 
 /** Die 4 Budget-Stufen mit Label und erläuterndem Hinweis. */
 const BUDGETS: { value: FinderBudget; label: string; hint: string }[] = [
-  { value: 'kostenlos', label: 'Kostenlos', hint: 'Nur Tools mit Free-Plan' },
-  { value: 'bis20', label: 'Bis 20 € / Monat', hint: 'Günstige Einsteiger-Tools' },
-  { value: 'bis50', label: 'Bis 50 € / Monat', hint: 'Mehr Funktionsumfang' },
-  { value: 'egal', label: 'Egal', hint: 'Preis ist nicht entscheidend' },
+  { value: 'kostenlos', label: 'Kostenlos', hint: 'Nur Tools mit dauerhaftem Free-Plan' },
+  { value: 'bis20', label: 'Bis 20 € / Monat', hint: 'Für schlanke Einzeltools und erste Prozesse' },
+  { value: 'bis50', label: 'Bis 50 € / Monat', hint: 'Für regelmäßige Nutzung mit mehr Funktionen' },
+  { value: 'egal', label: 'Preis zweitrangig', hint: 'Wenn Funktion und Nutzen wichtiger sind' },
 ]
 
-const STEP_LABELS = ['Kategorie', 'Budget', 'Ergebnisse']
+const STEP_LABELS = ['Aufgabe', 'Budget', 'Auswahl']
 
 export default function ToolFinder({ categories }: ToolFinderProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1)
@@ -105,11 +105,12 @@ export default function ToolFinder({ categories }: ToolFinderProps) {
       {/* ─── Schritt 1: Kategorie ──────────────────────────────── */}
       {step === 1 && (
         <section className={styles.stepSection} aria-label="Kategorie wählen">
-          <h2 className={styles.stepTitle}>Wofür suchst du ein Tool?</h2>
-          <p className={styles.stepLead}>Wähle eine Kategorie.</p>
+          <h2 className={styles.stepTitle}>Wofür brauchst du Unterstützung?</h2>
+          <p className={styles.stepLead}>Wähle den Bereich aus, in dem ein Tool dir konkret Arbeit abnehmen oder mehr Struktur bringen soll.</p>
 
           {categories.length === 0 ? (
             <p className={styles.empty}>Aktuell sind keine Kategorien verfügbar.</p>
+
           ) : (
             <div className={styles.optionGrid}>
               {categories.map((cat) => {
@@ -141,9 +142,9 @@ export default function ToolFinder({ categories }: ToolFinderProps) {
           <button type="button" className={styles.backBtn} onClick={() => setStep(1)}>
             ← Zurück
           </button>
-          <h2 className={styles.stepTitle}>Wie hoch ist dein Budget?</h2>
+          <h2 className={styles.stepTitle}>Welcher Preisrahmen ist realistisch?</h2>
           <p className={styles.stepLead}>
-            Kategorie: <strong>{categoryName}</strong>
+            Bereich: <strong>{categoryName}</strong>
           </p>
 
           <div className={styles.optionGrid}>
@@ -161,7 +162,7 @@ export default function ToolFinder({ categories }: ToolFinderProps) {
             ))}
           </div>
 
-          {isPending && <p className={styles.loading}>Empfehlungen werden geladen …</p>}
+          {isPending && <p className={styles.loading}>Passende Tools werden geprüft ...</p>}
         </section>
       )}
 
@@ -173,7 +174,7 @@ export default function ToolFinder({ categories }: ToolFinderProps) {
           </button>
 
           <h2 className={styles.stepTitle}>
-            {tools.length > 0 ? 'Das passt zu dir' : 'Keine Treffer'}
+            {tools.length > 0 ? 'Diese Tools solltest du prüfen' : 'Keine passende Auswahl gefunden'}
           </h2>
           <p className={styles.stepLead}>
             {categoryName}
@@ -184,8 +185,8 @@ export default function ToolFinder({ categories }: ToolFinderProps) {
             <p className={styles.errorBox}>{error}</p>
           ) : tools.length === 0 ? (
             <p className={styles.empty}>
-              Für diese Kombination haben wir aktuell kein passendes Tool.
-              Probiere ein höheres Budget oder eine andere Kategorie.
+              Für diese Kombination gibt es aktuell keine sinnvolle Auswahl.
+              Prüfe ein höheres Budget oder wähle einen verwandten Bereich.
             </p>
           ) : (
             <div className={styles.resultGrid}>
@@ -254,7 +255,7 @@ export default function ToolFinder({ categories }: ToolFinderProps) {
           {/* Affiliate-Hinweis — nur wenn mindestens ein Tool einen Affiliate-Link hat */}
           {tools.some((tool) => tool.affiliateLinks.length > 0) && (
             <p className={styles.affiliateNote}>
-              * Bei mit → gekennzeichneten Links handelt es sich um Affiliate-Links.
+              Hinweis: Links zum Anbieter können Affiliate-Links sein. Für dich ändert sich der Preis dadurch nicht.
             </p>
           )}
 

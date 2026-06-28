@@ -380,7 +380,7 @@ export default async function ToolDetailSeite({
         const faqItems = (t.faqItems as FaqItem[] | null) ?? []
         const items: FaqItem[] = faqItems.length > 0
           ? faqItems
-          : [{ question: 'Gibt es eine kostenlose Testversion?', answer: 'Viele Tools bieten eine kostenlose Testphase oder einen Free Plan an. Aktuelle Konditionen direkt beim Anbieter prüfen.' }]
+          : [{ question: 'Gibt es eine kostenlose Testversion?', answer: 'Für dieses Tool sind aktuell noch keine eigenen FAQ hinterlegt. Viele Tools bieten eine kostenlose Testphase oder einen Free Plan an. Aktuelle Konditionen direkt beim Anbieter prüfen.' }]
         return (
           <div className={styles.faqSection}>
             <h2 className={styles.sectionTitle}>Häufige Fragen</h2>
@@ -404,7 +404,7 @@ export default async function ToolDetailSeite({
             ? <>Einstieg ab {preisFormatted} / Monat.{tool.hasFreePlan ? ' Kostenloser Plan verfügbar.' : ''}</>
             : <>{preisFormatted}.</>
           }
-          {' '}Aktuelle Preise und Tarife direkt beim Anbieter prüfen.
+          {' '}Preisangaben können sich ändern. Maßgeblich sind die Angaben beim Anbieter.
         </p>
         <a href={primaryUrl} target="_blank" rel="noopener noreferrer" className={styles.priceSectionCta}>
           Alle Preispläne ansehen ↗

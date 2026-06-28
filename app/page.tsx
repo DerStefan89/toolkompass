@@ -69,13 +69,13 @@ export default async function Home() {
   // aus der DB aufgelöst (nicht hartkodiert). Pills ohne Treffer werden
   // ausgeblendet — besser als ein toter Link.
   const pills = [
-    { icon: '🧾', label: 'Unternehmen verwalten', kategorie: 'Buchhaltung & Rechnungen' },
-    { icon: '📅', label: 'Termine buchen', kategorie: 'Kalender & Calls' },
-    { icon: '🎙', label: 'KI Tools einbinden', kategorie: 'KI & Coding' },
-    { icon: '🎬', label: 'Videos erstellen', kategorie: 'Design & Video' },
-    { icon: '✍️', label: 'Social Media Kampagnen', kategorie: 'Social Media' },
-    { icon: '💼', label: 'Sales Funnel aufbauen', kategorie: 'CRM & Marketing' },
-    { icon: '💳', label: 'Finanzen verwalten', kategorie: 'Geschäftskonto & Finanzen' },
+    { icon: '🧾', label: 'Buchhaltung ordnen', kategorie: 'Buchhaltung & Rechnungen' },
+    { icon: '📅', label: 'Termine einfacher buchen', kategorie: 'Kalender & Calls' },
+    { icon: '🎙', label: 'KI sinnvoll nutzen', kategorie: 'KI & Coding' },
+    { icon: '🎬', label: 'Inhalte erstellen', kategorie: 'Design & Video' },
+    { icon: '✍️', label: 'Social Media planen', kategorie: 'Social Media' },
+    { icon: '💼', label: 'Vertrieb strukturieren', kategorie: 'CRM & Marketing' },
+    { icon: '💳', label: 'Finanzen trennen', kategorie: 'Geschäftskonto & Finanzen' },
   ]
 
   // Map: Kategoriename (de) → Slug, aus den bereits geladenen Kategorien
@@ -97,12 +97,12 @@ export default async function Home() {
         <div className={styles.heroLeft}>
 
           <h1 className={styles.heroHeadline}>
-            Finde und vergleiche die besten Tools für dein Business.
+            Finde Business-Tools, die wirklich zu deinem Alltag passen.
           </h1>
 
           <p className={styles.heroCopy}>
-            ToolSucher hilft Gründern, Selbstständigen und kleinen Teams in
-            Deutschland, passende Software zu finden und zu vergleichen.
+            ToolSucher hilft Selbstständigen, Gründern und kleinen Teams,
+            digitale Tools besser einzuordnen, zu vergleichen und bewusster auszuwählen.
           </p>
 
           <SearchInput
@@ -124,7 +124,7 @@ export default async function Home() {
           </div>
 
           {/* Aufgaben-Pills */}
-          <p className={styles.pillsLabel}>Was möchtest du erledigen?</p>
+          <p className={styles.pillsLabel}>Was möchtest du verbessern?</p>
 
           <div className={styles.pillsRow}>
             {pillsMitSlug.map((pill) => (
@@ -207,7 +207,7 @@ export default async function Home() {
       {/* ─── KATEGORIEN ───────────────────────────────────── */}
       <section className={styles.catSection}>
         <div className={styles.catHeader}>
-          <h2 className={styles.catTitle}>Entdecke Tools nach Kategorie</h2>
+          <h2 className={styles.catTitle}>Tools nach Aufgabe finden</h2>
           <Link href="/kategorien" className={styles.catAllLink}>
             Alle Kategorien ansehen →
           </Link>

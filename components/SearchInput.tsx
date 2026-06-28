@@ -36,7 +36,7 @@ interface SearchInputProps {
 export default function SearchInput({
   className,
   wrapperClassName,
-  placeholder = 'Nach Tool, Kategorie oder Anwendungsfall suchen ...',
+  placeholder = 'Tool, Kategorie oder Aufgabe suchen ...',
   initialValue = '',
 }: SearchInputProps) {
   const [value, setValue] = useState(initialValue)
@@ -152,11 +152,11 @@ export default function SearchInput({
       {hasDropdown && (
         <div id={listboxId} className={styles.dropdown} role="listbox">
           {loading && (
-            <p className={styles.dropdownEmpty}>Suche ...</p>
+            <p className={styles.dropdownEmpty}>Suche läuft ...</p>
           )}
 
           {!loading && suggestions.length === 0 && (
-            <p className={styles.dropdownEmpty}>Kein Tool gefunden.</p>
+            <p className={styles.dropdownEmpty}>Kein passendes Tool gefunden.</p>
           )}
 
           {!loading && suggestions.map((s, i) => (

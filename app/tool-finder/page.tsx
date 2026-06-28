@@ -42,7 +42,7 @@ export default async function ToolFinderSeite() {
 
       <h1 className={styles.pageTitle}>Tool-Finder</h1>
       <p className={styles.pageDesc}>
-        Finde das passende Tool in 3 Schritten — kostenlos und ohne Registrierung.
+        Finde in wenigen Schritten eine erste Tool-Auswahl nach Aufgabe und Budget. Die Ergebnisse sollen dir beim Eingrenzen helfen. Prüfen solltest du Preise, Funktionen und Vertragsbedingungen trotzdem vor der Entscheidung.
       </p>
 
       <ToolFinder categories={categories} />

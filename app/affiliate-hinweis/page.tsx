@@ -23,24 +23,19 @@ export default function AffiliateHinweisPage() {
       <div className={styles.proseCard}>
 
         <p style={{ marginBottom: '20px' }}>
-          Diese Website enthält Affiliate-Links. Das bedeutet: Wenn du auf einen solchen Link klickst
-          und ein Produkt oder eine Dienstleistung kaufst oder buchst, erhalten wir eine Provision vom
-          jeweiligen Anbieter. Für dich entstehen dabei <strong style={{ color: 'var(--color-text-primary)' }}>keine zusätzlichen Kosten</strong>.
+          Auf ToolSucher können Links zu Anbietern als Affiliate-Links eingebunden sein. Wenn du über einen solchen Link ein Tool kaufst, buchst oder testest, können wir vom Anbieter eine Provision erhalten. Für dich entstehen dadurch <strong style={{ color: 'var(--color-text-primary)' }}>keine zusätzlichen Kosten</strong>.
         </p>
 
         <p style={{ marginBottom: '20px' }}>
-          Affiliate-Links sind auf dieser Website mit dem Hinweis{' '}
-          <strong style={{ color: 'var(--color-text-primary)' }}>&bdquo;Partnerlink&ldquo;</strong> oder{' '}
-          <strong style={{ color: 'var(--color-text-primary)' }}>&bdquo;Zum Anbieter&ldquo;</strong> gekennzeichnet.
+          Affiliate-Links beeinflussen nicht automatisch unsere Einschätzung. Ein Tool soll auf ToolSucher nur dann empfohlen oder sichtbar eingeordnet werden, wenn es für Selbstständige, Gründer oder kleine Teams grundsätzlich sinnvoll sein kann.
         </p>
 
         <p style={{ marginBottom: '20px' }}>
-          Wir empfehlen nur Tools und Dienste, die wir selbst für sinnvoll halten. Die redaktionelle
-          Unabhängigkeit unserer Inhalte bleibt davon unberührt.
+          Trotzdem bleibt wichtig: Preise, Funktionen und Bedingungen können sich ändern. Prüfe vor einer Buchung immer die Angaben auf der Website des jeweiligen Anbieters. Affiliate-Links sind auf ToolSucher zum Beispiel durch Hinweise wie {'"'}Partnerlink{'"'} oder {'"'}Zum Anbieter{'"'} erkennbar.
         </p>
 
         <p>
-          Bei Fragen:{' '}
+          Bei Fragen oder Hinweisen:{' '}
           <a href="mailto:toolsucher@gmail.com" className={styles.proseLink}>
             toolsucher@gmail.com
           </a>

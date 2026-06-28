@@ -10,19 +10,19 @@ const ENDPOINT = 'https://formspree.io/f/mwvzndgj'
 
 const OPTIONS = [
   {
-    label:       'Seite verbessern / erweitern',
+    label:       'Seite korrigieren oder ergänzen',
     type:        'Seite verbessern',
-    placeholder: 'Was soll verbessert werden?',
+    placeholder: 'Was ist unklar, falsch oder fehlt?',
   },
   {
-    label:       'Tool hinzufügen',
+    label:       'Tool vorschlagen',
     type:        'Tool hinzufügen',
-    placeholder: 'Welches Tool fehlt dir?',
+    placeholder: 'Welches Tool fehlt und wofür nutzt du es?',
   },
   {
-    label:       'Tool-Beratung anfragen',
+    label:       'Tool-Auswahl anfragen',
     type:        'Tool-Beratung',
-    placeholder: 'Beschreibe kurz deine Situation',
+    placeholder: 'Beschreibe kurz, was du vorhast und welche Tools du bisher nutzt.',
   },
 ]
 
@@ -121,7 +121,7 @@ export default function FeedbackWidget() {
             borderBottom:   '1px solid var(--color-border)',
           }}>
             <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--color-text-primary)' }}>
-              Wie können wir helfen?
+              Was fehlt oder passt noch nicht?
             </span>
             <button
               onClick={handleClose}
@@ -135,7 +135,7 @@ export default function FeedbackWidget() {
           {/* Erfolg */}
           {status === 'success' ? (
             <div style={{ padding: '24px 16px', textAlign: 'center', fontSize: '14px', color: 'var(--color-text-primary)' }}>
-              Danke! Wir melden uns bald.
+              Danke für den Hinweis. Wir schauen es uns an.
             </div>
           ) : (
             <>
@@ -170,7 +170,7 @@ export default function FeedbackWidget() {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="Deine E-Mail (optional)"
+                    placeholder="Deine E-Mail, falls wir antworten sollen"
                     style={inputStyle}
                   />
                   <textarea
@@ -183,7 +183,7 @@ export default function FeedbackWidget() {
 
                   {status === 'error' && (
                     <p style={{ fontSize: '12px', color: 'var(--color-error)', margin: 0 }}>
-                      Etwas ist schiefgelaufen. Bitte versuche es nochmal.
+                      Die Nachricht konnte gerade nicht gesendet werden. Bitte versuche es noch einmal.
                     </p>
                   )}
 
@@ -201,7 +201,7 @@ export default function FeedbackWidget() {
                       cursor:          status === 'sending' ? 'not-allowed' : 'pointer',
                     }}
                   >
-                    {status === 'sending' ? 'Wird gesendet…' : 'Absenden'}
+                    {status === 'sending' ? 'Wird gesendet ...' : 'Absenden'}
                   </button>
                 </div>
               )}
@@ -213,7 +213,7 @@ export default function FeedbackWidget() {
       {/* ── Trigger-Button ────────────────────────────────── */}
       <button
         onClick={() => setOpen(prev => !prev)}
-        aria-label="Feedback geben"
+        aria-label="Feedback zu ToolSucher geben"
         style={{
           position:        'fixed',
           bottom:          '24px',
