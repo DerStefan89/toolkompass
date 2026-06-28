@@ -16,12 +16,12 @@ import styles from './page.module.css'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Tool-Vergleiche — ToolSucher',
-  description: 'Vergleiche die besten Business-Tools direkt nebeneinander und finde die passende Lösung für dein Team.',
+  title: 'Tool-Vergleiche für Selbstständige | ToolSucher',
+  description: 'Vergleiche Business-Tools nach Einsatzbereich, Preis, Funktionen und Grenzen. Damit du nicht das bekannteste Tool wählst, sondern das passendere.',
   alternates: { canonical: '/vergleichen' },
   openGraph: {
-    title: 'Tool-Vergleiche — ToolSucher',
-    description: 'Vergleiche die besten Business-Tools direkt nebeneinander und finde die passende Lösung für dein Team.',
+    title: 'Tool-Vergleiche für Selbstständige und kleine Teams',
+    description: 'Gegenüberstellungen beliebter Business-Tools. Mit klaren Unterschieden, Entscheidungshilfen und ehrlichen Einschätzungen.',
   },
 }
 

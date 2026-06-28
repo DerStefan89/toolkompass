@@ -27,11 +27,11 @@ import styles from './page.module.css'
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'ToolSucher — Digitale Business-Tools entdecken & vergleichen',
-  description: 'Finde die besten digitalen Tools für dein Business.',
+  title: 'ToolSucher: passende Business-Tools finden',
+  description: 'Vergleiche Software und KI-Tools für Selbstständige, Gründer und kleine Teams. Mit Kategorien, Tool-Finder und ehrlichen Empfehlungen.',
   openGraph: {
-    title: 'ToolSucher — Digitale Business-Tools entdecken & vergleichen',
-    description: 'Finde die besten digitalen Tools für dein Business.',
+    title: 'ToolSucher: Software finden, ohne stundenlang zu vergleichen',
+    description: 'Buchhaltung, KI, Organisation, Design, CRM und Automatisierung. ToolSucher ordnet Tools so ein, dass du schneller eine vernünftige Entscheidung treffen kannst.',
   },
 }
 

@@ -19,7 +19,7 @@ import LoginForm from '@/components/auth/LoginForm'
 import styles from './page.module.css'
 
 export const metadata: Metadata = {
-  title: 'Einloggen — ToolSucher',
+  title: 'Einloggen | ToolSucher',
   robots: { index: false },
 }
 

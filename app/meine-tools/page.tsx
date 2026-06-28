@@ -29,6 +29,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Meine Tools | ToolSucher',
+  description: 'Verwalte deinen persönlichen Tool-Stack. Speichere genutzte Tools, hinterlege Preise und behalte deine monatlichen Software-Kosten im Blick.',
   robots: { index: false },
 }
 

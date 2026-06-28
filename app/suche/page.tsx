@@ -29,10 +29,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { q } = await searchParams
   const title = q
-    ? `Suchergebnisse für „${q}" — ToolSucher`
-    : 'Suche — ToolSucher'
+    ? `Ergebnisse für „${q}" | ToolSucher`
+    : 'Suche | ToolSucher'
   return {
     title,
+    description: 'Tools, Kategorien und Aufgaben suchen. Finde passende Software für Buchhaltung, KI, CRM, Design und mehr.',
     robots: { index: false },
   }
 }

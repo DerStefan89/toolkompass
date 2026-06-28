@@ -38,8 +38,8 @@ export async function generateMetadata({
     return { title: 'Tool-Stack nicht gefunden | ToolSucher' }
   }
   const t = stack.translations[0]
-  const title = `${t?.name ?? slug} | ToolSucher`
-  const description = t?.description?.slice(0, 155) ?? 'Kuratierter Tool-Stack auf ToolSucher.'
+  const title = `${t?.name ?? slug}: Tool-Stack für Selbstständige | ToolSucher`
+  const description = t?.description?.slice(0, 155) ?? 'Ein kuratierter Tool-Stack für Selbstständige und kleine Teams.'
   const url = `${SITE_URL}/tool-stacks/${slug}`
   return {
     title,

@@ -41,14 +41,16 @@ export async function generateMetadata({
   if (!comparison) return {}
   const nameA = comparison.toolA.translations[0]?.name ?? comparison.toolA.slug
   const nameB = comparison.toolB.translations[0]?.name ?? comparison.toolB.slug
-  const title = `${nameA} vs ${nameB} — ToolSucher`
-  const description = `Vergleich: ${nameA} vs ${nameB}`
+  const title = comparison.title
+    ? `${comparison.title} | ToolSucher`
+    : `${nameA} vs ${nameB}: Vergleich | ToolSucher`
+  const description = `${nameA} oder ${nameB}? Unterschiede, Preise und Entscheidungshilfen für Selbstständige und kleine Teams.`
   return {
     title,
     description,
     alternates: { canonical: `/vergleichen/${slug}` },
-    openGraph: { title, description },
-    twitter: { card: 'summary_large_image', title, description },
+    openGraph: { title: `${nameA} vs ${nameB}: Was passt besser?`, description: `Direkter Vergleich: ${nameA} vs ${nameB}. Mit klaren Unterschieden und einer ehrlichen Einschätzung.` },
+    twitter: { card: 'summary_large_image', title: `${nameA} vs ${nameB}: Was passt besser?`, description: `Direkter Vergleich: ${nameA} vs ${nameB}. Mit klaren Unterschieden und einer ehrlichen Einschätzung.` },
   }
 }
 

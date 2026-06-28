@@ -16,12 +16,12 @@ import styles from './page.module.css'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Tool entwickeln lassen — ToolSucher',
+  title: 'Tool entwickeln lassen | ToolSucher',
   description:
     'Lass dir ein kleines Tool oder MVP entwickeln. Pragmatisch, klar begrenzt und ohne unnötig großes Softwareprojekt.',
   alternates: { canonical: '/entwickeln' },
   openGraph: {
-    title: 'Tool entwickeln lassen — ToolSucher',
+    title: 'Tool entwickeln lassen | ToolSucher',
     description:
       'Lass dir ein kleines Tool oder MVP entwickeln. Pragmatisch, klar begrenzt und ohne unnötig großes Softwareprojekt.',
   },

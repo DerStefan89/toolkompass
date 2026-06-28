@@ -17,12 +17,12 @@ import styles from './page.module.css'
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'Alle Kategorien — ToolSucher',
-  description: 'Entdecke digitale Business-Tools nach Kategorie: Buchhaltung, CRM, Projektmanagement und mehr.',
+  title: 'Tools nach Kategorie | ToolSucher',
+  description: 'Alle Tool-Kategorien im Überblick: Buchhaltung, KI, Design, CRM, Projektmanagement und mehr. Für Selbstständige und kleine Teams.',
   alternates: { canonical: '/kategorien' },
   openGraph: {
-    title: 'Alle Kategorien — ToolSucher',
-    description: 'Entdecke digitale Business-Tools nach Kategorie: Buchhaltung, CRM, Projektmanagement und mehr.',
+    title: 'Tool-Kategorien für Selbstständige | ToolSucher',
+    description: 'Von Buchhaltung bis Automatisierung: Entdecke Tools nach Aufgabe und Einsatzbereich.',
   },
 }
 

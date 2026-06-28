@@ -60,9 +60,13 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "ToolSucher — Digitale Business-Tools entdecken & vergleichen",
-  description: "ToolSucher hilft Gründern, Selbstständigen und kleinen Teams, passende Business-Tools für Buchhaltung, Marketing, Produktivität und mehr zu vergleichen.",
+  title: "ToolSucher: Software und KI-Tools für Selbstständige",
+  description: "Finde passende Tools für Buchhaltung, Organisation, KI, Design, Termine und Marketing. Sachlich eingeordnet für Selbstständige und kleine Teams.",
   alternates: { canonical: '/' },
+  openGraph: {
+    title: 'ToolSucher: bessere Tool-Entscheidungen für dein Business',
+    description: 'ToolSucher hilft dir, Software nicht nur zu sammeln, sondern sinnvoll auszuwählen. Mit Toolseiten, Vergleichen, Kategorien und ehrlichen Einordnungen.',
+  },
 };
 
 

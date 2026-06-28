@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import styles from './page.module.css'
 
 export const metadata: Metadata = {
-  title: 'Affiliate-Hinweis — ToolSucher',
+  title: 'Affiliate-Hinweis | ToolSucher',
 }
 
 export default function AffiliateHinweisPage() {

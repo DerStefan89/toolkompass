@@ -75,8 +75,8 @@ Linting:      ESLint (eslint-config-next)
 
 **Nicht im Projekt (nicht verwenden):**
 - Kein Tailwind-Preflight (nur `@import "tailwindcss/utilities"` für PostCSS)
-- Kein Zod (kommt erst für Webhook-Validierung in Phase 4.6)
-- Kein Playwright, kein Vitest (Vitest wird in Phase 4.6 eingeführt)
+- Kein Zod (Pflicht vor Cashback-Webhooks in Phase 6)
+- Kein Playwright, kein Vitest (Pflicht vor Cashback-Webhooks in Phase 6)
 - Kein Prettier (ESLint reicht)
 
 ---
@@ -115,9 +115,9 @@ Linting:      ESLint (eslint-config-next)
 
 ---
 
-## 🔄 Aktueller Scope — Phase 4
+## 🔄 Aktueller Scope: Phase 5 (Stand: Juni 2026)
 
-### In Phase 4 (bauen!):
+### Gebaut (Phase 4+5):
 - Tool-Finder (interaktiver Fragebogen)
 - PricingPlan-Modell + Admin-UI + Anzeige
 - User-Accounts mit Magic Link (Supabase Auth)
@@ -181,7 +181,7 @@ toolkompass/
 ├── proxy.ts                             Auth-Middleware (schützt /admin)
 ├── CLAUDE.md                            ← DU BIST HIER
 ├── ARCHITECTURE.md                      Code-Konventionen
-└── prisma/schema.prisma                 DB-Schema (28 Tabellen)
+└── prisma/schema.prisma                 DB-Schema (37 Modelle, Stand: Juni 2026)
 ```
 
 ---

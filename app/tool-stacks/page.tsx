@@ -16,12 +16,12 @@ import styles from './page.module.css'
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'Tool-Stacks — ToolSucher',
-  description: 'Entdecke bewährte Tool-Kombinationen für Freelancer, Agenturen und kleine Teams.',
+  title: 'Tool-Stacks für Selbstständige | ToolSucher',
+  description: 'Kuratierte Tool-Kombinationen für typische Arbeitssetups. Kein Pflichtprogramm, sondern ein sinnvoller Startpunkt.',
   alternates: { canonical: '/tool-stacks' },
   openGraph: {
-    title: 'Tool-Stacks — ToolSucher',
-    description: 'Entdecke bewährte Tool-Kombinationen für Freelancer, Agenturen und kleine Teams.',
+    title: 'Tool-Stacks für Selbstständige | ToolSucher',
+    description: 'Kuratierte Tool-Kombinationen für typische Arbeitssetups. Kein Pflichtprogramm, sondern ein sinnvoller Startpunkt.',
   },
 }
 

@@ -43,14 +43,14 @@ export async function generateMetadata({
   if (!tool) return {}
   const t = tool.translations[0]
   if (!t) return {}
-  const title = `${t.name} — ToolSucher`
-  const description = t.shortDescription
+  const title = `${t.name}: Erfahrungen, Preis und Alternativen`
+  const description = `${t.shortDescription} Lies, für wen ${t.name} sinnvoll ist und wo die Grenzen liegen.`
   return {
     title,
     description,
     alternates: { canonical: `/tools/${slug}` },
-    openGraph: { title, description },
-    twitter: { card: 'summary_large_image', title, description },
+    openGraph: { title: `${t.name} im Überblick | ToolSucher`, description: t.shortDescription },
+    twitter: { card: 'summary_large_image', title: `${t.name} im Überblick | ToolSucher`, description: t.shortDescription },
   }
 }
 

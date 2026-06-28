@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import styles from './page.module.css'
 
 export const metadata: Metadata = {
-  title: 'Impressum — ToolSucher',
+  title: 'Impressum | ToolSucher',
 }
 
 export default function ImpressumPage() {

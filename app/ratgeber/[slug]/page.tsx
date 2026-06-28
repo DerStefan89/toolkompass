@@ -33,14 +33,14 @@ export async function generateMetadata({
     select: { title: true, subtitle: true },
   })
   if (!article) return {}
-  const title = `${article.title} — ToolSucher`
-  const description = article.subtitle
+  const title = `${article.title} | ToolSucher`
+  const description = article.subtitle || `${article.title} — ein Ratgeber von ToolSucher.`
   return {
     title,
     description,
     alternates: { canonical: `/ratgeber/${slug}` },
-    openGraph: { title, description },
-    twitter: { card: 'summary_large_image', title, description },
+    openGraph: { title: article.title, description: article.subtitle ?? article.title },
+    twitter: { card: 'summary_large_image', title: article.title, description: article.subtitle ?? article.title },
   }
 }
 

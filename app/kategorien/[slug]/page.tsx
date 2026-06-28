@@ -39,13 +39,13 @@ export async function generateMetadata({
   if (!category) return {}
   const t = category.translations[0]
   if (!t) return {}
-  const title = `${t.name} Tools — ToolSucher`
-  const description = t.description ?? ''
+  const title = `${t.name}: Tools im Vergleich | ToolSucher`
+  const description = `Finde passende Tools für ${t.name}. Mit Preisen, Funktionen und ehrlichen Einordnungen für Selbstständige und kleine Teams.`
   return {
     title,
     description,
     alternates: { canonical: `/kategorien/${slug}` },
-    openGraph: { title, description },
+    openGraph: { title: `${t.name}: passende Tools finden`, description: `Tools für ${t.name} im Überblick. Preise, Funktionen und Einordnung für Selbstständige und kleine Teams.` },
   }
 }
 

@@ -22,10 +22,14 @@ import styles from './page.module.css'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Tool-Finder — ToolSucher',
+  title: 'Tool-Finder: passende Software schneller finden',
   description:
-    'Finde in 3 Schritten das passende Business-Tool: Kategorie wählen, Budget angeben, Empfehlungen erhalten.',
+    'Beantworte wenige Fragen und finde Tools, die zu Kategorie, Budget und Situation passen. Eine erste Orientierung, keine gekaufte Bestenliste.',
   alternates: { canonical: '/tool-finder' },
+  openGraph: {
+    title: 'Tool-Finder für Selbstständige und kleine Teams',
+    description: 'Wähle Kategorie und Budget aus und erhalte passende Tool-Vorschläge. Nützlich als Einstieg, wenn du nicht jedes Tool einzeln prüfen willst.',
+  },
 }
 
 export default async function ToolFinderSeite() {
