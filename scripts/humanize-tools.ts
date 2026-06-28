@@ -35,6 +35,77 @@ function parseNumberedList(lines: string[]): string[] {
     .filter(l => l.length > 0)
 }
 
+function parseDashList(lines: string[]): string[] {
+  return lines
+    .filter(l => l.trimStart().startsWith('- '))
+    .map(l => l.replace(/^\s*-\s*/, '').trim())
+    .filter(l => l.length > 0)
+}
+
+function parseMdV2(content: string): ToolBlock[] {
+  const blocks: ToolBlock[] = []
+  // Unterstützt "# 1. Name", "# Tool: Name" und "# Name" als Tool-Trenner
+  const sections = content.split(/\n(?=# (?:\d+\.\s|Tool:\s))/)
+  for (const section of sections) {
+    const lines = section.split('\n')
+    // Slug: entweder `slug-wert` (Backtick) unter ## slug, oder plain "slug: wert"
+    let inSlugHeading = false
+    let slug: string | null = null
+    for (const line of lines) {
+      if (/^## slug\s*$/i.test(line.trim())) { inSlugHeading = true; continue }
+      if (inSlugHeading) {
+        const backtick = line.match(/`([^`]+)`/)
+        if (backtick) { slug = backtick[1]; break }
+        if (line.trim().startsWith('##')) break
+      }
+      // Plain "slug: wert" (v1-kompatibel innerhalb v2-Dateien)
+      const plain = line.match(/^slug:\s*(\S+)/)
+      if (plain && !slug) { slug = plain[1]; }
+    }
+    if (!slug) continue
+
+    const block: ToolBlock = { slug }
+    const allFields = [...TEXT_FIELDS, ...ARRAY_FIELDS]
+    let currentField: string | null = null
+    let fieldLines: string[] = []
+
+    const flushField = () => {
+      if (!currentField || fieldLines.length === 0) { currentField = null; fieldLines = []; return }
+      if (ARRAY_FIELDS.includes(currentField as typeof ARRAY_FIELDS[number])) {
+        const dashes = parseDashList(fieldLines)
+        const numbered = parseNumberedList(fieldLines.filter(l => l.trim().length > 0))
+        ;(block as Record<string, unknown>)[currentField] = dashes.length > 0 ? dashes : numbered
+      } else {
+        ;(block as Record<string, unknown>)[currentField] = fieldLines.filter(l => l.trim().length > 0).join('\n').trim()
+      }
+      currentField = null
+      fieldLines = []
+    }
+
+    for (const line of lines) {
+      const heading = line.match(/^## (\w+)\s*$/)
+      if (heading) {
+        const fieldName = heading[1]
+        if (fieldName === 'slug') { flushField(); currentField = null; continue }
+        if (allFields.includes(fieldName as typeof allFields[number])) {
+          flushField()
+          currentField = fieldName
+          continue
+        }
+      }
+      if (currentField !== null) fieldLines.push(line)
+    }
+    flushField()
+    blocks.push(block)
+  }
+  return blocks
+}
+
+function detectFormat(content: string): 'v1' | 'v2' {
+  if (content.includes('## shortDescription') || content.includes('## name')) return 'v2'
+  return 'v1'
+}
+
 function parseMd(content: string): ToolBlock[] {
   const blocks: ToolBlock[] = []
   const sections = content.split(/\n(?=## \d+\.)/)
@@ -100,7 +171,8 @@ async function main() {
     process.exit(1)
   }
   const content = fs.readFileSync(abs, 'utf-8')
-  const blocks = parseMd(content)
+  const fmt = detectFormat(content)
+  const blocks = fmt === 'v2' ? parseMdV2(content) : parseMd(content)
   console.log(`\n═══ Humanize Tools ${dryRun ? '[DRY-RUN]' : '[ECHTLAUF]'} ═══`)
   console.log(`Datei: ${filePath}`)
   console.log(`Tools im MD: ${blocks.length}\n`)
