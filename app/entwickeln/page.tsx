@@ -18,38 +18,38 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Tool entwickeln lassen — ToolSucher',
   description:
-    'Lass dir ein eigenes kleines Tool entwickeln. Pragmatisch, bezahlbar, ohne monatelanges Softwareprojekt.',
+    'Lass dir ein kleines Tool oder MVP entwickeln. Pragmatisch, klar begrenzt und ohne unnötig großes Softwareprojekt.',
   alternates: { canonical: '/entwickeln' },
   openGraph: {
     title: 'Tool entwickeln lassen — ToolSucher',
     description:
-      'Lass dir ein eigenes kleines Tool entwickeln. Pragmatisch, bezahlbar, ohne monatelanges Softwareprojekt.',
+      'Lass dir ein kleines Tool oder MVP entwickeln. Pragmatisch, klar begrenzt und ohne unnötig großes Softwareprojekt.',
   },
 }
 
 const EXAMPLES = [
-  { icon: '🧮', title: 'Angebotsrechner', desc: 'Kunden berechnen Preise oder Pakete selbst' },
-  { icon: '📈', title: 'ROI-Rechner', desc: 'Zeige Kunden ihre Ersparnis mit deinem Angebot' },
-  { icon: '✅', title: 'Checklisten-Tool', desc: 'Interaktive Checkliste mit Fortschritt' },
-  { icon: '🏷', title: 'Preiskonfigurator', desc: 'Pakete zusammenstellen, Preis live sehen' },
-  { icon: '🧲', title: 'Lead-Magnet-Tool', desc: 'Interaktives Tool das Leads generiert' },
-  { icon: '👥', title: 'Mini-CRM', desc: 'Kontakte, Notizen und Pipeline an einem Ort' },
-  { icon: '📋', title: 'Kunden-Onboarding', desc: 'Formulare, Dokumente, Status tracken' },
-  { icon: '📅', title: 'Termin-Tool', desc: 'Buchungsformular mit Kalenderlogik' },
-  { icon: '📊', title: 'Projekt-Tracker', desc: 'Aufgaben, Deadlines, Teamübersicht' },
-  { icon: '🤖', title: 'Textgenerator', desc: 'Automatisierte Texte für deine Nische' },
-  { icon: '📉', title: 'Kunden-Dashboard', desc: 'Login, Reporting, PDF-Export' },
-  { icon: '⚡', title: 'Automatisierung', desc: 'Formular → CRM → E-Mail-Sequenz' },
-  { icon: '🚀', title: 'MVP für Geschäftsidee', desc: 'Erste Version zum Markttest' },
-  { icon: '📝', title: 'Bewerbungsportal', desc: 'Einreichung, Review, Feedback' },
+  { icon: '🧮', title: 'Angebotsrechner', desc: 'Kunden können Preise oder Pakete selbst einschätzen.' },
+  { icon: '📈', title: 'ROI-Rechner', desc: 'Zeige, welchen wirtschaftlichen Effekt dein Angebot haben kann.' },
+  { icon: '✅', title: 'Checklisten-Tool', desc: 'Interaktive Checkliste mit Status und Fortschritt.' },
+  { icon: '🏷', title: 'Preiskonfigurator', desc: 'Pakete zusammenstellen und den Preis direkt sehen.' },
+  { icon: '🧲', title: 'Lead-Magnet-Tool', desc: 'Ein interaktives Tool, das passende Anfragen erzeugt.' },
+  { icon: '👥', title: 'Mini-CRM', desc: 'Kontakte, Notizen und einfache Pipeline an einem Ort.' },
+  { icon: '📋', title: 'Kunden-Onboarding', desc: 'Formulare, Dokumente und Status nachvollziehbar bündeln.' },
+  { icon: '📅', title: 'Termin-Tool', desc: 'Buchungsformular mit einfacher Kalenderlogik.' },
+  { icon: '📊', title: 'Projekt-Tracker', desc: 'Aufgaben, Deadlines und Zuständigkeiten sichtbar machen.' },
+  { icon: '🤖', title: 'Textgenerator', desc: 'Wiederkehrende Texte für einen klaren Anwendungsfall erzeugen.' },
+  { icon: '📉', title: 'Kunden-Dashboard', desc: 'Login, Übersicht, Reporting und Export für Kunden.' },
+  { icon: '⚡', title: 'Automatisierung', desc: 'Formular, CRM und E-Mail-Prozess sinnvoll verbinden.' },
+  { icon: '🚀', title: 'MVP für Geschäftsidee', desc: 'Eine erste Version bauen, um eine Idee am Markt zu prüfen.' },
+  { icon: '📝', title: 'Bewerbungsportal', desc: 'Einreichung, Review und Feedback in einem klaren Ablauf.' },
 ]
 
 const STEPS = [
-  { nr: '1', title: 'Idee beschreiben', desc: 'Kurz erklären welches Problem das Tool lösen soll' },
-  { nr: '2', title: 'Einschätzung erhalten', desc: 'Prüfung ob realistisch, welcher Umfang' },
-  { nr: '3', title: 'MVP bauen', desc: 'Schlanke Umsetzung, Fokus auf Kernfunktionen' },
-  { nr: '4', title: 'Testen und verbessern', desc: 'Feedback geben, iterieren' },
-  { nr: '5', title: 'Live nutzen', desc: 'Intern nutzen, mit Kunden teilen, weiterentwickeln' },
+  { nr: '1', title: 'Idee beschreiben', desc: 'Kurz erklären, welches Problem das Tool lösen soll.' },
+  { nr: '2', title: 'Einschätzung erhalten', desc: 'Prüfen, ob die Idee als schlankes MVP realistisch ist.' },
+  { nr: '3', title: 'MVP bauen', desc: 'Schlanke Umsetzung mit Fokus auf die Kernfunktion.' },
+  { nr: '4', title: 'Testen und verbessern', desc: 'Erste Version nutzen, Feedback sammeln und gezielt verbessern.' },
+  { nr: '5', title: 'Live nutzen', desc: 'Intern einsetzen, mit Kunden teilen oder als Grundlage weiterentwickeln.' },
 ]
 
 const SCOPE = [
@@ -60,11 +60,11 @@ const SCOPE = [
 ]
 
 const FAQ = [
-  { q: 'Kann ich auch ohne technische Erfahrung anfragen?', a: 'Ja. Du musst nur dein Problem beschreiben. Die technische Umsetzung wird daraus abgeleitet.' },
-  { q: 'Ist das günstiger als eine Agentur?', a: 'In vielen Fällen ja, weil der Fokus auf kleinen MVPs und klar begrenzten Funktionen liegt. Große Individualsoftware ist nicht das Ziel dieses Angebots.' },
-  { q: 'Kann ich damit ein komplettes SaaS bauen lassen?', a: 'Ein erstes MVP ist möglich. Eine vollständige SaaS-Plattform mit komplexer Skalierung, Sicherheit und Abrechnung ist ein größeres Projekt und muss separat geprüft werden.' },
-  { q: 'Kann das Tool später erweitert werden?', a: 'Ja, wenn das MVP funktioniert und klar ist, welche Funktionen wirklich gebraucht werden.' },
-  { q: 'Für welche Projekte ist das nicht geeignet?', a: 'Nicht geeignet sind sehr komplexe, sicherheitskritische oder stark regulierte Anwendungen ohne weitere technische und rechtliche Prüfung.' },
+  { q: 'Kann ich auch ohne technische Erfahrung anfragen?', a: 'Ja. Du musst nicht wissen, welche Technologie gebraucht wird. Wichtiger ist, dass du das Problem, die Zielgruppe und den gewünschten Ablauf beschreiben kannst.' },
+  { q: 'Ist das günstiger als eine Agentur?', a: 'Oft ja, weil der Fokus auf kleinen MVPs und klar begrenzten Funktionen liegt. Für große Individualsoftware mit umfangreicher Planung, Sicherheit, Skalierung und Support ist eine klassische Agentur oder ein größeres Team meist passender.' },
+  { q: 'Kann ich damit ein komplettes SaaS bauen lassen?', a: 'Ein erstes MVP kann sinnvoll sein. Eine vollständige SaaS-Plattform mit Abrechnung, Rollenmodell, Skalierung, Support und Sicherheitskonzept ist ein deutlich größeres Projekt und muss separat bewertet werden.' },
+  { q: 'Kann das Tool später erweitert werden?', a: 'Ja, wenn die erste Version zeigt, dass der Anwendungsfall trägt. Erweiterungen sollten aber nicht auf Vermutung gebaut werden, sondern auf echtem Feedback aus der Nutzung.' },
+  { q: 'Für welche Projekte ist das nicht geeignet?', a: 'Nicht geeignet sind sehr komplexe, sicherheitskritische oder stark regulierte Anwendungen ohne zusätzliche technische und rechtliche Prüfung. In solchen Fällen sollte der Umfang zuerst sauber geklärt werden.' },
 ]
 
 const serviceLd = safeJsonLd({

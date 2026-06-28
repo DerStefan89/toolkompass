@@ -59,7 +59,7 @@ export async function updateProfile(
       const { captureException } = await import('@sentry/nextjs')
       captureException(error)
     }
-    return { error: 'Speichern fehlgeschlagen. Bitte versuche es erneut.' }
+    return { error: 'Die Änderungen konnten nicht gespeichert werden.' }
   }
 }
 

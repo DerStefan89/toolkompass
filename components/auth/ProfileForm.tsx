@@ -87,7 +87,7 @@ export default function ProfileForm({ firstName, lastName, company }: ProfileFor
         <button type="submit" disabled={isPending} className={styles.submitBtn}>
           {isPending ? 'Wird gespeichert …' : 'Speichern'}
         </button>
-        {showSaved && <span className={styles.saved}>✓ Gespeichert</span>}
+        {showSaved && <span className={styles.saved}>Gespeichert.</span>}
       </div>
     </form>
   )

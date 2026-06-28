@@ -67,7 +67,7 @@ export default async function MeineToolsSeite() {
       {userTools.length === 0 ? (
         /* ─── Empty State ─────────────────────────────────────── */
         <div className={styles.empty}>
-          <p className={styles.emptyText}>Du hast noch keine Tools in deinem Stack.</p>
+          <p className={styles.emptyText}>Du hast noch keine Tools in deinem Stack gespeichert. Entdecke Tools und markiere sie als genutzt.</p>
           <div className={styles.emptyActions}>
             <Link href="/tool-finder" className={styles.emptyBtnPrimary}>Tools entdecken</Link>
             <Link href="/kategorien" className={styles.emptyBtnSecondary}>Alle Kategorien</Link>
@@ -77,7 +77,7 @@ export default async function MeineToolsSeite() {
         <>
           {/* ─── Kostenübersicht ──────────────────────────────── */}
           <div className={styles.costCard}>
-            <p className={styles.costLabel}>Deine monatlichen Kosten</p>
+            <p className={styles.costLabel}>Geschätzte monatliche Kosten</p>
             <p className={styles.costAmount}>
               {formatPreis(costs.monthlyCents)} <span className={styles.costUnit}>/ Monat</span>
             </p>

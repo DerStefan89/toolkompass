@@ -65,7 +65,7 @@ export default function DatenschutzPage() {
             Wir verarbeiten personenbezogene Daten nur, soweit dies zur Bereitstellung dieser Website, zur technischen Sicherheit, zur Analyse der Nutzung, zur Kommunikation mit Nutzern oder zur Bereitstellung künftiger Plattformfunktionen erforderlich ist.
           </p>
           <p style={{ marginBottom: '12px' }}>
-            Personenbezogene Daten sind alle Informationen, die sich auf eine identifizierte oder identifizierbare natürliche Person beziehen. Dazu gehören zum Beispiel Name, E-Mail-Adresse, IP-Adresse, Nutzungsdaten, Geräteinformationen oder Angaben, die Nutzer später im Rahmen eines Nutzerkontos machen.
+            Personenbezogene Daten sind Informationen, die sich auf eine identifizierte oder identifizierbare Person beziehen. Dazu gehören zum Beispiel Name, E-Mail-Adresse, IP-Adresse, Nutzungsdaten, Geräteinformationen oder Angaben, die im Rahmen eines Nutzerkontos gemacht werden.
           </p>
           <p style={{ marginBottom: '8px' }}>Die Verarbeitung erfolgt insbesondere auf Grundlage folgender Rechtsgrundlagen:</p>
           <ul style={{ paddingLeft: '20px', margin: '0' }}>

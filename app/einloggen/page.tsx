@@ -25,8 +25,8 @@ export const metadata: Metadata = {
 
 /** Nutzerfreundliche Texte für die Fehlercodes aus /auth/confirm. */
 const FEHLER_TEXTE: Record<string, string> = {
-  'link-ungueltig': 'Dieser Link ist ungültig. Bitte fordere einen neuen an.',
-  'link-abgelaufen': 'Dieser Link ist abgelaufen. Magic Links sind nur einmal verwendbar.',
+  'link-ungueltig': 'Dieser Login-Link ist ungültig. Bitte fordere einen neuen Link an.',
+  'link-abgelaufen': 'Dieser Login-Link ist abgelaufen oder wurde bereits verwendet. Bitte fordere einen neuen Link an.',
 }
 
 export default async function EinloggenSeite({
@@ -43,12 +43,13 @@ export default async function EinloggenSeite({
         <div className={styles.cardIcon}>🧭</div>
         <h1 className={styles.cardTitle}>Einloggen</h1>
         <p className={styles.cardDesc}>
-          Bei ToolSucher meldest du dich ohne Passwort an. So funktioniert&apos;s:
+          Bei ToolSucher meldest du dich ohne Passwort an. Du gibst deine E-Mail-Adresse ein und bekommst einen einmaligen Login-Link zugeschickt.
         </p>
+        <p className={styles.cardDesc}>So funktioniert es:</p>
         <ol className={styles.steps}>
           <li>E-Mail-Adresse eingeben</li>
-          <li>Wir senden dir einen Login-Link per E-Mail</li>
-          <li>Auf den Link klicken — fertig, du bist eingeloggt</li>
+          <li>Login-Link per E-Mail erhalten</li>
+          <li>Link öffnen und angemeldet sein</li>
         </ol>
 
         {fehlerText && <p className={styles.fehler}>{fehlerText}</p>}

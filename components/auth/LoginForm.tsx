@@ -56,9 +56,9 @@ export default function LoginForm({ next }: LoginFormProps) {
   if (state.success) {
     return (
       <div className={styles.successBox}>
-        <p className={styles.successTitle}>✉️ Prüfe dein Postfach</p>
+        <p className={styles.successTitle}>Prüfe dein Postfach</p>
         <p className={styles.successText}>
-          Wir haben einen Link an <strong>{email}</strong> gesendet.
+          Wir haben einen Login-Link an <strong>{email}</strong> gesendet.
           Der Link ist 10 Minuten gültig und kann nur einmal verwendet werden.
         </p>
 
@@ -75,7 +75,7 @@ export default function LoginForm({ next }: LoginFormProps) {
             {isPending
               ? 'Wird gesendet …'
               : cooldown > 0
-                ? `Neuen Link anfordern (noch ${cooldown}s)`
+                ? `Neuen Link anfordern in ${cooldown}s`
                 : 'Neuen Link anfordern'}
           </button>
         </form>
@@ -90,7 +90,7 @@ export default function LoginForm({ next }: LoginFormProps) {
       {state.error && <p className={styles.fehler}>{state.error}</p>}
 
       <div className={styles.field}>
-        <label htmlFor="email" className={styles.label}>E-Mail</label>
+        <label htmlFor="email" className={styles.label}>E-Mail-Adresse</label>
         <input
           id="email"
           type="email"
@@ -123,7 +123,7 @@ export default function LoginForm({ next }: LoginFormProps) {
       </label>
 
       <button type="submit" disabled={isPending} className={styles.submitBtn}>
-        {isPending ? 'Wird gesendet …' : 'Link anfordern'}
+        {isPending ? 'Wird gesendet …' : 'Login-Link anfordern'}
       </button>
     </form>
   )

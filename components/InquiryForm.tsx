@@ -76,45 +76,44 @@ export default function InquiryForm() {
       <input type="text" name="_honeypot" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" aria-hidden="true" />
       <div className={styles.formGrid}>
         <div className={styles.formField}>
-          <label htmlFor="inq-name" className={styles.formLabel}>Name *</label>
+          <label htmlFor="inq-name" className={styles.formLabel}>Dein Name *</label>
           <input id="inq-name" type="text" name="name" required className={styles.formInput} />
         </div>
         <div className={styles.formField}>
-          <label htmlFor="inq-email" className={styles.formLabel}>E-Mail *</label>
+          <label htmlFor="inq-email" className={styles.formLabel}>E-Mail-Adresse *</label>
           <input id="inq-email" type="email" name="email" required className={styles.formInput} />
         </div>
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="inq-type" className={styles.formLabel}>Unternehmenstyp</label>
+        <label htmlFor="inq-type" className={styles.formLabel}>Unternehmensform</label>
         <select id="inq-type" name="companyType" className={styles.formSelect}>
           <option value="">— bitte wählen —</option>
-          <option value="Freelancer">Freelancer</option>
-          <option value="Coach">Coach</option>
-          <option value="Agentur">Agentur</option>
-          <option value="Startup">Startup</option>
-          <option value="Anderes">Anderes</option>
+          <option value="Freelancer">Solo-Selbstständig / Freelancer</option>
+          <option value="Startup">Startup / Gründung</option>
+          <option value="Agentur">Kleines Unternehmen</option>
+          <option value="Anderes">Sonstiges</option>
         </select>
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="inq-desc" className={styles.formLabel}>Was soll das Tool lösen? *</label>
-        <textarea id="inq-desc" name="description" rows={4} required className={styles.formTextarea} />
+        <label htmlFor="inq-desc" className={styles.formLabel}>Was soll das Tool können? *</label>
+        <textarea id="inq-desc" name="description" rows={4} required placeholder="Beschreibe kurz das Problem und was das Tool lösen soll." className={styles.formTextarea} />
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="inq-users" className={styles.formLabel}>Wer soll das Tool nutzen?</label>
-        <textarea id="inq-users" name="targetUsers" rows={2} className={styles.formTextarea} />
+        <label htmlFor="inq-users" className={styles.formLabel}>Für wen ist das Tool?</label>
+        <textarea id="inq-users" name="targetUsers" rows={2} placeholder="Wer wird das Tool nutzen?" className={styles.formTextarea} />
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="inq-feat" className={styles.formLabel}>Welche Funktionen sind wichtig?</label>
-        <textarea id="inq-feat" name="features" rows={2} className={styles.formTextarea} />
+        <label htmlFor="inq-feat" className={styles.formLabel}>Wichtige Funktionen</label>
+        <textarea id="inq-feat" name="features" rows={2} placeholder="Welche Funktionen sind unverzichtbar?" className={styles.formTextarea} />
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="inq-ex" className={styles.formLabel}>Gibt es Beispiele oder bestehende Tools?</label>
-        <textarea id="inq-ex" name="examples" rows={2} className={styles.formTextarea} />
+        <label htmlFor="inq-ex" className={styles.formLabel}>Ähnliche Tools oder Vorbilder</label>
+        <textarea id="inq-ex" name="examples" rows={2} placeholder="Gibt es Tools, die du dir als Vorbild vorstellst?" className={styles.formTextarea} />
       </div>
 
       <div className={styles.formGrid}>
@@ -123,8 +122,8 @@ export default function InquiryForm() {
           <select id="inq-budget" name="budget" className={styles.formSelect}>
             <option value="">— bitte wählen —</option>
             <option value="bis 1.000 €">bis 1.000 €</option>
-            <option value="1.000–3.000 €">1.000–3.000 €</option>
-            <option value="3.000–5.000 €">3.000–5.000 €</option>
+            <option value="1.000–3.000 €">1.000 bis 3.000 €</option>
+            <option value="3.000–5.000 €">3.000 bis 5.000 €</option>
             <option value="über 5.000 €">über 5.000 €</option>
             <option value="noch unklar">noch unklar</option>
           </select>
@@ -134,7 +133,7 @@ export default function InquiryForm() {
           <select id="inq-time" name="timeline" className={styles.formSelect}>
             <option value="">— bitte wählen —</option>
             <option value="so schnell wie möglich">so schnell wie möglich</option>
-            <option value="2–4 Wochen">2–4 Wochen</option>
+            <option value="2–4 Wochen">2 bis 4 Wochen</option>
             <option value="flexibel">flexibel</option>
           </select>
         </div>
@@ -142,12 +141,12 @@ export default function InquiryForm() {
 
       {status === 'error' && (
         <p className={styles.formError}>
-          Etwas ist schiefgelaufen. Bitte versuche es erneut oder schreib direkt an toolsucher@gmail.com.
+          Das Formular konnte gerade nicht gesendet werden. Bitte versuche es erneut oder schreib direkt an toolsucher@gmail.com.
         </p>
       )}
 
       <button type="submit" disabled={status === 'sending'} className={styles.formSubmit}>
-        {status === 'sending' ? 'Wird gesendet …' : 'Tool-Idee absenden'}
+        {status === 'sending' ? 'Wird gesendet …' : 'Anfrage absenden'}
       </button>
     </form>
   )
