@@ -11,23 +11,28 @@
  * - Strategy "afterInteractive" — Script wird nach dem Hydrate geladen.
  * - consent('update') setzt analytics_storage auf 'granted'.
  * - Kein GA-Code wird jemals vor Consent ausgeführt.
+ * - State startet mit false (Server und erster Client-Render identisch),
+ *   useEffect prüft den echten Consent erst nach der Hydration im Browser.
+ *   Das vermeidet Hydration-Mismatches, bei denen next/script die Tags
+ *   nie mountet, wenn der State schon beim ersten Render true wäre.
  */
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Script from 'next/script'
 import { getConsent } from '@/lib/consent'
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID
 
 export default function GoogleAnalytics() {
-  // Lazy-Init: liest Consent einmalig beim ersten Render (Client-only).
-  // Kein useEffect+setState nötig — vermeidet react-hooks/set-state-in-effect.
-  const [enabled] = useState(() => {
+  const [enabled, setEnabled] = useState(false)
+
+  useEffect(() => {
     const consent = getConsent()
-    return !!consent?.analytics
-  })
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (consent?.analytics) setEnabled(true)
+  }, [])
 
   if (!enabled || !GA_ID) return null
 
