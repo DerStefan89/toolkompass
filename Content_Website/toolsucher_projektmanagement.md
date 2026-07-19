@@ -14,6 +14,7 @@ Projektmanagement-Tools reichen vom simplen Kanban-Board bis zur All-in-one-Plat
 - **Einfaches Kanban** – Trello
 - **Work-Management für Teams** – Asana
 - **All-in-one-Plattform** – ClickUp
+- **Visuelle Zusammenarbeit & Whiteboard** – Miro
 
 ## Vergleich auf einen Blick
 
@@ -22,6 +23,7 @@ Projektmanagement-Tools reichen vom simplen Kanban-Board bis zur All-in-one-Plat
 | **Trello** | ab 5 $ | Ja | einfache Boards | schwach bei Komplexität |
 | **Asana** | ab 10,99 $ | Ja | strukturierte Teamprojekte | kann teuer werden |
 | **ClickUp** | ab 7 $ | Ja | viele parallele Workflows | Setup-Aufwand |
+| **Miro** | ab 8 € | Ja | Workshops & visuelle Planung | kein Task-Tracking |
 
 ---
 
@@ -69,6 +71,21 @@ Projektmanagement-Tools reichen vom simplen Kanban-Board bis zur All-in-one-Plat
 **Funktionen:** Aufgaben & Ansichten · Docs · Ziele/Goals · Automationen · Dashboards
 **Preise:** Free Forever, Unlimited ab 7 $/Nutzer/Monat (jährlich) bzw. 10 $, Business 12 $ (19 $ monatlich), Enterprise. US.
 **Alternativen:** Asana, Trello.
+
+## Miro
+**Slug:** miro
+**Free-Plan:** Ja (3 Boards, unbegrenzte Mitglieder)
+**Einstieg:** ab 8 €/Nutzer/Monat (Starter, jährlich)
+**Tagline:** Unbegrenztes Online-Whiteboard für Workshops, Brainstorming und visuelle Projektplanung im Team.
+
+**Kurzfazit.** Miro ist die verbreitetste Whiteboard-Plattform für Teams: Karten, Diagramme, Templates und Live-Zusammenarbeit auf einer unbegrenzten Fläche. Für strukturiertes Task-Tracking wie bei Trello oder Asana ist es aber nicht gebaut – Miro ergänzt Projektmanagement-Tools eher, als sie zu ersetzen.
+**Stärken:** unbegrenzte, multiplayer-fähige Arbeitsfläche · 7.000+ Templates für schnellen Einstieg · 250+ Integrationen (Jira, Asana, Slack u. a.)
+**Schwächen:** kein klassisches Task-/Projektmanagement · AI-Credits im Free- und Starter-Plan begrenzt · US-Anbieter, AVV/Datenflüsse prüfen
+**Für wen geeignet?** Teams und Agenturen für Workshops, Brainstorming, Roadmaps und visuelle Planung.
+**Für wen eher nicht?** Wer primär strukturiertes Aufgaben-Tracking sucht (→ Trello, Asana, ClickUp).
+**Funktionen:** Whiteboard & Diagramme · Templates · Formate (Docs, Tabellen, Slides) · Integrationen · AI-Workflows
+**Preise:** Free (3 Boards), Starter ab 8 €/Nutzer/Monat (jährlich), Business ab 20 €/Nutzer/Monat (jährlich), Enterprise (Custom, ab 30 Nutzern).
+**Alternativen:** FigJam (leichter, Design-nah), Mural (ähnlich, workshop-fokussiert).
 
 ---
 

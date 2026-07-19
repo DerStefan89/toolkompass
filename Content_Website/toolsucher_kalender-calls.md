@@ -33,7 +33,7 @@ Zwei Dinge stecken in dieser Kategorie, die man nicht verwechseln sollte: Termin
 
 ## Calendly
 **Slug:** calendly
-**Free-Plan:** Ja (begrenzt)
+**Free-Plan:** Ja (begrenzt: 1 Event-Typ, 1 verbundener Kalender)
 **Einstieg:** ab 10 $/Sitz/Monat (Standard, jährlich)
 **Tagline:** Terminbuchung direkt in deinen Kalender – der schnelle Standard.
 
@@ -43,7 +43,7 @@ Zwei Dinge stecken in dieser Kategorie, die man nicht verwechseln sollte: Termin
 **Für wen geeignet?** Selbstständige, Berater und Coaches, die schnell Termine annehmen wollen.
 **Für wen eher nicht?** Teams mit komplexem Routing und Anspruch auf EU-Hosting (→ Cal.com).
 **Funktionen:** Buchungsseiten · Kalender-Integration · automatische Bestätigung · Zahlungen · Round-Robin
-**Preise:** Free, Standard ca. 10 $/Sitz/Monat (jährlich), Teams/Enterprise darüber. US.
+**Preise:** Free (1 Event-Typ, 1 Kalender), Standard 10 $/Sitz/Monat (jährlich) bzw. 12 $ monatlich, Teams 16 $/Sitz/Monat (jährlich) bzw. 20 $ monatlich, Enterprise ab 15.000 $/Jahr (individuell). Stand: Juli 2026. US.
 **Alternativen:** Cal.com (flexibler), TidyCal (günstige Einmalzahlung).
 
 ## Cal.com

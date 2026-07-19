@@ -18,26 +18,8 @@ um digitale Business-Tools zu entdecken, zu vergleichen, zu bewerten, zu erwerbe
 Die Design-Screenshots im Ordner `design-refs/` sind die **einzige** visuelle Referenz.
 Das Design darf **nicht** frei interpretiert, modernisiert oder verändert werden.
 
-### Design-Token-Übersicht (aus Screenshots abgeleitet)
-
-```
-Primärfarbe CTA:     #1e3a2a  (dunkles Grün)
-CTA Hover:           #152d1f
-Hintergrund:         #f5f0e8  (Creme/Offwhite)
-Karten-Hintergrund:  #ffffff
-Text primär:         #1a1a1a
-Text sekundär:       #666666
-Border:              #e0dbd0
-Badge-Hintergrund:   #f0ece2
-Erfolg:              #38a169
-Fehler:              #e53e3e
-Warnung:             #d97706
-Border-Radius Card:  8px
-Border-Radius Button: 6px
-Schrift Headlines:   Playfair Display (Serif)
-Schrift Body:        Inter oder System-Sans
-Schatten:            0 1px 4px rgba(0,0,0,0.06)
-```
+### Design-Tokens
+Siehe `app/globals.css` (CSS-Variablen `--color-*`, `--radius-*`, `--shadow-*`, dort kommentiert).
 
 ### Designprinzipien
 - Vertrauenswürdig, kuratiert, ruhig, editorial, hochwertig — nicht verspielt
@@ -47,15 +29,7 @@ Schatten:            0 1px 4px rgba(0,0,0,0.06)
 - Kein Redesign ohne explizite Freigabe
 - Keine neuen Farben, Schatten, Rundungen ohne Begründung
 
-### Design-Referenz-Dateien
-```
-design-refs/1_Landing_Page.png          → Startseite
-design-refs/2_Tool_Detailseite.png      → Tool-Detailseite (Admin-Ansicht)
-design-refs/3_Vergleichsseite.png       → Vergleiche
-design-refs/4_Alle_Kategorien.png       → Kategorien-Übersicht + Tool-Discovery
-design-refs/5_Tool_Stacks.png           → Tool-Stacks
-design-refs/6_Tool_bewerten.png         → Bewertungsformular
-```
+Screenshots in design-refs/ — Dateiname benennt die Seite.
 
 ---
 
@@ -115,119 +89,17 @@ Linting:      ESLint (eslint-config-next)
 
 ---
 
-## 🔄 Aktueller Scope: Phase 5 (Stand: Juni 2026)
-
-### Gebaut (Phase 4+5):
-- Tool-Finder (interaktiver Fragebogen)
-- PricingPlan-Modell + Admin-UI + Anzeige
-- User-Accounts mit Magic Link (Supabase Auth)
-- Bewertungssystem mit kategoriespezifischen Kriterien + Moderation
-- Tool-Stack-Manager (eingeloggter Bereich)
-- Cashback-Infrastruktur (Webhooks + Admin, NICHT öffentlich)
-
-### Nicht bauen:
-- Reselling
-- Partnerzugänge
-- Komplexes Abo-Management
-- White-Label-Funktionen
-- Automatische Preis-Scraper
-- Cashback-UI für Endnutzer (erst wenn echte Conversions bestätigt)
+Aktueller Phasen-Stand & Scope: siehe docs/STATUS.md
 
 ---
 
-## 📁 Projektstruktur
 
-```
-toolkompass/
-├── app/
-│   ├── page.tsx                          Startseite
-│   ├── layout.tsx                        Root Layout
-│   ├── globals.css                       Design Tokens
-│   ├── sitemap.ts                        Auto-Sitemap
-│   ├── api/search/route.ts              Autocomplete-API
-│   ├── api/track/[linkId]/              Affiliate-Tracking
-│   ├── suche/                           Suchseite
-│   ├── kategorien/[slug]/               Kategorie-Detail
-│   ├── tools/[slug]/                    Tool-Detail
-│   ├── vergleichen/[slug]/              Vergleich
-│   ├── ratgeber/[slug]/                 Artikel
-│   ├── tool-stacks/[slug]/              Stack-Detail
-│   ├── tool-finder/                     Tool-Finder
-│   ├── einloggen/                       Login
-│   └── admin/
-│       ├── analytics/                   Affiliate-Dashboard
-│       ├── tools/                       Tool-CRUD + Affiliate-Filter
-│       ├── kategorien/                  Kategorie-CRUD
-│       ├── artikel/                     Artikel-CRUD
-│       ├── vergleiche/                  Vergleich-CRUD
-│       ├── stacks/                      Stack-CRUD
-│       ├── tags/                        Tag-CRUD
-│       └── vendors/                     Vendor-CRUD
-├── components/
-│   ├── SearchInput.tsx                  Autocomplete (Client Component)
-│   ├── admin/                           ToolForm, FaqEditor, AffiliateLinkManager, etc.
-│   ├── category/CategoryFilter.tsx      Live-Filter (Client Component)
-│   └── layout/                          Header, Footer
-├── lib/
-│   ├── prisma.ts                        Singleton mit Driver Adapter
-│   ├── auth/require-admin.ts            Auth-Helper (prüft app_metadata.role)
-│   ├── data/                            Data-Access-Layer (React cache)
-│   ├── seo/json-ld.ts                   JSON-LD Helper
-│   ├── utils/format.ts                  formatPreis(cents, {hasFreePlan})
-│   ├── utils/pagination.ts              Pagination-Helper
-│   ├── utils/form.ts                    toSlug(), parseStr(), parseLines()
-│   └── supabase/                        server.ts, client.ts, admin.ts
-├── scripts/                             Import/Update-Scripts (mit --dry-run)
-├── proxy.ts                             Auth-Middleware (schützt /admin)
-├── CLAUDE.md                            ← DU BIST HIER
-├── ARCHITECTURE.md                      Code-Konventionen
-└── prisma/schema.prisma                 DB-Schema (37 Modelle, Stand: Juni 2026)
-```
 
----
-
-## 💬 Kommentar-Standard
-
-Jede neue Datei beginnt mit:
-
-```typescript
-/**
- * Datei: components/admin/PricingPlanManager.tsx
- *
- * Zweck: [Was macht diese Datei?]
- *
- * Wird aufgerufen von:
- * - app/admin/tools/[id]/page.tsx
- *
- * Wichtig:
- * [Was darf nicht leichtfertig geändert werden?]
- */
-```
-
-Jede neue Funktion bekommt JSDoc:
-
-```typescript
-/**
- * Formatiert einen Preis in Cent auf deutsches Euro-Format.
- * @param cents - Preis in Cent (null = kostenlos oder auf Anfrage)
- * @param opts.hasFreePlan - true → "Kostenlos" statt "Auf Anfrage"
- * @returns Formatierter Preis-String (z.B. "9,90 €")
- */
-```
-
----
+Kommentar-Standard für neue Dateien: siehe docs/kommentar-standard.md
 
 ## 🔧 Bestehende Helper (NUTZEN, nicht neu schreiben)
 
-| Helper | Datei | Zweck |
-|--------|-------|-------|
-| `requireAdmin()` | `lib/auth/require-admin.ts` | Auth-Guard für Admin-Actions |
-| `formatPreis()` | `lib/utils/format.ts` | Preisformatierung Cent → Euro |
-| `parsePageParams()` | `lib/utils/pagination.ts` | Prisma-Pagination (25 pro Seite) |
-| `toSlug()` | `lib/utils/form.ts` | Slug-Generierung |
-| `parseStr()` / `parseLines()` | `lib/utils/form.ts` | FormData-Parsing |
-| `captureException()` | `@sentry/nextjs` | Error-Reporting |
-| `createSupabaseAdmin()` | `lib/supabase/admin.ts` | Supabase Admin-Client |
+Vor dem Schreiben neuer Utility-, Format- oder Auth-Funktionen IMMER erst `lib/utils/`, `lib/data/` und `lib/auth/` prüfen — vorhandene Helper nutzen, nicht neu schreiben (z. B. `formatPreis()`, `toSlug()`, `requireAdmin()`)
 
 ### Bestehende Admin-Blaupausen (als Muster verwenden):
 - `AffiliateLinkManager.tsx` → Inline-CRUD pro Tool
@@ -252,24 +124,12 @@ Mehrere Rollen können gleichzeitig aktiv sein (z. B. Builder + Guardian bei UI-
 
 ### Pflicht-Reviews nach jeder UI-Aufgabe
 
-**Frontend Reviewer** (`agents/frontend-reviewer.md`):
-- [ ] Kein `any` in TypeScript
-- [ ] `<button>` für Aktionen, `<a>` / `<Link>` für Navigation
-- [ ] Empty State vorhanden
-- [ ] Layout bricht bei langen Texten nicht
-
-**Design Guardian** (`agents/design-guardian.md`):
-- [ ] Farben stimmen mit Design Tokens überein
-- [ ] Hintergrund Creme (`#f5f0e8`), nicht Weiß
-- [ ] Nur `#1e3a2a` als CTA-Farbe
-- [ ] Abstände und Typografie konsistent mit Screenshots
-
 ---
 
 ## 🔄 Entscheidungsregel bei Unsicherheit
 
 1. Design-Screenshot respektieren
-2. Aktuellen Phase-4-Scope einhalten
+2. Aktuellen Scope laut docs/STATUS.md einhalten
 3. Wartbarkeit bevorzugen
 4. Komplexität reduzieren
 5. Entscheidung dokumentieren — niemals stillschweigend in Code verwandeln
@@ -288,3 +148,7 @@ Mehrere Rollen können gleichzeitig aktiv sein (z. B. Builder + Guardian bei UI-
 ## Nächster sinnvoller Schritt
 ...
 ```
+## ⚠️ Bekannte Fallen
+
+- Symptom: git add übernimmt manche Dateien stillschweigend nicht  (OneDrive-ReparsePoints) — Logos fehlten dadurch wochenlang im Repo
+- Was tun: Nach jedem git add von Binärdateien (Logos, Bilder): mit git status prüfen, ob sie wirklich staged sind.

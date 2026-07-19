@@ -22,17 +22,7 @@ design-refs/6_Tool_bewerten.png         → Bewertungsformular
 ```
 
 ## Design-Token-Referenz
-```
-CTA-Grün:            #1e3a2a
-Hintergrund:         #f5f0e8
-Karten-BG:           #ffffff
-Text primär:         #1a1a1a
-Text sekundär:       #555555
-Border:              #e0dbd0
-Border-Radius Card:  8px
-Font Headlines:      Playfair Display (Serif)
-Font Body:           Inter / System-Sans
-```
+Verbindliche Werte: `app/globals.css` (CSS-Variablen `--color-*`, `--radius-*`, `--shadow-*`). Keine Kopien pflegen.
 
 ## Prüfkriterien (für jedes Review)
 - [ ] Header entspricht der Referenz?

@@ -11,20 +11,18 @@
       "Bash(cmd /c \"netstat -ano | findstr \\\\\":300\\\\\" | findstr LISTENING\")",
       "Bash(npx next *)",
       "Bash(mkdir -p \"c:/Users/stefa/OneDrive/Desktop/Javascript.course/toolsucher/app/admin/kategorien/neu\" && mkdir -p \"c:/Users/stefa/OneDrive/Desktop/Javascript.course/toolsucher/app/admin/kategorien/[id]\")",
-      "Bash(git commit -m ' *)",
-      "Bash(npx tsx *)",
       "Bash(cat)",
-      "Bash(git commit *)",
-      "Bash(git push *)",
       "Bash(npm run *)",
       "Read(//tmp/**)",
       "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)",
       "PowerShell(Stop-Process -Force)",
       "Bash(git tag *)",
-      "Bash(npx prisma *)",
+      "Bash(npx prisma generate)",
       "Bash(echo \"LINT_EXIT:$?\")",
       "Bash(echo \"TSC:$?\")",
-      "Bash(echo \"LINT:$?\")"
+      "Bash(echo \"LINT:$?\")",
+      "Bash(git add *)",
+      "Bash(git reset *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\stefa\\OneDrive\\Desktop\\Javascript.course\\toolsucher\\app\\admin\\kategorien"

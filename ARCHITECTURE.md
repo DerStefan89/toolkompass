@@ -69,6 +69,9 @@ if (!user) return { error: 'Nicht autorisiert.' }
 - `Promise.all` für parallele Queries
 - DB-Migrationen: SQL-Datei erstellen → MANUELL im Supabase SQL Editor ausführen → `npx prisma generate`. NICHT `prisma migrate` (crasht auf Vercel)
 - Data-Access-Layer: wiederverwendbare Queries in `lib/data/*.ts` mit `React.cache()` — keine Prisma-Calls direkt in Page-Dateien duplizieren
+- Jedes Script in scripts/, das die DB verändert, wird zuerst mit --dry-run ausgeführt
+- Der Dry-Run-Output wird geprüft, bevor der Echtlauf startet
+- Das gilt ausnahmslos (auch für „kleine" Scripts)
 
 ---
 

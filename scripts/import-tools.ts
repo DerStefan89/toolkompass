@@ -489,7 +489,6 @@ async function writeToDB(
         update: {
           hasFreePlan: tool.hasFreePlan,
           vendorId,
-          published: false,
         },
         select: { id: true },
       })
