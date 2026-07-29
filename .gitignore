@@ -47,3 +47,6 @@ next-env.d.ts
 Toolsucher_Tooltexte_*.docx
 Toolsucher_alle_Logos_PNG/
 Toolsucher_fehlende_Logos_PNG/
+
+# Claude Code lokale Freigaben (maschinenspezifisch, nie ins Repo)
+.claude/settings.local.json
