@@ -44,8 +44,9 @@ async function main() {
 
   const csv = [header, ...rows].join('\n') + '\n'
 
-  // Output-Pfad: /mnt/user-data/outputs/ falls vorhanden, sonst Projektroot
-  const outputDir = fs.existsSync('/mnt/user-data/outputs') ? '/mnt/user-data/outputs' : process.cwd()
+  // Output-Pfad: Arbeitsmaterial-Ordner im Projektroot
+  const outputDir = path.join(process.cwd(), '_arbeitsmaterial')
+  fs.mkdirSync(outputDir, { recursive: true })
   const outputPath = path.join(outputDir, 'toolsucher_affiliate_status.csv')
 
   fs.writeFileSync(outputPath, csv, 'utf-8')

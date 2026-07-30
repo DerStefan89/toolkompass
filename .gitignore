@@ -50,3 +50,5 @@ Toolsucher_fehlende_Logos_PNG/
 
 # Claude Code lokale Freigaben (maschinenspezifisch, nie ins Repo)
 .claude/settings.local.json
+# Arbeitsmaterial: Eingabe-Dokumente und generierte Exporte, nie ins Repo
+/_arbeitsmaterial/

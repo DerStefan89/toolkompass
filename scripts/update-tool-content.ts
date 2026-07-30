@@ -37,6 +37,7 @@ let prisma: PrismaClient
 
 const DOCX_PATH = path.join(
   process.cwd(),
+  '_arbeitsmaterial',
   'Toolsucher_Tooltexte_final_V3_redaktionell_bereinigt.docx'
 )
 

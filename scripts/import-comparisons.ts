@@ -504,9 +504,9 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2)
   const execute = argv.includes('--execute')
   const publish = argv.includes('--publish')
-  const fileArgs = argv.filter((a) => !a.startsWith('--'))
+const fileArgs = argv.filter((a) => !a.startsWith('--'))
   const docxFiles = (fileArgs.length > 0 ? fileArgs : DEFAULT_DOCX).map((f) =>
-    path.isAbsolute(f) ? f : path.join(process.cwd(), f)
+    path.isAbsolute(f) ? f : path.join(process.cwd(), '_arbeitsmaterial', f)
   )
 
   console.log('═══════════════════════════════════════════════════')
