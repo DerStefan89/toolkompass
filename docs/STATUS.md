@@ -69,18 +69,12 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
    Affiliate-Links sind kommerziell. Entscheidung als ADR.
 7. **Migrations-Historie prüfen** — Migrationen laufen manuell im Supabase-Editor.
    Liegen die SQL-Dateien versioniert in `prisma/`?
-8. **Befehlsblock in CLAUDE.md** — `dev`, `build`, `check`, `typecheck`, `lint`, `seed`
-   wörtlich. DoD auf `npm run check` statt `npx tsc --noEmit`.
 9. **Design-Block auslagern** nach `docs/design-system.md` — CLAUDE.md liegt über der
    150-Zeilen-Grenze aus Playbook 01.
 10. **Duplikate auflösen** — README widerspricht CLAUDE.md beim Styling.
     Versionsnummern nur in `package.json`. Ordnerbäume in Prosa entfernen.
-11. **Logo-Ordner entfernen** — `Toolsucher_alle_Logos_PNG/` und
-    `Toolsucher_fehlende_Logos_PNG/` stehen in `.gitignore` und liegen trotzdem im
-    Repo. Fix: `git rm -r --cached`.
 12. **Namensentscheidung** — Repo `toolkompass`, `package.json` `toolsucher`,
     CLAUDE.md „ToolSucher", Domain `toolkompass.vercel.app`.
-13. **`Content_Website/` prüfen** — Arbeitsmaterial oder Code?
 14. **Vertrauensgrenze `rehypeRaw`** — `InlineMarkdown` rendert rohes HTML, aktuell
     nur mit Admin-Inhalten aus importierten `.docx`. Sobald Dritte Inhalte liefern,
     ist das eine offene Tür. Als Satz in `ARCHITECTURE.md` §7 festhalten.

@@ -52,3 +52,6 @@ Toolsucher_fehlende_Logos_PNG/
 .claude/settings.local.json
 # Arbeitsmaterial: Eingabe-Dokumente und generierte Exporte, nie ins Repo
 /_arbeitsmaterial/
+
+# Generierter Import-Bericht, entsteht bei jedem Lauf neu
+/Content_Website/_import-report.json
