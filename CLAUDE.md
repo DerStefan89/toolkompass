@@ -46,6 +46,19 @@ Hosting:      Vercel (Hobby Plan)
 Monitoring:   Sentry (nur Production, tracesSampleRate: 0)
 Linting:      ESLint (eslint-config-next)
 ```
+### Befehle
+
+```
+npm install              # Abhängigkeiten; erzeugt danach automatisch den Prisma-Client
+npm run dev              # Entwicklungsserver → http://localhost:3000
+npm run build            # Produktions-Build
+npm run start            # Produktions-Server lokal
+npm run lint             # ESLint
+npm run typecheck        # tsc --noEmit
+npm run check            # lint + typecheck — das Tor vor jedem Commit
+npx prisma generate      # Prisma-Client nach Schema-Änderung neu erzeugen
+npx tsx prisma/seed.ts   # Seed-Daten einspielen
+```
 
 **Nicht im Projekt (nicht verwenden):**
 - Kein Tailwind-Preflight (nur `@import "tailwindcss/utilities"` für PostCSS)
@@ -86,8 +99,7 @@ Linting:      ESLint (eslint-config-next)
 - [ ] Mobile Darstellung berücksichtigt (375px default)
 - [ ] Jeder Container mit max-width hat auch width: 100%
 - [ ] Code ist sinnvoll kommentiert (Datei-Header + JSDoc)
-- [ ] `npx tsc --noEmit` → Exit 0
-- [ ] `npm run lint` → 0 neue Errors
+- [ ] `npm run check` → Exit 0 (Lint + Typecheck)
 - [ ] KEINE Commits ohne explizite Freigabe
 ---
 
