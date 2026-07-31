@@ -96,6 +96,7 @@ Aktueller Phasen-Stand & Scope: siehe docs/STATUS.md
 ---
 
 Kommentar-Standard für neue Dateien: siehe docs/kommentar-standard.md
+Erwartete Skills: `tool-anlegen` (eigener Skill, im Repo). `ponytail` v4.8.4 (fremd, MIT, Quelle: github.com/DietrichGebert/ponytail) — nur SKILL.md kopiert, kein ausführbarer Code.
 
 ## 🔧 Bestehende Helper (NUTZEN, nicht neu schreiben)
 
