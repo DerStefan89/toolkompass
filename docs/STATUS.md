@@ -54,9 +54,6 @@ Bis zur Entscheidung gilt: **kein öffentliches Cashback.**
 Reihenfolge nach Schaden, nicht nach Aufwand.
 
 1. **Risiko 1 entscheiden** (siehe oben)
-2. **`agents/frontend-builder.md` und `documentation.md` entgiften** — beide schreiben
-   Next.js 14 und Tailwind vor, `ARCHITECTURE.md` schreibt CSS Modules vor. CLAUDE.md
-   lässt `frontend-builder.md` bei jeder UI-Aufgabe lesen.
 3. **Agent-Rollen nach `.claude/agents/` migrieren** — die neun Dateien in `agents/`
    sind keine Subagenten, sondern Text im Hauptkontext. Der Reviewer liest die
    Begründungen des Builders mit. Dabei entscheiden, welche Rollen bleiben:
@@ -109,3 +106,8 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
 Verschachtelte Skill-Dublette `.claude/skills/.claude/` entfernt.
 `status.md` → `STATUS.md` umbenannt (Verweis in CLAUDE.md war unter Linux tot).
 XSS-Regel für nutzergenerierten Content geprüft: eingehalten.
+
+Vier Agent-Rollen entfernt (`content-data`, `documentation`, `research`, `frontend-builder`) —
+allesamt Kopien von Wissen, das in `ARCHITECTURE.md`, `CLAUDE.md`, `prisma/schema.prisma`
+und dem Skill `tool-anlegen` lebt. Der Stack-Widerspruch ist damit aufgelöst, ohne eine
+einzige Zeile zu reparieren.

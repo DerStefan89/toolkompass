@@ -112,16 +112,17 @@ Vor dem Schreiben neuer Utility-, Format- oder Auth-Funktionen IMMER erst `lib/u
 ## 🤖 Agent-Rollen — automatisch anwenden
 
 Beim Start einer Aufgabe die passende Agent-Datei lesen und deren Regeln einhalten.
-Mehrere Rollen können gleichzeitig aktiv sein (z. B. Builder + Guardian bei UI-Arbeit).
+Mehrere Rollen können gleichzeitig aktiv sein (z. B. Reviewer + Guardian nach UI-Arbeit).
 
 | Aufgabentyp                              | Agent-Datei lesen                    |
 |------------------------------------------|--------------------------------------|
-| UI-Komponente oder Seite bauen           | `agents/frontend-builder.md`         |
 | Code nach dem Bauen prüfen              | `agents/frontend-reviewer.md`        |
 | Design-Treue gegen Screenshot prüfen    | `agents/design-guardian.md`          |
 | Neue Iteration planen / Scope klären    | `agents/orchestrator.md`             |
 | Tests definieren oder schreiben         | `agents/qa.md`                       |
 | Datenmodell oder Architektur entwerfen  | `agents/backend-architect.md`        |
+
+Für das Bauen selbst gibt es bewusst keine Rollen-Datei: Stack und Regeln stehen in `ARCHITECTURE.md`, der Ablauf im Briefing und in der Definition of Done oben.
 
 Nach jeder UI-Aufgabe Pflicht: Reviews gemäß agents/frontend-reviewer.md und agents/design-guardian.md.
 
