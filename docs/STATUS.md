@@ -58,11 +58,8 @@ Kein Geld im Spiel, aber dieselbe Fehlerklasse — bei Gelegenheit prüfen.
 Reihenfolge nach Schaden, nicht nach Aufwand.
 
 
-1. **Agent-Rollen nach `.claude/agents/` migrieren** — die fünf verbliebenen Dateien in
-   `agents/` sind keine Subagenten, sondern Text im Hauptkontext. Der Reviewer liest die
-   Begründungen des Autors mit; die Unabhängigkeit ist nur behauptet. Bei der Migration:
-   Frontmatter setzen, Reviewer und Guardian ohne Schreibrechte konfigurieren.
-4. **CI-Gate bauen** — `scripts/check-docs.mjs` (referenzierte Pfade existieren,
+
+1. **CI-Gate bauen** — `scripts/check-docs.mjs` (referenzierte Pfade existieren,
    Versionsnummern nur in `package.json`, verbotene Begriffe, CLAUDE.md ≤ 150 Zeilen,
    Groß-/Kleinschreibung von Verweisen) plus `scripts/check-rules.mjs` (`as any`,
    `<img `, `take` ohne `skip`, `createClient()` in Actions). In `npm run check`
@@ -95,7 +92,8 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
     Stellen. Entweder abgeleitet (dann muss die Ableitung automatisch passieren und die
     Regel in `ARCHITECTURE.md` stehen) oder unabhängig gepflegt (dann laufen Übersicht
     und Detailseite auseinander). Aktuell ungeklärt.
- ---
+
+---
 
 ## Erledigt in Gate 2.5 (30.–31.07.2026)
 
@@ -122,3 +120,16 @@ einzige Zeile zu reparieren.
 Falschaussage in der Statusdatei korrigiert: Cashback-Infrastruktur war als „gebaut"
 gelistet, existiert aber nicht. Gefunden beim Abgleich der Statusdatei gegen die
 tatsächlichen `route.ts`-Dateien.
+
+Agent-Rollen bereinigt und migriert: Von neun Rollen bleiben drei — `frontend-reviewer`,
+`design-guardian`, `qa` — als echte Subagenten in `.claude/agents/` mit eigenem Kontext
+und ohne Schreibrechte (`tools: Read, Grep, Glob`). Die sechs entfernten waren Kopien von
+Wissen aus `ARCHITECTURE.md`, `CLAUDE.md`, `docs/STATUS.md` und `prisma/schema.prisma`;
+zwei Architekturregeln daraus wurden gerettet. Der Review-Schritt ist damit zum ersten Mal
+tatsächlich unabhängig statt nur so benannt.
+
+Drei Dokumente aus der Gründungswoche (25.05.) entfernt: `docs/WORKFLOW.md` und die zwei
+Iterations-Prompts. `WORKFLOW.md` empfahl ausdrücklich drei parallele Claude-Code-Sitzungen
+im selben Ordner — genau die Praxis, die während dieses Gates zu widersprüchlichen
+Dateiständen führte. Veraltete Dokumentation war hier nicht nutzlos, sondern Ursache eines
+konkreten Schadens.

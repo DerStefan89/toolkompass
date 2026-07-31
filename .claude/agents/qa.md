@@ -1,3 +1,10 @@
+---
+name: qa
+description: Prüft ein Feature aus Sicht echter Nutzer und definiert Akzeptanztests und Randfälle. Einsetzen, bevor ein Feature als fertig gilt. Meldet Lücken, ändert selbst nichts.
+tools: Read, Grep, Glob
+color: cyan
+---
+
 # Agent: QA / Test
 
 ## Deine Rolle
@@ -40,9 +47,9 @@ Du testest aus Sicht echter Nutzer und prüfst ob Features funktional, verständ
 import { test, expect } from '@playwright/test';
 
 test('Tool-Detailseite lädt korrekt', async ({ page }) => {
-  await page.goto('/tools/notion');
-  await expect(page.getByRole('heading', { name: 'Notion' })).toBeVisible();
-  await expect(page.getByText('Zum Anbieter')).toBeVisible();
+await page.goto('/tools/notion');
+await expect(page.getByRole('heading', { name: 'Notion' })).toBeVisible();
+await expect(page.getByText('Zum Anbieter')).toBeVisible();
 });
 ```
 

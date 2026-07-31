@@ -121,22 +121,25 @@ Vor dem Schreiben neuer Utility-, Format- oder Auth-Funktionen IMMER erst `lib/u
 
 ---
 
-## 🤖 Agent-Rollen — automatisch anwenden
+## 🤖 Prüfrollen als Subagenten
 
-Beim Start einer Aufgabe die passende Agent-Datei lesen und deren Regeln einhalten.
-Mehrere Rollen können gleichzeitig aktiv sein (z. B. Reviewer + Guardian nach UI-Arbeit).
+Drei Prüfrollen liegen als echte Subagenten in `.claude/agents/`: eigener Kontext, keine
+Schreibrechte (`tools: Read, Grep, Glob`). Sie werden nicht gelesen, sondern delegiert —
+Claude Code wählt sie anhand ihrer `description`.
 
-| Aufgabentyp                              | Agent-Datei lesen                    |
-|------------------------------------------|--------------------------------------|
-| Code nach dem Bauen prüfen              | `agents/frontend-reviewer.md`        |
-| Design-Treue gegen Screenshot prüfen    | `agents/design-guardian.md`          |
-| Neue Iteration planen / Scope klären    | `agents/orchestrator.md`             |
-| Tests definieren oder schreiben         | `agents/qa.md`                       |
-| Datenmodell oder Architektur entwerfen  | `agents/backend-architect.md`        |
+| Rolle | Wofür |
+|---|---|
+| `frontend-reviewer` | Code nach dem Bauen prüfen |
+| `design-guardian`   | Design-Treue gegen die Screenshots prüfen |
+| `qa`                | Akzeptanztests und Randfälle definieren |
 
-Für das Bauen selbst gibt es bewusst keine Rollen-Datei: Stack und Regeln stehen in `ARCHITECTURE.md`, der Ablauf im Briefing und in der Definition of Done oben.
+Nach jeder UI-Aufgabe Pflicht: `frontend-reviewer` und `design-guardian`.
 
-Nach jeder UI-Aufgabe Pflicht: Reviews gemäß agents/frontend-reviewer.md und agents/design-guardian.md.
+Sie können ihre Befunde nicht selbst wegräumen — das ist Absicht. Ein Prüfer mit
+Schreibrechten wird heimlich zum Autor.
+
+Für das Bauen selbst gibt es bewusst keine Rollen-Datei: Stack und Regeln stehen in
+`ARCHITECTURE.md`, der Ablauf im Briefing und in der Definition of Done oben.
 
 ---
 
