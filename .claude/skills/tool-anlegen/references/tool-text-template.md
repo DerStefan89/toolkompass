@@ -30,3 +30,6 @@ kategorie: <Kategorie-Name>
 **Funktionen:** Buchungsseiten · Kalender-Integration · automatische Bestätigung · Zahlungen · Round-Robin
 **Preise:** Free, Standard ca. 10 $/Sitz/Monat (jährlich), Teams/Enterprise darüber. US.
 **Alternativen:** Cal.com (flexibler), TidyCal (günstige Einmalzahlung).
+
+> Hinweis: **Einstieg:** und **Preise:** werden vom Import-Script NICHT eingelesen —
+> Pricing wird separat im Admin (PricingPlan) gepflegt und muss mit dem Text übereinstimmen.

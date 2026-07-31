@@ -12,7 +12,7 @@ description: Legt ein neues Tool auf ToolSucher vollständig an — Recherche, T
      bestehenden Status melden (Name, Slug, published ja/nein, Admin-Link) und fragen, ob er es so
      lassen will ("braucht man nicht") oder ob das bestehende Tool aktualisiert/überschrieben werden
      soll. Erst nach expliziter Bestätigung weitermachen — dann ab Schritt 1, aber mit Update statt
-     Neuanlage (Import-Script upserted ohnehin per Slug).
+     Neuanlage (Import-Script upserted per Slug — dabei werden vorhandene Texte überschrieben und das Tool auf unpublished gesetzt.)
    - 🟨 **Ähnlicher Treffer** (Vendor-Name/Domain ähnlich, aber kein exakter Slug-Match) → dem Nutzer
      die Kandidaten zeigen und klären, ob es dasselbe Tool ist, bevor weitergemacht wird.
    - 🟩 **Kein Treffer** → normal mit Schritt 1 fortfahren.
