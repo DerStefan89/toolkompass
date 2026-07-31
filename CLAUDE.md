@@ -72,6 +72,9 @@ Linting:      ESLint (eslint-config-next)
 - Keine großen Funktionspakete auf einmal
 - Erst planen, dann umsetzen
 - Ein Task nach dem anderen — nie parallel
+- Ein Schreiber pro Arbeitsverzeichnis. Keine zweite Claude-Sitzung im selben Ordner; parallele Arbeit nur in getrennten git-Worktrees.
+- Iterationsende heißt: `git status` prüfen, Freigabe einholen, committen UND pushen. Gegenstück zur Commit-Freigabe-Regel — eine Bremse ohne Gaspedal erzeugt Halden.
+- Keine Versionsnummern in Prosa. Versionen stehen ausschließlich in `package.json`.
 
 ### Definition of Done
 - [ ] Design bleibt treu (Design-Tokens, keine neuen Farben/Schatten)
@@ -86,14 +89,11 @@ Linting:      ESLint (eslint-config-next)
 - [ ] `npx tsc --noEmit` → Exit 0
 - [ ] `npm run lint` → 0 neue Errors
 - [ ] KEINE Commits ohne explizite Freigabe
-
 ---
 
 Aktueller Phasen-Stand & Scope: siehe docs/STATUS.md
 
 ---
-
-
 
 Kommentar-Standard für neue Dateien: siehe docs/kommentar-standard.md
 
@@ -122,7 +122,7 @@ Mehrere Rollen können gleichzeitig aktiv sein (z. B. Builder + Guardian bei UI-
 | Tests definieren oder schreiben         | `agents/qa.md`                       |
 | Datenmodell oder Architektur entwerfen  | `agents/backend-architect.md`        |
 
-### Pflicht-Reviews nach jeder UI-Aufgabe
+Nach jeder UI-Aufgabe Pflicht: Reviews gemäß agents/frontend-reviewer.md und agents/design-guardian.md.
 
 ---
 

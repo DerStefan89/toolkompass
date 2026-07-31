@@ -83,6 +83,19 @@ if (!user) return { error: 'Nicht autorisiert.' }
 
 ---
 
+### 6b. Scripts — sicherer Default
+
+Scripts, die die DB verändern, schreiben nur mit `--execute`. Ohne Flag: Dry-Run.
+Begründung: Ein Schalter, den man setzen muss, damit nichts kaputtgeht, ist keine
+Sicherheitsmaßnahme, sondern eine Bitte an das Gedächtnis.
+
+**Stand:** umgesetzt in `import-comparisons.ts`. Offen: 9 weitere Scripts, die noch
+`--dry-run` als Opt-out verwenden.
+
+Jede Datei-Fehlermeldung nennt den vollständig aufgelösten Pfad, nicht nur den Dateinamen.
+
+---
+
 ### 7. Verbotene Patterns
 
 | Verboten | Erlaubt |
