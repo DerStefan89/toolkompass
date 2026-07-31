@@ -14,6 +14,11 @@
 
 **Phase 5** · Stand: Juli 2026
 
+**Phasenmodell:** Diese Datei ist die einzige Quelle für Phasennummern. Ältere Dateien
+verwendeten ein abweichendes Modell (dort war Phase 6 das Nutzerkonto, hier sind es die
+Cashback-Webhooks). Phasennummern in `ARCHITECTURE.md` beziehen sich auf dieses Modell.
+
+---
 ### Gebaut (Phase 4 + 5)
 - Tool-Finder (interaktiver Fragebogen)
 - PricingPlan-Modell + Admin-UI + Anzeige
@@ -83,6 +88,13 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
 16. **Eingaben der vier bestehenden Endpunkte prüfen** — `/api/anfrage` und `/api/search`
     verarbeiten Nutzereingaben ohne Schema. Kein akutes Risiko, aber die Vorstufe zu
     dem, was bei Cashback teuer würde.
+17. **Phasenverweise in `ARCHITECTURE.md` prüfen** — „ab Phase 3", „ab Phase 4.3",
+    „ab Phase 4.4" stammen aus der Zeit vor der Vereinheitlichung. Prüfen, ob sie noch
+    stimmen, oder auf Features statt Nummern umstellen („sobald es Nutzerkonten gibt").
+18. **`Tool.startingPriceCents` gegen `PricingPlan` klären** — derselbe Preis an zwei
+    Stellen. Entweder abgeleitet (dann muss die Ableitung automatisch passieren und die
+    Regel in `ARCHITECTURE.md` stehen) oder unabhängig gepflegt (dann laufen Übersicht
+    und Detailseite auseinander). Aktuell ungeklärt.
  ---
 
 ## Erledigt in Gate 2.5 (30.–31.07.2026)

@@ -64,14 +64,15 @@ if (!user) return { error: 'Nicht autorisiert.' }
 ### 5. Datenbank
 
 - Geldbeträge als `Int` in Cent (Float verboten)
+- Redaktionelle und Community-Bewertungen bleiben getrennt — eigene Modelle, eigene
+  Anzeige. Die Glaubwürdigkeit des Portals hängt daran.
+- Affiliate-Links werden auditierbar gespeichert: Jede Änderung am Link und jeder Klick
+  müssen nachvollziehbar bleiben. Provisionen ohne Prüfspur sind nicht verhandelbar.
 - Slugs via `toSlug()` aus `lib/utils/form.ts`
 - `revalidatePath` nach jeder Mutation auf Admin- UND public Pfad
 - `Promise.all` für parallele Queries
 - DB-Migrationen: SQL-Datei erstellen → MANUELL im Supabase SQL Editor ausführen → `npx prisma generate`. NICHT `prisma migrate` (crasht auf Vercel)
 - Data-Access-Layer: wiederverwendbare Queries in `lib/data/*.ts` mit `React.cache()` — keine Prisma-Calls direkt in Page-Dateien duplizieren
-- Jedes Script in scripts/, das die DB verändert, wird zuerst mit --dry-run ausgeführt
-- Der Dry-Run-Output wird geprüft, bevor der Echtlauf startet
-- Das gilt ausnahmslos (auch für „kleine" Scripts)
 
 ---
 
@@ -85,12 +86,13 @@ if (!user) return { error: 'Nicht autorisiert.' }
 
 ### 6b. Scripts — sicherer Default
 
-Scripts, die die DB verändern, schreiben nur mit `--execute`. Ohne Flag: Dry-Run.
+**Ziel:** Scripts, die die DB verändern, schreiben nur mit `--execute`. Ohne Flag: Dry-Run.
 Begründung: Ein Schalter, den man setzen muss, damit nichts kaputtgeht, ist keine
 Sicherheitsmaßnahme, sondern eine Bitte an das Gedächtnis.
 
-**Stand:** umgesetzt in `import-comparisons.ts`. Offen: 9 weitere Scripts, die noch
-`--dry-run` als Opt-out verwenden.
+**Stand:** umgesetzt in `import-comparisons.ts`. Die übrigen neun Scripts verwenden noch
+`--dry-run` als Opt-out. Solange das so ist, gilt für sie ausnahmslos: jeder Lauf zuerst
+mit `--dry-run`, Output prüfen, dann erst der Echtlauf — auch bei „kleinen" Scripts.
 
 Jede Datei-Fehlermeldung nennt den vollständig aufgelösten Pfad, nicht nur den Dateinamen.
 
