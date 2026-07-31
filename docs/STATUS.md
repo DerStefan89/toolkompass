@@ -20,7 +20,7 @@
 - User-Accounts mit Magic Link (Supabase Auth)
 - Bewertungssystem mit kategoriespezifischen Kriterien + Moderation
 - Tool-Stack-Manager (eingeloggter Bereich)
-- Cashback-Infrastruktur (Webhooks + Admin) — **nicht öffentlich**, siehe Risiko 1
+
 
 ### Nicht bauen
 - Reselling
@@ -32,20 +32,19 @@
 
 ---
 
-## Risiko 1 — Cashback-Webhooks ohne ihre Voraussetzungen
+## Gate für Phase 6 — Cashback
 
-`CLAUDE.md` erklärt Zod, Vitest und Playwright zur **Pflicht vor** den Cashback-Webhooks.
-Die Webhooks sind gebaut (Phase 4+5), die drei Voraussetzungen stehen nicht in
-`package.json`. Ein Endpunkt, der von außen Daten annimmt und über Geldbeträge
-entscheidet, läuft damit ohne Schema-Validierung und ohne Tests.
+Cashback-Infrastruktur existiert **nicht** — weder Webhooks noch Admin. Die frühere
+Statusdatei behauptete das Gegenteil; korrigiert am 31.07.2026.
 
-Drei mögliche Auflösungen — eine davon muss bewusst gewählt und hier dokumentiert werden:
+Bevor damit begonnen wird, gilt die Regel aus `CLAUDE.md`: Zod, Vitest und Playwright
+sind Pflicht **vor** dem ersten Webhook, nicht danach. Ein Endpunkt, der von außen
+Daten annimmt und über Geldbeträge entscheidet, wird nicht ohne Schema-Validierung
+und Tests gebaut.
 
-1. Voraussetzungen nachbauen (Zod-Schema am Webhook, Tests für die Auszahlungslogik)
-2. Endpunkt bis dahin deaktivieren oder hinter Auth legen
-3. Regel korrigieren, falls sie so nie gemeint war — mit Begründung
-
-Bis zur Entscheidung gilt: **kein öffentliches Cashback.**
+**Bestehende Endpunkte:** `/api/anfrage`, `/api/search`, `/api/track/[linkId]`,
+`/auth/confirm`. Alle nehmen Fremddaten entgegen, aktuell ohne Schema-Validierung.
+Kein Geld im Spiel, aber dieselbe Fehlerklasse — bei Gelegenheit prüfen.
 
 ---
 
@@ -53,11 +52,11 @@ Bis zur Entscheidung gilt: **kein öffentliches Cashback.**
 
 Reihenfolge nach Schaden, nicht nach Aufwand.
 
-1. **Risiko 1 entscheiden** (siehe oben)
-3. **Agent-Rollen nach `.claude/agents/` migrieren** — die neun Dateien in `agents/`
-   sind keine Subagenten, sondern Text im Hauptkontext. Der Reviewer liest die
-   Begründungen des Builders mit. Dabei entscheiden, welche Rollen bleiben:
-   `content-data`, `documentation`, `research` stehen in keiner Tabelle.
+
+1. **Agent-Rollen nach `.claude/agents/` migrieren** — die fünf verbliebenen Dateien in
+   `agents/` sind keine Subagenten, sondern Text im Hauptkontext. Der Reviewer liest die
+   Begründungen des Autors mit; die Unabhängigkeit ist nur behauptet. Bei der Migration:
+   Frontmatter setzen, Reviewer und Guardian ohne Schreibrechte konfigurieren.
 4. **CI-Gate bauen** — `scripts/check-docs.mjs` (referenzierte Pfade existieren,
    Versionsnummern nur in `package.json`, verbotene Begriffe, CLAUDE.md ≤ 150 Zeilen,
    Groß-/Kleinschreibung von Verweisen) plus `scripts/check-rules.mjs` (`as any`,
@@ -87,8 +86,10 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
     ist das eine offene Tür. Als Satz in `ARCHITECTURE.md` §7 festhalten.
 15. **Kursbibliothek unter git** — Playbooks liegen in `Downloads`, mit einer Dublette
     von `00-MASTER-BRIEFING.md`. Eigenes Repo, Dublette entfernen, Anhang B einsortieren.
-
----
+16. **Eingaben der vier bestehenden Endpunkte prüfen** — `/api/anfrage` und `/api/search`
+    verarbeiten Nutzereingaben ohne Schema. Kein akutes Risiko, aber die Vorstufe zu
+    dem, was bei Cashback teuer würde.
+ ---
 
 ## Erledigt in Gate 2.5 (30.–31.07.2026)
 
@@ -111,3 +112,7 @@ Vier Agent-Rollen entfernt (`content-data`, `documentation`, `research`, `fronte
 allesamt Kopien von Wissen, das in `ARCHITECTURE.md`, `CLAUDE.md`, `prisma/schema.prisma`
 und dem Skill `tool-anlegen` lebt. Der Stack-Widerspruch ist damit aufgelöst, ohne eine
 einzige Zeile zu reparieren.
+
+Falschaussage in der Statusdatei korrigiert: Cashback-Infrastruktur war als „gebaut"
+gelistet, existiert aber nicht. Gefunden beim Abgleich der Statusdatei gegen die
+tatsächlichen `route.ts`-Dateien.
