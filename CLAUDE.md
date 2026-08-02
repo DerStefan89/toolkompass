@@ -15,32 +15,23 @@ um digitale Business-Tools zu entdecken, zu vergleichen, zu bewerten, zu erwerbe
 
 ## 🎨 Design — VERBINDLICH
 
-Die Design-Screenshots im Ordner `design-refs/` sind die **einzige** visuelle Referenz.
-Das Design darf **nicht** frei interpretiert, modernisiert oder verändert werden.
+Die Screenshots in `design-refs/` sind die **einzige** visuelle Referenz; der Dateiname
+benennt die Seite. Kein Redesign, keine neuen Farben, Schatten oder Rundungen ohne
+explizite Freigabe.
 
-### Design-Tokens
-Siehe `app/globals.css` (CSS-Variablen `--color-*`, `--radius-*`, `--shadow-*`, dort kommentiert).
-
-### Designprinzipien
-- Vertrauenswürdig, kuratiert, ruhig, editorial, hochwertig — nicht verspielt
-- Creme-/Offwhite-Hintergründe, feine Linien, Cards, abgerundete Ecken, dezente Icons
-- Dunkles Grün = einzige CTA-Farbe
-- Goldener Kompass = Markenzeichen (Logo)
-- Kein Redesign ohne explizite Freigabe
-- Keine neuen Farben, Schatten, Rundungen ohne Begründung
-
-Screenshots in design-refs/ — Dateiname benennt die Seite.
+Design-Tokens: `app/globals.css`. Gestaltungsprinzipien und Maßstäbe:
+`docs/design-system.md`.
 
 ---
 
 ## 🏗️ Technischer Stack
 
 ```
-Framework:    Next.js 16.2.6 (App Router)
+Framework:    Next.js (App Router) — Version siehe package.json
 Sprache:      TypeScript (strict, 0 Fehler Pflicht)
 Styling:      CSS Modules (Mobile-First) + CSS Variables aus globals.css
 Datenbank:    PostgreSQL via Supabase (eu-central-1 Frankfurt)
-ORM:          Prisma 7 mit pg Driver Adapter
+ORM:          Prisma mit pg Driver Adapter (Version siehe package.json)
 Auth:         Supabase Auth (app_metadata.role für Admin)
 Hosting:      Vercel (Hobby Plan)
 Monitoring:   Sentry (nur Production, tracesSampleRate: 0)
@@ -108,7 +99,7 @@ Aktueller Phasen-Stand & Scope: siehe docs/STATUS.md
 ---
 
 Kommentar-Standard für neue Dateien: siehe docs/kommentar-standard.md
-Erwartete Skills: `tool-anlegen` (eigener Skill, im Repo). `ponytail` v4.8.4 (fremd, MIT, Quelle: github.com/DietrichGebert/ponytail) — nur SKILL.md kopiert, kein ausführbarer Code.
+Erwartete Skills: `tool-anlegen` (eigener Skill, im Repo). `ponytail` v4.8.4 (fremd, MIT, Quelle: github.com/DietrichGebert/ponytail) — nur SKILL.md kopiert, kein ausführbarer Code. <!-- check-docs-ignore: Versionspin des vendorten Skills, dient dem Herkunftsnachweis -->
 
 ## 🔧 Bestehende Helper (NUTZEN, nicht neu schreiben)
 

@@ -4,6 +4,7 @@ description: Prüft eine UI-Umsetzung gegen die verbindlichen Screenshots in des
 tools: Read, Grep, Glob
 color: purple
 ---
+Maßstäbe und Gestaltungsprinzipien: `docs/design-system.md`. Verbindliche Referenz sind die Screenshots in `design-refs/`.
 
 # Agent: UX/UI Design Guardian
 

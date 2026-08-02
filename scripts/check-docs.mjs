@@ -47,6 +47,36 @@ for (const datei of anweisungsDateien) {
   }
 }
 
+// ─── Prüfung 2: Stehen Versionsnummern nur in package.json? ─────────────────
+//
+// Eine Version an zwei Stellen ist an einer Stelle schon falsch — man weiß nur noch
+// nicht, an welcher. Quelle ist package.json, alles andere verweist darauf.
+//
+// Ausnahmen: Eine Zeile mit "check-docs-ignore:" wird übersprungen. Die Begründung
+// steht dann im selben Kommentar — wie bei eslint-disable. Eine Ausnahme ohne
+// sichtbare Begründung ist eine Umgehung.
+
+const versionsMuster = [
+  /\bv?\d+\.\d+\.\d+\b/g,
+  /\b(Next\.js|React|Prisma|Tailwind|TypeScript|Node|ESLint|Supabase|Sentry)\s+v?\d[\d.]*/g,
+]
+
+for (const datei of ['CLAUDE.md', 'ARCHITECTURE.md']) {
+  const zeilen = readFileSync(datei, 'utf-8').split('\n')
+
+  zeilen.forEach((zeile, i) => {
+    if (zeile.includes('check-docs-ignore:')) return
+
+    for (const muster of versionsMuster) {
+      for (const treffer of new Set(zeile.match(muster) ?? [])) {
+        befunde.push(
+          `${datei}:${i + 1}: Versionsnummer "${treffer}" — Versionen gehören nur in package.json`
+        )
+      }
+    }
+  })
+}
+
 // ─── Ergebnis ───────────────────────────────────────────────────────────────
 if (befunde.length === 0) {
   console.log('✓ Keine Befunde.\n')
