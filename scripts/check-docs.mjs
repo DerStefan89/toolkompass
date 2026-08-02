@@ -27,6 +27,7 @@ const agentDir = '.claude/agents'
 const anweisungsDateien = [
   'CLAUDE.md',
   'ARCHITECTURE.md',
+  'README.md',
   ...(existsSync(agentDir)
     ? readdirSync(agentDir)
         .filter((f) => f.endsWith('.md'))
