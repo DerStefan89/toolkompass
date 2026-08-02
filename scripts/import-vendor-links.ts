@@ -126,7 +126,6 @@ async function main() {
 
   let updated = 0
   let linksCreated = 0
-  let skipped = 0
   let notFound = 0
 
   for (const entry of TOOL_WEBSITES) {
