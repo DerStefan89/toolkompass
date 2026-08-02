@@ -25,8 +25,7 @@ Edge-Runtime (`sentry.server.config.ts`, `sentry.edge.config.ts`) — es gibt ke
 `sentry.client.config.ts`. <!-- check-docs-ignore: Dokumentiert bewusst das Fehlen von sentry.client.config.ts, kein Verweis darauf -->
 Ein Client-SDK würde bei jedem Besucher ausgeliefert, Browser-Daten erheben und den DSN
 öffentlich machen; das steht zum aktuellen Betriebsumfang nicht im Verhältnis. Entscheidung
-vom 02.08.2026. <!-- check-docs-ignore: Datumsangabe, keine Versionsnummer -->
-Bei wachsendem Angebot wird neu entschieden und `datenschutz.md` ergänzt.
+vom 02.08.2026. Bei wachsendem Angebot wird neu entschieden und `datenschutz.md` ergänzt.
 
 ---
 

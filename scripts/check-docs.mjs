@@ -105,6 +105,14 @@ const versionsMuster = [
   /\b(Next\.js|React|Prisma|Tailwind|TypeScript|Node|ESLint|Supabase|Sentry)\s+v?\d[\d.]*/g,
 ]
 
+// Deutsche Datumsangaben (Tag.Monat.Jahr, z. B. "02.08.2026") passen zufällig auf
+// \d+\.\d+\.\d+ und sähen sonst wie Versionsnummern aus. Der Ausschluss steht hier
+// in der Prüflogik und nicht als check-docs-ignore-Marker im Text: Eine Datumsangabe
+// ist keine berechtigte Ausnahme von der Regel, sondern ein Muster, das der Prüfer
+// von vornherein nicht hätte melden dürfen — sonst bräuchte jede künftige
+// Datumsangabe in einem Anweisungsdokument denselben Marker.
+const istDatum = (treffer) => /^\d{1,2}\.\d{1,2}\.\d{4}$/.test(treffer)
+
 for (const datei of ['CLAUDE.md', 'ARCHITECTURE.md']) {
   const zeilen = readFileSync(datei, 'utf-8').split('\n')
 
@@ -113,6 +121,7 @@ for (const datei of ['CLAUDE.md', 'ARCHITECTURE.md']) {
 
     for (const muster of versionsMuster) {
       for (const treffer of new Set(zeile.match(muster) ?? [])) {
+        if (istDatum(treffer)) continue
         befunde.push(
           `${datei}:${i + 1}: Versionsnummer "${treffer}" — Versionen gehören nur in package.json`
         )
