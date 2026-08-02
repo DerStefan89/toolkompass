@@ -92,6 +92,9 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
     Stellen. Entweder abgeleitet (dann muss die Ableitung automatisch passieren und die
     Regel in `ARCHITECTURE.md` stehen) oder unabhängig gepflegt (dann laufen Übersicht
     und Detailseite auseinander). Aktuell ungeklärt.
+19. **`sentry.client.config.ts` fehlt** — es existieren nur `sentry.server.config.ts` und
+    `sentry.edge.config.ts`. Browser-seitige Fehler werden dadurch von Sentry aktuell
+    nicht erfasst und bleiben unbeobachtet.
 
 ---
 

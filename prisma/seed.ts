@@ -1,7 +1,7 @@
 /**
  * prisma/seed.ts
  *
- * Befüllt die Datenbank mit allen Mock-Daten aus dem app/-Ordner.
+ * Befüllt die Datenbank mit den Mock-Daten, die inline in diesem Skript stehen (Zeilen 25-737).
  * Idempotent: Mehrfaches Ausführen erstellt keine Duplikate (upsert).
  *
  * Ausführen: npx prisma db seed

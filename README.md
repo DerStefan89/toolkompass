@@ -6,62 +6,49 @@ Plattform für Gründer, Selbstständige, Coaches, Berater, Agenturen und kleine
 
 ## Stack
 
-| Technologie | Version |
+| Bereich | Technologie |
 |---|---|
-| Next.js (App Router) | 15+ |
-| TypeScript | strict |
-| Tailwind CSS | v4 (CSS-first) |
+| Framework | Next.js (App Router) |
+| Sprache | TypeScript (strict) |
+| Styling | CSS Modules (Mobile-First) + CSS Variables aus `app/globals.css`. Tailwind wird nur für den Utilities-Import (`@import "tailwindcss/utilities"`) und die Theme-Variablen (`@theme inline`) in `app/globals.css` genutzt, nicht als Styling-Ansatz. |
 | Schriften | Playfair Display (Headlines), Inter (Body) |
 
+Versionen: siehe `package.json`.
+
 ---
 
-## Quickstart
+## Setup
+
+1. `npm install` — installiert die Abhängigkeiten. Über das `postinstall`-Script läuft danach automatisch `prisma generate`.
+2. `.env.example` nach `.env.local` kopieren und befüllen. `.env.local` deshalb, weil sowohl `prisma.config.ts` als auch `prisma/seed.ts` ihre Umgebungsvariablen explizit aus dieser Datei laden:
+   - `DATABASE_URL` — Pooler-Verbindung, für den Query-Betrieb der App
+   - `DIRECT_URL` — Direktverbindung, für Prisma-CLI und Seed
+   - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase-Client
+   - `SUPABASE_SERVICE_ROLE_KEY` — nur serverseitig verwenden
+   - `IP_HASH_SALT` — optional; ohne diesen Wert wird beim Affiliate-Tracking kein IP-Hash gespeichert (Privacy-by-default)
+   - `SENTRY_DSN` — für die lokale Entwicklung leer lassen
+3. `npx prisma generate` — falls sich das Schema seit dem letzten `npm install` geändert hat.
+4. Seed-Daten einspielen: `npx tsx prisma/seed.ts`
+5. `npm run dev` → [http://localhost:3000](http://localhost:3000)
+
+---
+
+## Prüfen vor dem Commit
 
 ```bash
-npm install
-npm run dev
+npm run check
 ```
 
-Öffne [http://localhost:3000](http://localhost:3000).
+Führt nacheinander aus: ESLint (`npm run lint`), TypeScript-Typecheck (`npm run typecheck`) und das Doku-Gate (`scripts/check-docs.mjs`, prüft Anweisungsdokumente auf tote Verweise und Versionsnummern in Prosa). Pflicht vor jedem Commit — kein Commit ohne grünes `npm run check`.
 
 ---
 
-## Ordnerstruktur
+## Weiterlesen
 
-```
-toolsucher/
-├── app/                    # Next.js App Router
-│   ├── globals.css         # Design Tokens (CSS Variables + Tailwind @theme)
-│   ├── layout.tsx          # Root Layout mit Fonts und Metadata
-│   └── page.tsx            # Startseite
-├── components/
-│   ├── layout/             # Header, Footer, PageShell
-│   ├── tool/               # ToolCard, ToolGrid, ToolFinder
-│   ├── category/           # CategoryCard, CategoryGrid
-│   ├── comparison/         # ComparisonCard, ComparisonTable
-│   ├── ui/                 # Button, Badge, SearchBar, FilterPill
-│   └── shared/             # CTABox, AffiliateNotice, FAQAccordion
-├── lib/
-│   ├── types/              # TypeScript-Typen (Tool, Category, …)
-│   ├── mock-data/          # Mock-Daten (klar als solche markiert)
-│   └── utils/
-├── design-refs/            # Design-Screenshots (verbindliche Referenz)
-├── agents/                 # Claude Code Agent-Definitionen
-└── docs/                   # Entscheidungen, Iterationsprompts, Architektur
-```
-
----
-
-## Design
-
-Das Design orientiert sich **verbindlich** an den Screenshots in `design-refs/`.
-
-- Hintergrund: `#f5f0e8` (Creme)
-- CTA-Farbe: `#1e3a2a` (dunkles Grün)
-- Headlines: Playfair Display (Serif)
-- Body: Inter (Sans-serif)
-
-Kein Redesign ohne explizite Freigabe. Alle Design Tokens sind als CSS Variables in `app/globals.css` definiert und via `@theme inline` in Tailwind verfügbar.
+- [`CLAUDE.md`](./CLAUDE.md) — Arbeitsregeln
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md) — verbindliche Code-Konventionen
+- [`docs/STATUS.md`](./docs/STATUS.md) — Phasenstand und Scope
+- [`docs/design-system.md`](./docs/design-system.md) — Gestaltungsmaßstäbe
 
 ---
 
@@ -84,3 +71,4 @@ Sentry ist für Production-Fehler eingebunden — im lokalen Betrieb vollständi
 - Performance-Daten (`tracesSampleRate: 0`)
 - Session Replay (nicht konfiguriert)
 - Auth-Fehler in `lib/supabase/server.ts` (bewusst stiller Catch)
+- **Browser-Fehler generell:** Es existiert nur `sentry.server.config.ts` und `sentry.edge.config.ts`, kein `sentry.client.config.ts`. Erfasst werden ausschließlich Fehler in Server- und Edge-Runtime, keine im Browser.
