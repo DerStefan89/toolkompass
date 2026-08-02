@@ -3,11 +3,13 @@
  * Zweck: Batch 08 Teil B — 1 Comparison updaten (sevdesk-vs-lexware-office)
  *        + 4 neue Comparisons anlegen (notion-vs-clickup, calendly-vs-tidycal,
  *        chatgpt-vs-claude, canva-vs-figma).
- * Aufruf: npx tsx scripts/humanize-batch08.ts [--dry-run]
+ * Aufruf: npx tsx scripts/humanize-batch08.ts [--execute]
+ *   Ohne Flag: Dry-Run (kein Schreibzugriff). Mit --execute: schreibt in DB.
  */
 
 import * as dotenv from 'dotenv'
 import type { PrismaClient, Prisma } from '@prisma/client'
+import { startScript } from './_mode'
 
 let prisma: PrismaClient
 let PrismaNS: typeof Prisma
@@ -215,8 +217,7 @@ async function main() {
   const prismaClient = await import('@prisma/client')
   PrismaNS = prismaClient.Prisma
 
-  const dryRun = process.argv.includes('--dry-run')
-  console.log(`\n═══ Humanize Batch 08 ${dryRun ? '[DRY-RUN]' : '[ECHTLAUF]'} ═══\n`)
+  const execute = startScript()
 
   // ── Block 1: UPDATE sevdesk-vs-lexware-office ──
   console.log('[UPDATE] sevdesk-vs-lexware-office')
@@ -230,7 +231,7 @@ async function main() {
     console.log('  ✓ gefunden')
     console.log(`    decisionGuide: ${existing.decisionGuide ? 'vorhanden → wird überschrieben' : 'leer → NEU'}`)
     console.log(`    targetGroups:  ${existing.targetGroups ? 'vorhanden → wird überschrieben' : 'leer → NEU'}`)
-    if (!dryRun) {
+    if (execute) {
       await prisma.comparison.update({
         where: { id: existing.id },
         data: {
@@ -267,7 +268,7 @@ async function main() {
     console.log(`  verdict: ${truncate(comp.verdict)}`)
     console.log(`  faqItems: ${comp.faqItems?.length ?? 0}`)
 
-    if (!dryRun) {
+    if (execute) {
       const data = {
         slug: comp.slug,
         published: false,
@@ -298,7 +299,7 @@ async function main() {
 
   console.log('═══ Zusammenfassung ═══')
   console.log(`1 Update + ${NEW_COMPARISONS.length} neue Comparisons geprüft`)
-  if (dryRun) console.log('\n[DRY-RUN] Keine Änderungen geschrieben.')
+  if (!execute) console.log('\n[DRY-RUN] Keine Änderungen geschrieben.')
   else console.log('\n✓ Fertig.')
 
   await prisma.$disconnect()

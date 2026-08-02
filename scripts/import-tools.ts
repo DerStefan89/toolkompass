@@ -4,8 +4,8 @@
  * Zweck: Parser + Importer für Tools aus Content_Website/*.md.
  *
  * Ausführen:
- *   npx tsx scripts/import-tools.ts --dry-run   → Report ohne DB-Writes
- *   npx tsx scripts/import-tools.ts              → schreibt in DB
+ *   npx tsx scripts/import-tools.ts             → Report ohne DB-Writes (Dry-Run per Default)
+ *   npx tsx scripts/import-tools.ts --execute   → schreibt in DB
  *
  * Zwei Content-Formate:
  *   Format A (14 Dateien): YAML-Frontmatter, **Slug:** pro Tool
@@ -16,6 +16,7 @@ import * as dotenv from 'dotenv'
 import * as fs from 'fs'
 import * as path from 'path'
 import type { PrismaClient } from '@prisma/client'
+import { startScript } from './_mode'
 
 // Prisma wird in main() dynamisch geladen, NACHDEM dotenv .env.local mit override:true
 // gesetzt hat. Esbuild hoistet alle statischen imports, daher darf prisma NICHT statisch
@@ -551,12 +552,7 @@ async function main(): Promise<void> {
   const mod = await import('@/lib/prisma')
   prisma = mod.prisma
 
-  const isDryRun = process.argv.includes('--dry-run')
-  const mode = isDryRun ? 'DRY-RUN REPORT' : 'IMPORT'
-
-  console.log('\n═══════════════════════════════════════════════════')
-  console.log(`  ToolSucher Import — ${mode}`)
-  console.log('═══════════════════════════════════════════════════\n')
+  const execute = startScript()
 
   // ─── Lese Content-Dateien ───────────────────────────────────────────────────
 
@@ -615,7 +611,7 @@ async function main(): Promise<void> {
   } catch {
     dbAvailable = false
     console.log('  ⚠ DB nicht erreichbar — Slug-Abgleich übersprungen (nur Parsing-Report)\n')
-    if (!isDryRun) {
+    if (execute) {
       console.error('  ✗ DB-Verbindung erforderlich für Import. Abbruch.')
       process.exit(1)
     }
@@ -761,10 +757,10 @@ async function main(): Promise<void> {
 
   // ─── Dry-Run endet hier ─────────────────────────────────────────────────────
 
-  if (isDryRun) {
+  if (!execute) {
     console.log('\n═══════════════════════════════════════════════════')
     console.log('  DRY-RUN abgeschlossen — keine DB-Writes.')
-    console.log('  Ohne --dry-run schreibt das Skript in die DB.')
+    console.log('  Mit --execute schreibt das Skript in die DB.')
     console.log('═══════════════════════════════════════════════════\n')
     return
   }

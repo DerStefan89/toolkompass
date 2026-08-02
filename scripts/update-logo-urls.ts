@@ -4,15 +4,18 @@
  * Zweck: Setzt logoUrl auf allen Tools deren Logo in public/logos/tools/ liegt.
  *        Liest Dateien aus dem Logo-Ordner, matched by slug, updated DB.
  *
+ * SICHER PER DEFAULT: Ohne --execute wird NICHTS geschrieben (Dry-Run).
+ *
  * Ausführen:
- *   npx tsx scripts/update-logo-urls.ts --dry-run   → zeigt was geändert würde
- *   npx tsx scripts/update-logo-urls.ts              → schreibt in DB
+ *   npx tsx scripts/update-logo-urls.ts             → zeigt was geändert würde (kein DB-Zugriff zum Schreiben)
+ *   npx tsx scripts/update-logo-urls.ts --execute   → schreibt in DB
  */
 
 import * as dotenv from 'dotenv'
 import * as fs from 'fs'
 import * as path from 'path'
 import type { PrismaClient } from '@prisma/client'
+import { startScript } from './_mode'
 
 // PrismaClient dynamisch nach dotenv laden (verhindert localhost-Fallback aus .env)
 let prisma: PrismaClient
@@ -25,11 +28,7 @@ async function main(): Promise<void> {
   const mod = await import('@/lib/prisma')
   prisma = mod.prisma
 
-  const isDryRun = process.argv.includes('--dry-run')
-
-  console.log('\n═══════════════════════════════════════════════════')
-  console.log(`  Logo URL Update — ${isDryRun ? 'DRY-RUN' : 'SCHREIBE IN DB'}`)
-  console.log('═══════════════════════════════════════════════════\n')
+  const execute = startScript()
 
   // ─── Logo-Dateien lesen ────────────────────────────────────────────────────
 
@@ -104,12 +103,12 @@ async function main(): Promise<void> {
 
   // ─── Dry-Run endet hier ────────────────────────────────────────────────────
 
-  if (isDryRun) {
+  if (!execute) {
     console.log('  ─── Würde setzen: ──────────────────────────────────\n')
     for (const { slug, newUrl } of matched) {
       console.log(`    ${slug} → ${newUrl}`)
     }
-    console.log('\n  DRY-RUN — keine DB-Änderungen.')
+    console.log('\n  DRY-RUN — keine DB-Änderungen. Mit --execute schreiben.')
     console.log('═══════════════════════════════════════════════════\n')
     return
   }

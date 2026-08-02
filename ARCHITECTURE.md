@@ -90,9 +90,9 @@ if (!user) return { error: 'Nicht autorisiert.' }
 Begründung: Ein Schalter, den man setzen muss, damit nichts kaputtgeht, ist keine
 Sicherheitsmaßnahme, sondern eine Bitte an das Gedächtnis.
 
-**Stand:** umgesetzt in `import-comparisons.ts`. Die übrigen neun Scripts verwenden noch
-`--dry-run` als Opt-out. Solange das so ist, gilt für sie ausnahmslos: jeder Lauf zuerst
-mit `--dry-run`, Output prüfen, dann erst der Echtlauf — auch bei „kleinen" Scripts.
+**Stand:** umgesetzt in allen zehn Scripts, die in die DB schreiben — über die
+gemeinsame Modus-Logik `startScript()` in `scripts/_mode.ts`. `--dry-run` wird
+nirgends mehr ausgewertet.
 
 Jede Datei-Fehlermeldung nennt den vollständig aufgelösten Pfad, nicht nur den Dateinamen.
 

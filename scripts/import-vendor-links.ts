@@ -2,12 +2,13 @@
  * scripts/import-vendor-links.ts
  * Zweck: Setzt vendor.website + legt einen Direkt-AffiliateLink an für alle
  *        publizierten Tools. Kein Affiliate-Tracking, nur Website-URL als Link.
- * Aufruf: npx tsx scripts/import-vendor-links.ts --dry-run
- *         npx tsx scripts/import-vendor-links.ts
+ * Aufruf: npx tsx scripts/import-vendor-links.ts             (Dry-Run per Default)
+ *         npx tsx scripts/import-vendor-links.ts --execute   (schreibt in DB)
  */
 
 import * as dotenv from 'dotenv'
 import type { PrismaClient } from '@prisma/client'
+import { startScript } from './_mode'
 
 let prisma: PrismaClient
 
@@ -121,8 +122,7 @@ async function main() {
   const prismaMod = await import('@/lib/prisma')
   prisma = prismaMod.prisma
 
-  const dryRun = process.argv.includes('--dry-run')
-  console.log(`\n═══ Import Vendor Links ${dryRun ? '[DRY-RUN]' : '[ECHTLAUF]'} ═══\n`)
+  const execute = startScript()
 
   let updated = 0
   let linksCreated = 0
@@ -151,7 +151,7 @@ async function main() {
     const websiteChanged = oldWebsite !== entry.website
     if (websiteChanged) {
       console.log(`✓  ${entry.slug}: website ${oldWebsite ? truncate(oldWebsite) : '(leer)'} → ${truncate(entry.website)}`)
-      if (!dryRun) {
+      if (execute) {
         await prisma.vendor.update({
           where: { id: tool.vendor.id },
           data: { website: entry.website },
@@ -168,7 +168,7 @@ async function main() {
     } else {
       const trackingSlug = `${tool.slug}-direct`
       console.log(`   Link: würde angelegt (${trackingSlug})`)
-      if (!dryRun) {
+      if (execute) {
         try {
           await prisma.affiliateLink.create({
             data: {
@@ -194,7 +194,7 @@ async function main() {
   console.log(`Websites aktualisiert: ${updated}`)
   console.log(`Links angelegt:        ${linksCreated}`)
   console.log(`Slugs nicht gefunden:  ${notFound}`)
-  if (dryRun) console.log('\n[DRY-RUN] Keine Änderungen geschrieben.')
+  if (!execute) console.log('\n[DRY-RUN] Keine Änderungen geschrieben.')
   else console.log('\n✓ Fertig.')
 
   await prisma.$disconnect()

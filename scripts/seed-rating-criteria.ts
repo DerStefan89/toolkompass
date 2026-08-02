@@ -5,14 +5,15 @@
  * per ToolRatingCriterion den Tools der jeweiligen Kategorie zu.
  *
  * Ausführen:
- *   npx tsx scripts/seed-rating-criteria.ts --dry-run   → zeigt was passieren würde
- *   npx tsx scripts/seed-rating-criteria.ts              → schreibt in DB
+ *   npx tsx scripts/seed-rating-criteria.ts             → zeigt was passieren würde (Dry-Run per Default)
+ *   npx tsx scripts/seed-rating-criteria.ts --execute   → schreibt in DB
  *
  * Idempotent: upsert by slug für Kriterien, skipDuplicates für Zuweisungen.
  */
 
 import * as dotenv from 'dotenv'
 import type { PrismaClient } from '@prisma/client'
+import { startScript } from './_mode'
 
 let prisma: PrismaClient
 
@@ -116,16 +117,12 @@ async function main(): Promise<void> {
   const prismaMod = await import('@/lib/prisma')
   prisma = prismaMod.prisma
 
-  const isDryRun = process.argv.includes('--dry-run')
-
-  console.log('═══════════════════════════════════════════════════')
-  console.log(isDryRun ? '  MODUS: DRY-RUN (kein Schreibzugriff)' : '  MODUS: SCHREIBEN')
-  console.log('═══════════════════════════════════════════════════\n')
+  const execute = startScript()
 
   // ── Schritt 1: Kriterien upserten ──
   console.log(`Kriterien: ${CRITERIA.length} Einträge`)
 
-  if (!isDryRun) {
+  if (execute) {
     for (const c of CRITERIA) {
       await prisma.ratingCriterion.upsert({
         where: { slug: c.slug },
@@ -137,9 +134,9 @@ async function main(): Promise<void> {
   }
 
   // Kriterien-Map laden (für IDs)
-  const allCriteria = isDryRun
-    ? CRITERIA.map((c, i) => ({ id: `dry-${i}`, slug: c.slug }))
-    : await prisma.ratingCriterion.findMany({ select: { id: true, slug: true } })
+  const allCriteria = execute
+    ? await prisma.ratingCriterion.findMany({ select: { id: true, slug: true } })
+    : CRITERIA.map((c, i) => ({ id: `dry-${i}`, slug: c.slug }))
   const criterionBySlug = new Map(allCriteria.map((c) => [c.slug, c.id]))
 
   // ── Schritt 2: Tool-Zuweisungen ──
@@ -149,14 +146,14 @@ async function main(): Promise<void> {
 
   for (const [catSlug, critSlugs] of Object.entries(CATEGORY_CRITERIA)) {
     // Alle Tools dieser Kategorie holen
-    const toolCategories = isDryRun
-      ? []
-      : await prisma.toolCategory.findMany({
+    const toolCategories = execute
+      ? await prisma.toolCategory.findMany({
           where: { category: { slug: catSlug } },
           select: { toolId: true },
         })
+      : []
 
-    if (!isDryRun && toolCategories.length === 0) {
+    if (execute && toolCategories.length === 0) {
       // Kategorie existiert nicht oder hat keine Tools
       console.log(`  ⚠️  Kategorie "${catSlug}": keine Tools gefunden — übersprungen`)
       categoriesSkipped++
@@ -177,7 +174,7 @@ async function main(): Promise<void> {
       }
     }
 
-    if (isDryRun) {
+    if (!execute) {
       // Im Dry-Run die Tool-Anzahl aus der DB holen
       const count = await prisma.toolCategory.count({ where: { category: { slug: catSlug } } })
       const assignCount = critSlugs.length * count
@@ -202,8 +199,8 @@ async function main(): Promise<void> {
   console.log(`  Zusammenfassung:`)
   console.log(`    ${CRITERIA.length} Kriterien`)
   console.log(`    ${categoriesMatched} Kategorien gematcht, ${categoriesSkipped} übersprungen`)
-  console.log(`    ${totalAssignments} Tool-Zuweisungen${isDryRun ? ' (würden angelegt)' : ''}`)
-  if (isDryRun) {
+  console.log(`    ${totalAssignments} Tool-Zuweisungen${!execute ? ' (würden angelegt)' : ''}`)
+  if (!execute) {
     console.log('  (Dry-Run — nichts geschrieben.)')
   }
   console.log('═══════════════════════════════════════════════════')

@@ -31,6 +31,7 @@ import * as fs from 'fs'
 import mammoth from 'mammoth'
 import type { PrismaClient, Prisma } from '@prisma/client'
 import { toSlug } from '../lib/utils/form'
+import { startScript } from './_mode'
 
 let prisma: PrismaClient
 
@@ -502,17 +503,14 @@ async function main(): Promise<void> {
   const { Prisma: PrismaNS } = await import('@prisma/client')
 
   const argv = process.argv.slice(2)
-  const execute = argv.includes('--execute')
+  const execute = startScript()
   const publish = argv.includes('--publish')
-const fileArgs = argv.filter((a) => !a.startsWith('--'))
+  const fileArgs = argv.filter((a) => !a.startsWith('--'))
   const docxFiles = (fileArgs.length > 0 ? fileArgs : DEFAULT_DOCX).map((f) =>
     path.isAbsolute(f) ? f : path.join(process.cwd(), '_arbeitsmaterial', f)
   )
 
-  console.log('═══════════════════════════════════════════════════')
-  console.log(execute ? '  MODUS: SCHREIBEN (--execute)' : '  MODUS: DRY-RUN (kein Schreibzugriff)')
-  if (execute) console.log(`  published: ${publish ? 'true (--publish)' : 'false'}`)
-  console.log('═══════════════════════════════════════════════════\n')
+  if (execute) console.log(`  published: ${publish ? 'true (--publish)' : 'false'}\n`)
 
   let importable = 0
   let skipped = 0

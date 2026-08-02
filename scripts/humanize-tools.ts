@@ -3,7 +3,8 @@
  * scripts/humanize-tools.ts
  * Zweck: Importiert überarbeitete Tool-Texte aus MD-Dateien
  *        in ToolTranslation (locale=de).
- * Aufruf: npx tsx scripts/humanize-tools.ts <datei.md> [--dry-run]
+ * Aufruf: npx tsx scripts/humanize-tools.ts <datei.md> [--execute]
+ *   Ohne Flag: Dry-Run (kein Schreibzugriff). Mit --execute: schreibt in DB.
  * Wird aufgerufen von: CLI
  */
 
@@ -11,6 +12,7 @@ import * as dotenv from 'dotenv'
 import * as fs from 'fs'
 import * as path from 'path'
 import type { PrismaClient } from '@prisma/client'
+import { startScript } from './_mode'
 
 let prisma: PrismaClient
 
@@ -158,11 +160,11 @@ async function main() {
   const prismaMod = await import('@/lib/prisma')
   prisma = prismaMod.prisma
 
+  const execute = startScript()
   const args = process.argv.slice(2)
-  const dryRun = args.includes('--dry-run')
   const filePath = args.find(a => !a.startsWith('--'))
   if (!filePath) {
-    console.error('Usage: npx tsx scripts/humanize-tools.ts <datei.md> [--dry-run]')
+    console.error('Usage: npx tsx scripts/humanize-tools.ts <datei.md> [--execute]')
     process.exit(1)
   }
   const abs = path.resolve(filePath)
@@ -173,7 +175,6 @@ async function main() {
   const content = fs.readFileSync(abs, 'utf-8')
   const fmt = detectFormat(content)
   const blocks = fmt === 'v2' ? parseMdV2(content) : parseMd(content)
-  console.log(`\n═══ Humanize Tools ${dryRun ? '[DRY-RUN]' : '[ECHTLAUF]'} ═══`)
   console.log(`Datei: ${filePath}`)
   console.log(`Tools im MD: ${blocks.length}\n`)
   let found = 0, notFound = 0
@@ -211,7 +212,7 @@ async function main() {
       }
     }
     console.log('')
-    if (!dryRun) {
+    if (execute) {
       const id = translation.id
       updateFns.push(() => prisma.toolTranslation.update({
         where: { id },
@@ -231,11 +232,11 @@ async function main() {
   console.log(`═══ Zusammenfassung ═══`)
   console.log(`Tools gefunden:    ${found}`)
   console.log(`Slugs nicht in DB: ${notFound}`)
-  if (!dryRun && updateFns.length > 0) {
+  if (execute && updateFns.length > 0) {
     console.log(`\nSchreibe ${updateFns.length} Updates...`)
     for (const fn of updateFns) await fn()
     console.log('✓ Fertig.')
-  } else if (dryRun) {
+  } else if (!execute) {
     console.log('\n[DRY-RUN] Keine Änderungen geschrieben.')
   }
   await prisma.$disconnect()

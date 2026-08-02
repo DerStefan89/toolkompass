@@ -95,6 +95,19 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
 19. **`sentry.client.config.ts` fehlt** — es existieren nur `sentry.server.config.ts` und
     `sentry.edge.config.ts`. Browser-seitige Fehler werden dadurch von Sentry aktuell
     nicht erfasst und bleiben unbeobachtet.
+20. **GitHub Actions auf v5, v7 bereits verfügbar** — `.github/workflows/ci.yml` nutzt
+    aktuell `actions/checkout@v5` und `actions/setup-node@v5` (beide Node-24-fähig).
+    Zum Zeitpunkt des Eintrags sind bei beiden Actions bereits v7-Releases verfügbar.
+    Prüfen, ob ein Sprung auf v7 sinnvoll ist.
+21. **`seed-rating-criteria.ts`: Dry-Run mit Fake-IDs statt echter Abfragen** — im
+    Dry-Run werden `ratingCriterion`-IDs als `dry-0`, `dry-1`, … erzeugt statt per
+    `findMany` aus der DB gelesen, und die Tool-Zuweisungen laufen über `count` statt
+    über die tatsächlich zugeordneten Tool-IDs. Der Dry-Run nimmt damit einen anderen
+    Codepfad als der Echtlauf. Das schränkt die Aussagekraft der Vorschau ein: Ein
+    Dry-Run soll zeigen, was der Echtlauf tun würde — wenn beide Modi unterschiedliche
+    Abfragen ausführen, kann der Dry-Run Fehler im echten Abfragepfad (falsche
+    Kategorie-Slugs, fehlende Relationen) nicht aufdecken, die erst beim Echtlauf
+    sichtbar würden.
 
 ---
 

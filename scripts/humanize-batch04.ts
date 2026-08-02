@@ -3,11 +3,13 @@
  * Zweck: Importiert überarbeitete Texte aus Batch 04 (Seitenstruktur)
  *        in 4 verschiedene Modelle: CategoryTranslation, ToolStackTranslation,
  *        Article + ArticleSection, Comparison + ComparisonRow.
- * Aufruf: npx tsx scripts/humanize-batch04.ts [--dry-run]
+ * Aufruf: npx tsx scripts/humanize-batch04.ts [--execute]
+ *   Ohne Flag: Dry-Run (kein Schreibzugriff). Mit --execute: schreibt in DB.
  */
 
 import * as dotenv from 'dotenv'
 import type { PrismaClient } from '@prisma/client'
+import { startScript } from './_mode'
 
 let prisma: PrismaClient
 
@@ -89,8 +91,7 @@ async function main() {
   const prismaMod = await import('@/lib/prisma')
   prisma = prismaMod.prisma
 
-  const dryRun = process.argv.includes('--dry-run')
-  console.log(`\n═══ Humanize Batch 04 ${dryRun ? '[DRY-RUN]' : '[ECHTLAUF]'} ═══\n`)
+  const execute = startScript()
 
   // ── Block 1: Kategorien ──
   console.log('[KATEGORIEN]')
@@ -115,7 +116,7 @@ async function main() {
     } else {
       console.log(`  - ${cat.slug} (unverändert)`)
     }
-    if (!dryRun) {
+    if (execute) {
       await prisma.categoryTranslation.update({
         where: { id: trans.id },
         data: { name: cat.name, description: cat.description },
@@ -142,7 +143,7 @@ async function main() {
     if (trans.name !== stack.name) console.log(`    name: ${truncate(trans.name)} → ${truncate(stack.name)}`)
     if ((trans.description ?? '') !== stack.description) console.log(`    desc: ${truncate(trans.description ?? '')} → ${truncate(stack.description)}`)
     if (trans.targetAudience !== stack.targetAudience) console.log(`    audience: ${truncate(trans.targetAudience)} → ${truncate(stack.targetAudience)}`)
-    if (!dryRun) {
+    if (execute) {
       await prisma.toolStackTranslation.update({
         where: { id: trans.id },
         data: { name: stack.name, description: stack.description, targetAudience: stack.targetAudience },
@@ -173,7 +174,7 @@ async function main() {
         console.log(`    section[${sec.sortOrder}]: NEU (${truncate(sec.heading)})`)
       }
     }
-    if (!dryRun) {
+    if (execute) {
       await prisma.article.update({
         where: { id: article.id },
         data: { title: ARTICLE.title, subtitle: ARTICLE.subtitle },
@@ -206,7 +207,7 @@ async function main() {
     if (comp.subtitle !== COMPARISON.subtitle) console.log(`    subtitle: ${truncate(comp.subtitle ?? '')} → ${truncate(COMPARISON.subtitle)}`)
     if (comp.keyDifference !== COMPARISON.keyDifference) console.log(`    keyDifference: ${truncate(comp.keyDifference ?? '')} → ${truncate(COMPARISON.keyDifference)}`)
     console.log(`    rows: ${comp.rows.length} bestehend → ${COMPARISON.rows.length} neu`)
-    if (!dryRun) {
+    if (execute) {
       await prisma.comparison.update({
         where: { id: comp.id },
         data: {
@@ -228,7 +229,7 @@ async function main() {
   console.log(`Stacks:     ${stackFound}/${STACKS.length}`)
   console.log(`Artikel:    ${article ? '1' : '0'}/1`)
   console.log(`Vergleich:  ${comp ? '1' : '0'}/1`)
-  if (dryRun) console.log('\n[DRY-RUN] Keine Änderungen geschrieben.')
+  if (!execute) console.log('\n[DRY-RUN] Keine Änderungen geschrieben.')
   else console.log('\n✓ Fertig.')
 
   await prisma.$disconnect()

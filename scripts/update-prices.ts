@@ -6,14 +6,15 @@
  *        keinen Preis haben (skip wenn startingPriceCents IS NOT NULL).
  *
  * Ausführen:
- *   npx tsx scripts/update-prices.ts --dry-run   → zeigt was geändert würde
- *   npx tsx scripts/update-prices.ts              → schreibt in DB
+ *   npx tsx scripts/update-prices.ts             → zeigt was geändert würde (Dry-Run per Default)
+ *   npx tsx scripts/update-prices.ts --execute   → schreibt in DB
  */
 
 import * as dotenv from 'dotenv'
 import * as fs from 'fs'
 import * as path from 'path'
 import type { PrismaClient } from '@prisma/client'
+import { startScript } from './_mode'
 
 // PrismaClient dynamisch nach dotenv laden (verhindert localhost-Fallback aus .env)
 let prisma: PrismaClient
@@ -164,11 +165,7 @@ async function main(): Promise<void> {
   const mod = await import('@/lib/prisma')
   prisma = mod.prisma
 
-  const isDryRun = process.argv.includes('--dry-run')
-
-  console.log('\n═══════════════════════════════════════════════════════════')
-  console.log(`  Preise-Update — ${isDryRun ? 'DRY-RUN (keine DB-Writes)' : 'SCHREIBE IN DB'}`)
-  console.log('═══════════════════════════════════════════════════════════\n')
+  const execute = startScript()
 
   // ─── MD-Dateien einlesen ────────────────────────────────────────────────────
 
@@ -236,7 +233,7 @@ async function main(): Promise<void> {
         continue
       }
 
-      if (!isDryRun) {
+      if (execute) {
         await prisma.tool.update({
           where: { slug: entry.slug },
           data: { startingPriceCents: entry.parsedCents },
@@ -273,15 +270,15 @@ async function main(): Promise<void> {
   const notFound  = results.filter(r => r.status === 'not_found').length
 
   console.log('\n  ─── Zusammenfassung ────────────────────────────────────────\n')
-  console.log(`  ✓ Preise ${isDryRun ? 'würden gesetzt werden' : 'neu gesetzt'}:   ${updated}`)
+  console.log(`  ✓ Preise ${!execute ? 'würden gesetzt werden' : 'neu gesetzt'}:   ${updated}`)
   console.log(`  ↷ Übersprungen (hatten schon Preis):    ${skipped}`)
   console.log(`  — Auf null (Free/Anfrage/kein Preis):   ${nullPrice}`)
   console.log(`  ✗ Nicht in DB gefunden:                 ${notFound}`)
   console.log(`\n  Gesamt geparst: ${results.length}`)
 
-  if (isDryRun) {
+  if (!execute) {
     console.log('\n  ℹ  DRY-RUN — keine DB-Änderungen.')
-    console.log('  Ohne --dry-run werden Preise in die DB geschrieben.')
+    console.log('  Mit --execute werden Preise in die DB geschrieben.')
   }
 
   console.log('\n═══════════════════════════════════════════════════════════\n')

@@ -23,8 +23,8 @@
  * fehlt eine Sektion komplett, bleibt der bestehende DB-Wert unangetastet.
  *
  * Ausführen:
- *   npx tsx scripts/update-tool-content.ts --dry-run   → zeigt was geändert würde
- *   npx tsx scripts/update-tool-content.ts              → schreibt in DB
+ *   npx tsx scripts/update-tool-content.ts             → zeigt was geändert würde (Dry-Run per Default)
+ *   npx tsx scripts/update-tool-content.ts --execute   → schreibt in DB
  */
 
 import * as dotenv from 'dotenv'
@@ -32,6 +32,7 @@ import * as path from 'path'
 import mammoth from 'mammoth'
 import type { PrismaClient, Prisma } from '@prisma/client'
 import { toSlug } from '../lib/utils/form'
+import { startScript } from './_mode'
 
 let prisma: PrismaClient
 
@@ -376,11 +377,7 @@ async function main(): Promise<void> {
   prisma = prismaMod.prisma
   const { Prisma: PrismaNS } = await import('@prisma/client')
 
-  const isDryRun = process.argv.includes('--dry-run')
-
-  console.log('\n═══════════════════════════════════════════════════════════')
-  console.log(`  Tool-Content-Update — ${isDryRun ? 'DRY-RUN (keine DB-Writes)' : 'SCHREIBE IN DB'}`)
-  console.log('═══════════════════════════════════════════════════════════\n')
+  const execute = startScript()
 
   const tools = await parseDocx()
   console.log(`  📄 ${tools.length} Tool-Abschnitte aus DOCX geparst\n`)
@@ -438,7 +435,7 @@ async function main(): Promise<void> {
     const next = computeNewValues(tool)
     const changedFields = diffFields(current, next)
 
-    if (!isDryRun && changedFields.length > 0) {
+    if (execute && changedFields.length > 0) {
       await prisma.toolTranslation.update({
         where: { toolId_locale: { toolId: dbTool.id, locale: 'de' } },
         data: {
@@ -462,7 +459,7 @@ async function main(): Promise<void> {
   // ─── Detaillierter Report ────────────────────────────────────────────────
 
   console.log('  ─── Detaillierter Report ───────────────────────────────────\n')
-  console.log(`  ${'DOCX-Name'.padEnd(36)} ${'Slug'.padEnd(22)} ${'Gefunden?'.padEnd(11)} Felder die geändert ${isDryRun ? 'würden' : 'wurden'}`)
+  console.log(`  ${'DOCX-Name'.padEnd(36)} ${'Slug'.padEnd(22)} ${'Gefunden?'.padEnd(11)} Felder die geändert ${!execute ? 'würden' : 'wurden'}`)
   console.log(`  ${'─'.repeat(36)} ${'─'.repeat(22)} ${'─'.repeat(11)} ${'─'.repeat(40)}`)
 
   for (const r of results) {
@@ -505,9 +502,9 @@ async function main(): Promise<void> {
   console.log('     angesprochen und bleibt unverändert (siehe Aufgabe 3 —')
   console.log('     "lexoffice: KEIN Update, wird über Lexware Office abgedeckt").')
 
-  if (isDryRun) {
+  if (!execute) {
     console.log('\n  ℹ  DRY-RUN — keine DB-Änderungen.')
-    console.log('  Ohne --dry-run werden die Inhalte in die DB geschrieben.')
+    console.log('  Mit --execute werden die Inhalte in die DB geschrieben.')
   }
 
   console.log('\n═══════════════════════════════════════════════════════════\n')
