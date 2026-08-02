@@ -9,6 +9,7 @@
  */
 
 import { readFileSync, existsSync, readdirSync } from 'node:fs'
+import { join } from 'node:path'
 
 const befunde = []
 
@@ -20,8 +21,15 @@ console.log('\n=== Doku-Check ===\n')
 // docs/STATUS.md ist bewusst nicht dabei: Eine Planungsdatei spricht per Definition
 // über Dateien, die noch nicht oder nicht mehr existieren.
 //
-// Nackte Dateinamen ohne "/" werden übersprungen: Sie sind nicht auflösbar und
-// erzeugen nur Fehlalarme. Ein Gate mit Fehlalarmen wird abgeschaltet.
+// Verweise mit "/" werden gegen den genauen Pfad geprüft. Nackte Dateinamen ohne "/"
+// sind im Repo-Root oft die korrekte Schreibweise (ARCHITECTURE.md, package.json,
+// sentry.server.config.ts) — sie werden deshalb gegen alle Dateinamen im Repo geprüft,
+// nicht übersprungen. Ausgeschlossen von dieser Suche: node_modules, .next, .git,
+// _arbeitsmaterial, out, build.
+//
+// Ausnahmen: Eine Zeile mit "check-docs-ignore:" wird übersprungen. Die Begründung
+// steht dann im selben Kommentar — wie bei eslint-disable. Eine Ausnahme ohne
+// sichtbare Begründung ist eine Umgehung.
 
 const agentDir = '.claude/agents'
 const anweisungsDateien = [
@@ -35,17 +43,52 @@ const anweisungsDateien = [
     : []),
 ]
 
-for (const datei of anweisungsDateien) {
-  const inhalt = readFileSync(datei, 'utf-8')
-  const verweise = inhalt.match(/`[a-zA-Z0-9_\-./[\]]+\.(md|ts|tsx|css|json|mjs)`/g) ?? []
+const ausgeschlosseneVerzeichnisse = new Set([
+  'node_modules',
+  '.next',
+  '.git',
+  '_arbeitsmaterial',
+  'out',
+  'build',
+])
 
-  for (const roh of new Set(verweise)) {
-    const pfad = roh.replaceAll('`', '')
-    if (!pfad.includes('/')) continue
-    if (!existsSync(pfad)) {
-      befunde.push(`${datei}: Verweis auf \`${pfad}\` — Datei existiert nicht`)
+function sammleDateinamen(dir, sammlung = new Set()) {
+  for (const eintrag of readdirSync(dir, { withFileTypes: true })) {
+    if (ausgeschlosseneVerzeichnisse.has(eintrag.name)) continue
+    const pfad = join(dir, eintrag.name)
+    if (eintrag.isDirectory()) {
+      sammleDateinamen(pfad, sammlung)
+    } else {
+      sammlung.add(eintrag.name)
     }
   }
+  return sammlung
+}
+
+const alleDateinamenImRepo = sammleDateinamen('.')
+
+for (const datei of anweisungsDateien) {
+  const zeilen = readFileSync(datei, 'utf-8').split('\n')
+
+  zeilen.forEach((zeile, i) => {
+    if (zeile.includes('check-docs-ignore:')) return
+
+    for (const roh of new Set(
+      zeile.match(/`[a-zA-Z0-9_\-./[\]]+\.(md|ts|tsx|css|json|mjs)`/g) ?? []
+    )) {
+      const pfad = roh.replaceAll('`', '')
+
+      if (pfad.includes('/')) {
+        if (!existsSync(pfad)) {
+          befunde.push(`${datei}:${i + 1}: Verweis auf \`${pfad}\` — Datei existiert nicht`)
+        }
+      } else if (!alleDateinamenImRepo.has(pfad)) {
+        befunde.push(
+          `${datei}:${i + 1}: Verweis auf \`${pfad}\` — Datei existiert nirgends im Repo`
+        )
+      }
+    }
+  })
 }
 
 // ─── Prüfung 2: Stehen Versionsnummern nur in package.json? ─────────────────

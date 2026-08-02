@@ -5,7 +5,7 @@
 
 ### 1. Styling
 
-- CSS Modules pro Seite/Komponente (`Datei.module.css`)
+- CSS Modules pro Seite/Komponente (`<Komponente>.module.css`)
 - Inline-Styles nur für dynamische Werte (berechnete Breiten etc.)
 - Alle Farben/Abstände über CSS-Variablen aus `globals.css`
 - Breakpoints: `640px` · `768px` · `1024px` · `1280px`
