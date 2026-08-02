@@ -71,4 +71,4 @@ Sentry ist für Production-Fehler eingebunden — im lokalen Betrieb vollständi
 - Performance-Daten (`tracesSampleRate: 0`)
 - Session Replay (nicht konfiguriert)
 - Auth-Fehler in `lib/supabase/server.ts` (bewusst stiller Catch)
-- **Browser-Fehler generell:** Es existiert nur `sentry.server.config.ts` und `sentry.edge.config.ts`, kein `sentry.client.config.ts`. Erfasst werden ausschließlich Fehler in Server- und Edge-Runtime, keine im Browser. <!-- check-docs-ignore: Dokumentiert bewusst das Fehlen von sentry.client.config.ts, kein Verweis darauf -->
+- **Browser-Fehler:** bewusst nicht erfasst — Sentry läuft ausschließlich in Server- und Edge-Runtime. Datenschutz- und Verhältnismäßigkeitsgründe, siehe [`ARCHITECTURE.md`](./ARCHITECTURE.md) Abschnitt 2 (Entscheidung vom 02.08.2026)

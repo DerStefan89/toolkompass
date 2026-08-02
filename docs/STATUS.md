@@ -92,9 +92,6 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
     Stellen. Entweder abgeleitet (dann muss die Ableitung automatisch passieren und die
     Regel in `ARCHITECTURE.md` stehen) oder unabhängig gepflegt (dann laufen Übersicht
     und Detailseite auseinander). Aktuell ungeklärt.
-19. **`sentry.client.config.ts` fehlt** — es existieren nur `sentry.server.config.ts` und
-    `sentry.edge.config.ts`. Browser-seitige Fehler werden dadurch von Sentry aktuell
-    nicht erfasst und bleiben unbeobachtet.
 20. **GitHub Actions auf v5, v7 bereits verfügbar** — `.github/workflows/ci.yml` nutzt
     aktuell `actions/checkout@v5` und `actions/setup-node@v5` (beide Node-24-fähig).
     Zum Zeitpunkt des Eintrags sind bei beiden Actions bereits v7-Releases verfügbar.
@@ -149,3 +146,8 @@ Iterations-Prompts. `WORKFLOW.md` empfahl ausdrücklich drei parallele Claude-Co
 im selben Ordner — genau die Praxis, die während dieses Gates zu widersprüchlichen
 Dateiständen führte. Veraltete Dokumentation war hier nicht nutzlos, sondern Ursache eines
 konkreten Schadens.
+
+Aus der offenen Lücke „`sentry.client.config.ts` fehlt" wurde am 02.08.2026 eine bewusste,
+dokumentierte Entscheidung: Sentry bleibt aus Datenschutz- und Verhältnismäßigkeitsgründen
+auf Server- und Edge-Runtime beschränkt, Browser-Fehler werden nicht erfasst. Festgehalten
+in `ARCHITECTURE.md` Abschnitt 2, verwiesen aus `README.md`.
