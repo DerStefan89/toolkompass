@@ -5,6 +5,15 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+
+  {
+    rules: {
+      // ARCHITECTURE.md §7: Native <img>-Tags sind verboten.
+      // Ausnahmen nur mit eslint-disable-next-line UND Begruendung im Kommentar.
+      "@next/next/no-img-element": "error",
+    },
+  },
+
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

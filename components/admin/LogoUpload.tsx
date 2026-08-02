@@ -92,6 +92,7 @@ export default function LogoUpload({ toolId, currentLogoUrl }: Props) {
             justifyContent: 'center',
           }}>
             {previewUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- Vorschau einer lokalen Blob-URL vor dem Upload; next/image kann Blob-URLs nicht optimieren (ARCHITECTURE.md §7)
               <img
                 src={previewUrl}
                 alt="Logo Vorschau"

@@ -169,3 +169,4 @@ Für das Bauen selbst gibt es bewusst keine Rollen-Datei: Stack und Regeln stehe
 
 - Symptom: git add übernimmt manche Dateien stillschweigend nicht  (OneDrive-ReparsePoints) — Logos fehlten dadurch wochenlang im Repo
 - Was tun: Nach jedem git add von Binärdateien (Logos, Bilder): mit git status prüfen, ob sie wirklich staged sind.
+

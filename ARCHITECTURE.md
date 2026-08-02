@@ -116,3 +116,9 @@ Jede Datei-Fehlermeldung nennt den vollständig aufgelösten Pfad, nicht nur den
 Ab Phase 4.4 (Bewertungssystem) kommt nutzergenerierter Content dazu —
 Kommentare und Bewertungen werden **ausschließlich als Plain Text** gerendert.
 Kein Markdown, kein HTML, kein `dangerouslySetInnerHTML` für User-Input.
+
+**Ausnahme zur `<img>`-Regel:** In Upload-Vorschauen (`LogoUpload`, `ScreenshotUpload`)
+zeigt `<img>` eine lokale Blob-URL der noch nicht hochgeladenen Datei; `next/image` kann
+Blob-URLs nicht optimieren. Die Regel steht in `eslint.config.mjs` auf `error`, diese
+beiden Stellen tragen ein `eslint-disable-next-line` mit Begründung. Jede weitere Ausnahme
+braucht denselben Nachweis — sonst ist sie eine Umgehung.
