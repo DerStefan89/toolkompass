@@ -23,6 +23,13 @@
           { "type": "command", "command": "npm run lint --silent 1>&2" }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node .claude/hooks/session-reminder.js" }
+        ]
+      }
     ]
   }
 }
