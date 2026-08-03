@@ -75,8 +75,6 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
    150-Zeilen-Grenze aus Playbook 01.
 10. **Duplikate auflösen** — README widerspricht CLAUDE.md beim Styling.
     Versionsnummern nur in `package.json`. Ordnerbäume in Prosa entfernen.
-12. **Namensentscheidung** — Repo `toolkompass`, `package.json` `toolsucher`,
-    CLAUDE.md „ToolSucher", Domain `toolkompass.vercel.app`.
 14. **Vertrauensgrenze `rehypeRaw`** — `InlineMarkdown` rendert rohes HTML, aktuell
     nur mit Admin-Inhalten aus importierten `.docx`. Sobald Dritte Inhalte liefern,
     ist das eine offene Tür. Als Satz in `ARCHITECTURE.md` §7 festhalten.
@@ -151,3 +149,7 @@ Aus der offenen Lücke „`sentry.client.config.ts` fehlt" wurde am 02.08.2026 e
 dokumentierte Entscheidung: Sentry bleibt aus Datenschutz- und Verhältnismäßigkeitsgründen
 auf Server- und Edge-Runtime beschränkt, Browser-Fehler werden nicht erfasst. Festgehalten
 in `ARCHITECTURE.md` Abschnitt 2, verwiesen aus `README.md`.
+
+Namensentscheidung getroffen (03.08.2026): Repo/Domain bleiben `toolkompass` (Rename-Aufwand
+höher als Nutzen), Produktmarke bleibt „ToolSucher" (`package.json`, `CLAUDE.md`, `README.md`,
+UI-Texte) — bewusst getrennt, kein Code-Rename nötig.
