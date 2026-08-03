@@ -18,5 +18,11 @@ Name und wie es sich zeigte. Wenn keins auftrat: "keins".
 Pro Punkt: welches Playbook, welcher Abschnitt, und der fertige Textbaustein
 zum Einfügen.
 
+Wähle ausschließlich aus dieser Liste: 01 Fundament · 02 Context & Token Engineering ·
+03 Memory & State · 04 Orchestrierung & Loops · 05 Qualität & Security ·
+06 Entwicklungs-Methodik · 07 Design-System · 08 Kunden-Playbook ·
+09 Automation & Media · GLOSSAR · ANHANG-A Prompt-Standards.
+Passt nichts: "kein Playbook" schreiben, keins erfinden.
+
 ## Offene Punkte für die nächste Session
 Nummerierte Liste, jeweils mit dem konkreten nächsten Handgriff.
