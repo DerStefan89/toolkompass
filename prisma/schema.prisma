@@ -125,6 +125,9 @@ model Tool {
   slug                 String    @unique
   logoUrl              String?
   screenshotUrl        String?
+  // "ab"-Preis in Cent, EUR/Monat. Hat das Tool PricingPlan-Zeilen, wird dieser Wert
+  // automatisch aus dem günstigsten monatlichen Tarif abgeleitet (lib/data/pricing.ts,
+  // syncStartingPrice) — sonst manuell gepflegt. Regel: ARCHITECTURE.md "Preis-Ableitung".
   startingPriceCents   Int?
   hasFreePlan          Boolean   @default(false)
   isAffiliate          Boolean   @default(false)
