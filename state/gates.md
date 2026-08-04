@@ -6,7 +6,7 @@
 | Typecheck | `tsc --noEmit` | Ja | `package.json` Script `check`: `... && npm run typecheck && ...`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben | s. Lint |
 | Doku-Gate | `scripts/check-docs.mjs` | Ja | `package.json` Script `check`: `... && node scripts/check-docs.mjs`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben | s. Lint |
 | Regel-Gate | `scripts/check-rules.mjs` (geplant, noch nicht vorhanden) | Nein | — | — |
-| Secret-Scan | geplant, noch nicht vorhanden | Nein | — | — |
+| Secret-Scan | `gitleaks` (Docker-Image, nicht der proprietäre `gitleaks-action`-Wrapper) | Ja | Schritt "Secret-Scan (gitleaks)" im selben CI-Job `check` in `.github/workflows/ci.yml`; fällt der Schritt, fällt der ganze Job, der bereits Required Status Check ist — keine eigene Branch-Protection-Regel nötig | s. Lint |
 
 **Kalibrierungsfund (04.08.2026):** Direkt nach dem Einrichten der Required-Status-Check-Regel
 wurde ein Push auf `main` mit der Meldung `Bypassed rule violations ... Required status check
