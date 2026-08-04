@@ -92,10 +92,13 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
 17. **Phasenverweise in `ARCHITECTURE.md` prüfen** — „ab Phase 3", „ab Phase 4.3",
     „ab Phase 4.4" stammen aus der Zeit vor der Vereinheitlichung. Prüfen, ob sie noch
     stimmen, oder auf Features statt Nummern umstellen („sobald es Nutzerkonten gibt").
-18. **`Tool.startingPriceCents` gegen `PricingPlan` klären** — derselbe Preis an zwei
-    Stellen. Entweder abgeleitet (dann muss die Ableitung automatisch passieren und die
-    Regel in `ARCHITECTURE.md` stehen) oder unabhängig gepflegt (dann laufen Übersicht
-    und Detailseite auseinander). Aktuell ungeklärt.
+18. **`Tool.startingPriceCents` gegen `PricingPlan` klären** — geklärt (04.08.2026,
+    Zyklus 3): bedingt abgeleitet. Tools ohne `PricingPlan` bleiben manuell gepflegt;
+    Tools mit `PricingPlan` leiten `startingPriceCents` automatisch aus dem günstigsten
+    monatlichen Tarif ab. Regel in `ARCHITECTURE.md`, Abschnitt "Preis-Ableitung".
+    Entscheidung, Begründung, Advisor-Review und Umsetzung: `state/plan-v2-pricing.md`,
+    Branch `feat/pricing-derivation`. Backfill-Migration liegt bereit, aber noch nicht
+    ausgeführt (`prisma/migrations/20260805_backfill_starting_price_from_plans/`).
 20. **GitHub Actions auf v5, v7 bereits verfügbar** — `.github/workflows/ci.yml` nutzt
     aktuell `actions/checkout@v5` und `actions/setup-node@v5` (beide Node-24-fähig).
     Zum Zeitpunkt des Eintrags sind bei beiden Actions bereits v7-Releases verfügbar.

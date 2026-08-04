@@ -75,6 +75,10 @@ type ToolFormProps = {
   categories: CategoryOption[]
   tagGroups?: TagGroupOption[]
   defaultValues?: ToolFormDefaults
+  /** true, wenn das Tool bereits PricingPlan-Zeilen hat — dann wird startingPriceCents
+   *  serverseitig aus den Tarifen abgeleitet (ARCHITECTURE.md, "Preis-Ableitung") und
+   *  das manuelle Preisfeld hier nur informativ angezeigt. */
+  hasPricingPlans?: boolean
 }
 
 // ─── Unterkomponenten ────────────────────────────────────────────────────────
@@ -132,23 +136,24 @@ function Field({
   )
 }
 
-function inputStyle(hasError: boolean): React.CSSProperties {
+function inputStyle(hasError: boolean, disabled = false): React.CSSProperties {
   return {
     width: '100%',
     padding: '8px 12px',
     border: `1px solid ${hasError ? 'var(--color-error)' : 'var(--color-border)'}`,
     borderRadius: 'var(--radius-btn)',
     fontSize: '14px',
-    color: 'var(--color-text-primary)',
-    backgroundColor: 'var(--color-bg-card)',
+    color: disabled ? 'var(--color-text-secondary)' : 'var(--color-text-primary)',
+    backgroundColor: disabled ? 'var(--color-bg)' : 'var(--color-bg-card)',
     boxSizing: 'border-box',
     outline: 'none',
+    cursor: disabled ? 'not-allowed' : 'text',
   }
 }
 
 // ─── Hauptkomponente ─────────────────────────────────────────────────────────
 
-export default function ToolForm({ action, vendors, categories, tagGroups = [], defaultValues }: ToolFormProps) {
+export default function ToolForm({ action, vendors, categories, tagGroups = [], defaultValues, hasPricingPlans = false }: ToolFormProps) {
   const [state, formAction, isPending] = useActionState(action, {})
 
   // Kontrollierter Zustand — alle müssen kontrolliert sein, damit sie bei
@@ -280,7 +285,11 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
       {/* ── Preisgestaltung ── */}
       <Section title="Preisgestaltung">
         <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: '16px', alignItems: 'end' }}>
-          <Field label="Preis ab (€/Monat)" error={fe.startingPriceCents}>
+          <Field
+            label="Preis ab (€/Monat)"
+            error={fe.startingPriceCents}
+            hint={hasPricingPlans ? 'Nicht bearbeitbar — wird aus den Preistarifen unten abgeleitet (günstigster Monatstarif).' : undefined}
+          >
             <input
               type="number"
               name="startingPriceCents"
@@ -288,7 +297,8 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
               placeholder="z. B. 19.99"
               step="0.01"
               min="0"
-              style={inputStyle(!!fe.startingPriceCents)}
+              disabled={hasPricingPlans}
+              style={inputStyle(!!fe.startingPriceCents, hasPricingPlans)}
             />
           </Field>
 

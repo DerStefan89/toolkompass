@@ -210,15 +210,46 @@ export async function updateTool(
   // publishedAt nur setzen wenn noch nicht vorhanden — nicht bei jedem Edit überschreiben
   const existing = await prisma.tool.findUnique({
     where: { id },
-    select: { publishedAt: true },
+    select: {
+      publishedAt: true,
+      startingPriceCents: true,
+      _count: { select: { pricingPlans: true } },
+    },
   })
+
+  // Race Condition zwischen Formular-Laden und -Speichern (qa-Finding 5,
+  // state/plan-v2-pricing.md): Ein disabled <input> wird vom Browser GAR NICHT in
+  // FormData aufgenommen — der Key fehlt komplett, das ist etwas anderes als "Nutzer
+  // hat das Feld geleert" (Key vorhanden, Wert ""). War das Preisfeld beim Laden des
+  // Formulars disabled (Tool hatte damals PricingPlan-Zeilen), fehlt der Key auch dann
+  // noch, wenn zwischen Laden und Speichern der letzte Plan gelöscht wurde und der
+  // serverseitige Plan-Count beim Submit bereits 0 ist. Ohne diese Unterscheidung würde
+  // die alte Logik in diesem Fall `data.startingPriceCents` (= null, weil aus einem
+  // fehlenden Key geparst) schreiben und den zuletzt abgeleiteten Wert löschen — obwohl
+  // die Entscheidung in state/plan-v2-pricing.md genau das verhindern soll: der Wert
+  // soll nach dem Löschen des letzten Plans stehen bleiben. Fehlt der Key, wird die
+  // Spalte deshalb gar nicht angefasst, unabhängig vom aktuellen Plan-Count.
+  const priceFieldProvided = formData.has('startingPriceCents')
+
+  // Ist der Key vorhanden (auch mit leerem Wert), gilt weiterhin: Hat das Tool bereits
+  // PricingPlan-Zeilen, wird startingPriceCents dort abgeleitet (lib/data/pricing.ts) —
+  // ein hier übermittelter Wert wird verworfen, unabhängig davon, ob das Formularfeld im
+  // Client korrekt deaktiviert war (ARCHITECTURE.md, "Preis-Ableitung";
+  // state/advisor-findings-pricing.md, Finding 4).
+  const startingPriceCentsUpdate: { startingPriceCents?: number | null } = priceFieldProvided
+    ? {
+        startingPriceCents: (existing?._count.pricingPlans ?? 0) > 0
+          ? (existing?.startingPriceCents ?? null)
+          : data.startingPriceCents,
+      }
+    : {}
 
   try {
     await prisma.tool.update({
       where: { id },
       data: {
         slug: data.slug,
-        startingPriceCents: data.startingPriceCents,
+        ...startingPriceCentsUpdate,
         hasFreePlan: data.hasFreePlan,
         isAffiliate: data.isAffiliate,
         published: data.published,

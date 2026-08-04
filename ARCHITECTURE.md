@@ -83,6 +83,35 @@ if (!user) return { error: 'Nicht autorisiert.' }
 
 ---
 
+### 5b. Preis-Ableitung — `Tool.startingPriceCents` vs. `PricingPlan`
+
+Entschieden 04.08.2026 (Zyklus 3, `docs/STATUS.md` Punkt 18). Herleitung, Alternativen
+und Advisor-Review: `state/plan-v2-pricing.md`.
+
+- Tools **ohne** `PricingPlan`-Zeilen: `startingPriceCents` wird manuell im `ToolForm`
+  gepflegt (Status quo).
+- Tools **mit** mindestens einer `PricingPlan`-Zeile: `startingPriceCents` wird
+  automatisch aus dem günstigsten `PricingPlan` mit `billingCycle = monthly` abgeleitet
+  — `lib/data/pricing.ts` (`syncStartingPrice()`), aufgerufen nach jeder Mutation in
+  `app/admin/tools/pricing-actions.ts`. Das manuelle Feld im `ToolForm` ist für diese
+  Tools deaktiviert; `updateTool` (`app/admin/tools/actions.ts`) verwirft einen trotzdem
+  übermittelten Wert serverseitig — die UI-Sperre ist reine Führung, nicht die
+  Durchsetzung.
+- Kein monatlicher Tarif vorhanden (nur `yearly`/`one_time`) → `startingPriceCents`
+  wird `null`, nicht mit einem falsch etikettierten „/Monat"-Preis befüllt. JSON-LD
+  (`lib/seo/json-ld.ts`) lässt den `offers`-Block in diesem Fall weg, statt `price: "0"`
+  zu behaupten.
+- Wird der letzte `PricingPlan` eines Tools gelöscht, bleibt der zuletzt abgeleitete Wert
+  stehen (kein Reset auf `null`) und ist ab dann wieder ein normaler manueller Wert.
+- `isHighlighted`/`sortOrder` fließen bewusst nicht in die Ableitung ein — maßgeblich ist
+  ausschließlich der günstigste monatliche Preis, unabhängig von redaktioneller
+  Hervorhebung.
+- `scripts/update-prices.ts` fasst Tools mit `PricingPlan`-Zeilen grundsätzlich nicht an,
+  auch wenn `startingPriceCents` dort `null` ist — sonst überschreibt es einen
+  bewusst-`null`-Ableitungswert mit einem veralteten Markdown-Preis.
+
+---
+
 ### 6. SEO (ab Phase 3)
 
 - `generateMetadata` auf jeder public Seite
