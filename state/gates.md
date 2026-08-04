@@ -15,3 +15,12 @@ Branch-Protection-Regeln zu umgehen. Anti-Pattern 7 aus Playbook 05 live beobach
 gelesen. Fix: "Do not allow bypassing the above settings" nachträglich aktiviert. Ohne diesen
 Fund hätte das Gate "Ja" bei Blockierend behauptet, ohne es für den einzigen tatsächlichen
 Pusher (Admin) einzulösen.
+
+**Gegentest bestanden (04.08.2026):** Nächster direkter Push auf `main` (Commit `beba20a`)
+wurde mit `GH006: Protected branch update failed ... Required status check "check" is
+expected` abgelehnt. Nach Regel „Gates kalibrieren" (Playbook 05, Regel 2) ist ein Gate erst
+belegt, wenn beide Zustände beobachtet wurden — rot bei Verstoß, grün bei Sauberkeit. Der
+Bypass-Fund oben war der erste Zustand (unbeabsichtigt grün trotz Verstoß), diese Ablehnung
+ist der zweite (korrekt rot). Konsequenz für den Arbeitsablauf: Direkter Push auf `main` ist
+ab jetzt technisch ausgeschlossen — Änderungen laufen über Branch + Pull Request, CI muss auf
+dem PR grün sein, Merge erst danach über den GitHub-Button (kein reiner CLI-Push mehr).
