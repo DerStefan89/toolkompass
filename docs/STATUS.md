@@ -97,8 +97,11 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
     Tools mit `PricingPlan` leiten `startingPriceCents` automatisch aus dem günstigsten
     monatlichen Tarif ab. Regel in `ARCHITECTURE.md`, Abschnitt "Preis-Ableitung".
     Entscheidung, Begründung, Advisor-Review und Umsetzung: `state/plan-v2-pricing.md`,
-    Branch `feat/pricing-derivation`. Backfill-Migration liegt bereit, aber noch nicht
-    ausgeführt (`prisma/migrations/20260805_backfill_starting_price_from_plans/`).
+    gemergt nach `main` (04.08.2026, PR #4). Audit-Query aus der Backfill-Migration
+    (`prisma/migrations/20260805_backfill_starting_price_from_plans/`, Schritt 1) am
+    04.08.2026 im Supabase SQL Editor ausgeführt: 0 Zeilen — kein Tool mit abweichendem
+    Preis, kein Backfill (Schritt 2) nötig. Migrationsdatei bleibt als Nachweis/für
+    künftige Altdaten-Fälle im Repo.
 20. **GitHub Actions auf v5, v7 bereits verfügbar** — `.github/workflows/ci.yml` nutzt
     aktuell `actions/checkout@v5` und `actions/setup-node@v5` (beide Node-24-fähig).
     Zum Zeitpunkt des Eintrags sind bei beiden Actions bereits v7-Releases verfügbar.
