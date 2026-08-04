@@ -34,6 +34,17 @@ export function toolJsonLd(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _siteUrl: string,
 ): string {
+  // Kein Preis bekannt (kein Free-Plan, startingPriceCents null — z. B. Tools mit
+  // ausschließlich Jahres-/Einmaltarifen, siehe ARCHITECTURE.md "Preis-Ableitung"):
+  // offers-Block ganz weglassen statt price "0" zu behaupten (Advisor-Finding 3,
+  // state/advisor-findings-pricing.md — der alte Fallback hätte real kostenpflichtige
+  // Tools als kostenlos ausgezeichnet).
+  const price = tool.hasFreePlan
+    ? '0'
+    : tool.startingPriceCents != null
+      ? (tool.startingPriceCents / 100).toFixed(2)
+      : null
+
   return safeJsonLd({
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
@@ -43,12 +54,16 @@ export function toolJsonLd(
     operatingSystem: 'Web',
     url: tool.url,
     ...(tool.logoUrl && { image: tool.logoUrl }),
-    offers: {
-      '@type': 'Offer',
-      price: tool.hasFreePlan ? '0' : (tool.startingPriceCents != null ? (tool.startingPriceCents / 100).toFixed(2) : '0'),
-      priceCurrency: 'EUR',
-      availability: 'https://schema.org/OnlineOnly',
-    },
+    ...(price != null
+      ? {
+          offers: {
+            '@type': 'Offer',
+            price,
+            priceCurrency: 'EUR',
+            availability: 'https://schema.org/OnlineOnly',
+          },
+        }
+      : {}),
     ...(tool.rating && tool.rating.count >= 1
       ? {
           aggregateRating: {
