@@ -40,6 +40,8 @@ dieses Projekts. Vollständige Herleitung siehe `Lessons-Learned-Zyklen-1-2-2.5.
 | Drift | Lautloses Auseinanderlaufen zweier Stellen | Normalzustand, gegen den Sanierung arbeitet | CLAUDE.md-Agent-Tabelle vs. Realität |
 | Deterministisches Gate | Prüfung, die nicht verhandelt | Ebene 2 der Qualitätspyramide | `npm run check` in CI |
 | Evaluator | Instanz, die Nein sagen kann | Bestimmt, was nicht durchkommt | `qa`-Subagent, CI |
+| Advisor | Prüft einen Plan, bevor gebaut wird — anders als der Reviewer, der das fertige Ergebnis beurteilt | Findet unbelegte Annahmen/fehlende Fehlerpfade vor den Bau-Kosten | `architecture-advisor`, Plan v1 → Findings → Plan v2 bei der Preis-Ableitung |
+| Branch Protection | GitHub-Regel, die Pushes/Merges auf einen Branch an Bedingungen bindet | Macht „CI muss grün sein" technisch statt höflich; ohne „Do not allow bypassing" kann der Repo-Admin sie umgehen | `main` in toolkompass, Required Status Check `check`, seit Zyklus 3 ohne Bypass |
 | Kalibrieren | Gate so einstellen, dass es Echtes findet | Voraussetzung für Vertrauen | `check-docs.mjs`, "viermal kalibriert" |
 | Fehlalarm | Befund, der keiner ist | Größtes Risiko für Gate-Akzeptanz | Datums-Ausnahme in `check-docs.mjs` |
 | Gegentest | Absichtlich Verstoß erzeugen zum Beweis | Ohne ihn ist "grün" unbewiesen | Nicht dokumentiert im Projekt |
@@ -50,5 +52,6 @@ dieses Projekts. Vollständige Herleitung siehe `Lessons-Learned-Zyklen-1-2-2.5.
 | Case-Sensitivity | Groß-/Kleinschreibung linux=ja, windows=nein | Erklärt CI-Funde, die lokal unsichtbar bleiben | `status.md` → `STATUS.md` |
 | Anweisungsdokument vs. Planungsdokument | Ersteres muss wörtlich wahr sein, Letzteres nicht | Bestimmt Prüfbarkeit | CLAUDE.md vs. STATUS.md |
 | State-File | Datei, die aktuellen Stand festhält | Gegenstück zum "Verlaufs-Gläubigen" | `docs/STATUS.md`, `state/gates.md` |
+| Assumption Ledger | Tabelle unausgesprochener Annahmen, von einem frischen Kontext gegen ein reales System erzeugt | Macht Annahmen sichtbar, die niemand hinterfragt hat, bevor sie zum Vorfall werden | `state/assumption-ledger.md`, 9 Einträge (Anhang B Phase 1) |
 | ADR | Kurzdokument pro Architekturentscheidung | Hält "Warum" fest | `docs/adr/0001-namensentscheidung.md` |
 | Prompt-Injection | Fremder Inhalt als Anweisung statt Material gelesen | Grund für eigene Datenblöcke | Relevant für ungeschützte API-Endpunkte |
