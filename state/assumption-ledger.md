@@ -1,7 +1,40 @@
 # Assumption Ledger
 
-Wird während Playbook 05, Übung 3 (Anhang-B-Phase 1) befüllt — nicht vorab ausfüllen,
-das ist Teil der eigentlichen Zyklus-3-Übung.
+Anhang-B-Phase 1 (Playbook 05, Zyklus 3, Übung 3) — befüllt am 04.08.2026.
+Nur unausgesprochene Annahmen, die nicht bereits als offener Punkt in
+`docs/STATUS.md` gelistet sind.
 
 | ID | Annahme | Warum relevant | Evidenz | Unsicherheit | Validierung |
 |---|---|---|---|---|---|
+| A1 | Der dreischichtige Admin-Auth-Schutz (`proxy.ts` → Layout → Server Action) ist vollständig, und ein Reviewer, der nur das Pflichtdokument liest, kennt ihn. | `ARCHITECTURE.md` §3 (laut Kopfzeile "Pflichtlektüre vor jedem Code-Commit") dokumentiert nur Schicht 3 (`requireAdmin()` in Server Actions). Schicht 1 und 2 stehen nur in Code-Kommentaren. | `proxy.ts` Z. 1–11 und `app/admin/layout.tsx` Z. 6–13 beschreiben explizit "Defense-in-Depth" mit 3 Schichten; `ARCHITECTURE.md` Abschnitt "3. Auth" erwähnt weder `proxy.ts` noch den Layout-Check. | Annahme | `proxy.ts`- und Layout-Schicht als eigene Zeilen in `ARCHITECTURE.md` §3 ergänzen. |
+| A2 | Das bereits vollständig modellierte Cashback-Datenmodell (Enums `CashbackStatus`/`PayoutStatus`, Models `CashbackAccount`/`CashbackEarning`/`Payout`) ist gefahrlos, solange kein Code darauf zugreift. | `docs/STATUS.md` behauptet "Cashback-Infrastruktur existiert nicht — weder Webhooks noch Admin", aber das DB-Schema selbst ist bereits vollständig da und wird bei jedem `prisma generate` mit vollem Typzugriff erzeugt. | `prisma/schema.prisma` Z. 46–59 und 594–652; Kommentar Z. 46 "MVP-gesperrt"; `grep` nach `CashbackAccount\|CashbackEarning\|Payout` in `app/` und `lib/` liefert keinen Treffer — Modelle sind unbenutzt, aber jederzeit ansprechbar. | Annahme | Prüfen, ob "existiert nicht" in `STATUS.md` präzisiert werden sollte ("Schema vorhanden, ungenutzt"), und ob ein Rules-Gate versehentliche Nutzung vor Zod/Vitest/Playwright verhindern sollte. |
+| A3 | Alle Preise sind und bleiben EUR — eine Currency-Spalte wird nie gebraucht. | `Tool.startingPriceCents` und `PricingPlan.priceCents` sind reine `Int`-Felder ohne Currency-Spalte, obwohl `Locale` (`de`/`en`) bereits als Enum existiert — internationale Nutzer sind architektonisch schon vorgesehen. | `prisma/schema.prisma` Z. 128 (Kommentar "EUR/Monat"), Z. 485 (`priceCents` ohne Currency-Feld), Enum `Locale` Z. 26–29; kein `currency`-Feld im gesamten Schema. | Annahme | Klären, ob eine spätere Internationalisierung eine Currency-Spalte braucht, bevor viele `PricingPlan`-Zeilen bestehen (Migration wird mit Datenvolumen teurer). |
+| A4 | Das ungepinnte Docker-Image `zricethezav/gitleaks:latest` liefert im CI-Gate dauerhaft reproduzierbares, sicheres Verhalten. | Der Secret-Scan ist laut `state/gates.md` blockierend und Required Status Check — ein Tag-Wechsel bei `latest` kann den Gate-Zustand ändern, ohne dass im Repo etwas geändert wurde. | `.github/workflows/ci.yml` Z. 29 `zricethezav/gitleaks:latest`; `state/gates.md` Z. 9 bestätigt die Blockierwirkung; `STATUS.md` Punkt 20 hinterfragt nur `actions/checkout`/`actions/setup-node`-Versionen, nicht dieses Image. | Annahme | Image auf festen Tag oder Digest pinnen, Update-Prozess festlegen. |
+| A5 | Vercel Hobby unterstützt die in `package.json` gepinnte Node-Version 24.x in Produktion genauso wie lokal. | Unterstützt Vercels Build-/Runtime-Umgebung Node 24 nicht oder nur eingeschränkt, schlägt der Produktions-Build fehl — unabhängig vom bereits offenen Punkt 6 (Fair-Use bei kommerzieller Nutzung), der eine andere Vercel-Frage behandelt. | `package.json` Z. 6 `"node": "24.x"`; kein Verweis in `STATUS.md`, `ARCHITECTURE.md` oder README auf eine geprüfte Vercel-Node-Kompatibilität. | Offene Unsicherheit — im Repo nirgends dokumentiert, ob dies je gegen ein echtes Vercel-Hobby-Deployment verifiziert wurde. | Aktuellen Vercel-Produktions-Build-Log auf tatsächlich verwendete Node-Version prüfen. |
+| A6 | `schema.prisma` bleibt jederzeit deckungsgleich mit dem echten Supabase-Datenbankzustand, obwohl `prisma migrate` verboten ist und jede Änderung manuell im SQL Editor ausgeführt wird. | Ohne `prisma migrate` gibt es keine von Prisma geführte Migrations-Tabelle und keinen automatisierten Drift-Check zwischen Schema-Datei und Live-DB vor einem Deploy — ein vergessener manueller Schritt fällt erst zur Laufzeit auf. Anders als STATUS Punkt 7 (ob SQL-Dateien versioniert sind) geht es hier um fehlende Drift-*Erkennung*, nicht um Historie. | `ARCHITECTURE.md` Z. 81 "DB-Migrationen: ... MANUELL im Supabase SQL Editor ausführen ... NICHT `prisma migrate` (crasht auf Vercel)"; kein Schritt in `.github/workflows/ci.yml`, der Schema gegen DB prüft. | Annahme | Schreibgeschützten CI- oder manuellen Check ergänzen, der `schema.prisma` periodisch gegen die echte DB-Struktur abgleicht. |
+| A7 | Eine in Supabase entzogene Admin-Rolle verliert sofort ihre Berechtigung, weil `requireAdmin()`/`proxy.ts` bei jedem Request `app_metadata.role` frisch abfragen. | Falls ein bereits ausgestellter Access-Token mit altem `app_metadata`-Claim bis zum nächsten Refresh weiterverwendet wird (übliches JWT-Verhalten), bleibt ein degradierter Admin bis zum Token-Ablauf faktisch privilegiert — nirgends im Repo als Risiko benannt. | `lib/auth/require-admin.ts` Z. 10–16 und `proxy.ts` Z. 46 rufen beide `supabase.auth.getUser()`/`app_metadata.role` ab; keine Datei dokumentiert Token-Refresh- oder Session-Invalidierungsverhalten bei Rollenänderung. | Offene Unsicherheit — ohne Supabase-Projekteinstellungen (Token-TTL, Refresh-Verhalten) nicht allein aus dem Repo zu klären. | Supabase-Konfiguration zu Token-TTL/`getUser()`-Serverside-Revalidierung prüfen; Testfall "Admin degradiert während aktiver Session" durchspielen. |
+| A8 | `tracesSampleRate: 0` (kein Performance-Tracing über Sentry) ist eine bewusste Dauerentscheidung und kein vergessener Default. | `CLAUDE.md` nennt es als Fakt in der Stack-Tabelle, aber anders als die Client-Sentry-Abwesenheit (`ARCHITECTURE.md` §2, mit Datum, Begründung und Revisions-Trigger dokumentiert) gibt es für `tracesSampleRate: 0` keine vergleichbare Begründung im Repo. | `CLAUDE.md` Z. 37 "Monitoring: Sentry (nur Production, tracesSampleRate: 0)"; `ARCHITECTURE.md` Z. 23–28 begründen ausführlich das Fehlen von `sentry.client.config.ts`, keine Zeile begründet `tracesSampleRate: 0`. | Annahme | Kurzen Begründungssatz zu `tracesSampleRate: 0` in `ARCHITECTURE.md` §2 ergänzen, analog zur Client-Config-Begründung. |
+| A9 | `ssl: { rejectUnauthorized: false }` bei der PostgreSQL-Pool-Verbindung ist unbedenklich, weil die Verbindung ohnehin innerhalb der Supabase/Vercel-Infrastruktur verläuft. | Das deaktiviert die TLS-Zertifikatsprüfung für jede DB-Verbindung der App (nicht nur Migrationen) — eine klassische MITM-Abschwächung, die nirgends als bewusste, begründete Entscheidung auftaucht, anders als z. B. die `rehypeRaw`-Ausnahme in `ARCHITECTURE.md` §7, die einen Begründungssatz verlangt. | `lib/prisma.ts` Z. 23 `ssl: { rejectUnauthorized: false }`; kein Begründungskommentar in derselben Datei; keine Erwähnung in `ARCHITECTURE.md` oder `STATUS.md`. | Annahme | Klären, ob Supabase ein verifizierbares CA-Zertifikat bereitstellt, das `rejectUnauthorized: true` erlauben würde, und warum aktuell darauf verzichtet wird. |
+
+---
+
+## Nachweis — Annahmen, die überrascht haben (Stefan, 04.08.2026)
+
+Playbook 05, Übung 3 verlangt die Top 3 — hier bewusst alle 5 aufgenommen, die
+beim Lesen tatsächlich überrascht haben:
+
+- **A1:** Dass Schicht 1 (`proxy.ts`) und Schicht 2 (Layout-Check) nirgends im
+  Pflichtdokument `ARCHITECTURE.md` stehen, nur Schicht 3. Sollte nicht so
+  sein — ein Pflichtdokument, das nur ein Drittel der eigenen Schutzmaßnahme
+  kennt, kann versehentlich unterlaufen werden.
+- **A2:** Dass es überhaupt eine Abweichung zwischen der Aussage "Cashback
+  existiert nicht" und der Realität (vollständiges, aber unbenutztes
+  Datenmodell) gibt.
+- **A4:** Unklar, ob `gitleaks:latest` gut oder schlecht ist — Abwägung
+  zwischen automatischen Regel-Updates und Reproduzierbarkeit des Gates.
+- **A5:** Dass die Vercel/Node-24-Kompatibilität nirgends im Repo verifiziert
+  oder dokumentiert ist.
+- **A7:** Dachte, Risiken rund um Admin-Rollen seien nach dem
+  Branch-Protection-Fund aus Übung 1 bereits erledigt — das war aber ein
+  anderes System (GitHub-Bypass vs. Supabase-Token-Refresh). Dieses Risiko
+  ist neu und ungelöst.
