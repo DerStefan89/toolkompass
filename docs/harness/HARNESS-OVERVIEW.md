@@ -7,6 +7,16 @@ Stabil halten — nur bei echten Struktur-Änderungen am Harness pflegen, nicht 
 Stabile Beschreibung, wie das Claude-Code-Harness dieses Projekts aufgebaut ist und zusammenspielt.
 Für Lernstand und offene Punkte siehe `HARNESS-LEARNING-STATE.md`, für Begriffe `HARNESS-GLOSSARY.md`.
 
+## Repo-Grenze: warum `docs/harness/` hier liegt, nicht in `claude-playbook`
+
+`docs/harness/` lebt bewusst in diesem (öffentlichen) Repo, nicht in der privaten Playbook-Bibliothek
+(`claude-playbook`). Grund: Jeder neue Chat muss sich per unauthentifiziertem
+`raw.githubusercontent.com`-Read selbst bootstrappen können — das funktioniert nur bei einem
+öffentlichen Repo. `claude-playbook` bleibt die separate, private Kursbibliothek (Playbooks,
+Master-Briefing) mit eigenem Änderungslog; dort landet nichts, das ein fremder Chat lesen muss, um
+den Ist-Stand von toolkompass zu verifizieren. Entschieden am 04.08.2026, nach einer Verwechslung
+in einer Cowork-Sitzung.
+
 ## Aufbau
 
 toolkompass/
