@@ -12,6 +12,9 @@
  * - revalidatePath nach jeder Mutation auf Admin- UND Public-Pfad. Der Slug
  *   wird dafür serverseitig geladen (nicht aus dem Client übernommen).
  * - billingCycle wird gegen das Enum validiert (Fallback: monthly).
+ * - Nach create/update/delete wird syncStartingPrice() aufgerufen — leitet
+ *   Tool.startingPriceCents aus den Tarifen ab (siehe ARCHITECTURE.md,
+ *   Abschnitt "Preis-Ableitung", und lib/data/pricing.ts).
  */
 
 'use server'
@@ -21,6 +24,7 @@ import { BillingCycle } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { requireAdmin } from '@/lib/auth/require-admin'
 import { parseStr, parseLines } from '@/lib/utils/form'
+import { syncStartingPrice } from '@/lib/data/pricing'
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -64,6 +68,8 @@ function euroToCents(raw: string): number | null {
 /**
  * Revalidiert den Admin- und den öffentlichen Tool-Pfad nach einer Mutation.
  * Lädt den Slug serverseitig, damit /tools/[slug] korrekt invalidiert wird.
+ * Revalidiert zusätzlich die Admin-Übersichtsliste, die startingPriceCents anzeigt
+ * und sonst nach einer preisrelevanten Mutation veraltet bliebe.
  */
 async function revalidateToolPaths(toolId: string): Promise<void> {
   const tool = await prisma.tool.findUnique({
@@ -71,6 +77,7 @@ async function revalidateToolPaths(toolId: string): Promise<void> {
     select: { slug: true },
   })
   revalidatePath(`/admin/tools/${toolId}`)
+  revalidatePath('/admin/tools')
   if (tool) revalidatePath(`/tools/${tool.slug}`)
 }
 
@@ -142,6 +149,7 @@ export async function createPricingPlan(formData: FormData): Promise<PricingPlan
     return { error: 'Datenbankfehler beim Erstellen. Bitte versuche es erneut.' }
   }
 
+  await syncStartingPrice(toolId)
   await revalidateToolPaths(toolId)
   return { success: true }
 }
@@ -178,6 +186,7 @@ export async function updatePricingPlan(formData: FormData): Promise<PricingPlan
     return { error: 'Datenbankfehler beim Speichern. Bitte versuche es erneut.' }
   }
 
+  await syncStartingPrice(toolId)
   await revalidateToolPaths(toolId)
   return { success: true }
 }
@@ -208,6 +217,7 @@ export async function deletePricingPlan(formData: FormData): Promise<PricingPlan
     return { error: 'Datenbankfehler beim Löschen. Bitte versuche es erneut.' }
   }
 
+  await syncStartingPrice(toolId)
   await revalidateToolPaths(toolId)
   return { success: true }
 }
