@@ -136,17 +136,18 @@ function Field({
   )
 }
 
-function inputStyle(hasError: boolean): React.CSSProperties {
+function inputStyle(hasError: boolean, disabled = false): React.CSSProperties {
   return {
     width: '100%',
     padding: '8px 12px',
     border: `1px solid ${hasError ? 'var(--color-error)' : 'var(--color-border)'}`,
     borderRadius: 'var(--radius-btn)',
     fontSize: '14px',
-    color: 'var(--color-text-primary)',
-    backgroundColor: 'var(--color-bg-card)',
+    color: disabled ? 'var(--color-text-secondary)' : 'var(--color-text-primary)',
+    backgroundColor: disabled ? 'var(--color-bg)' : 'var(--color-bg-card)',
     boxSizing: 'border-box',
     outline: 'none',
+    cursor: disabled ? 'not-allowed' : 'text',
   }
 }
 
@@ -287,7 +288,7 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
           <Field
             label="Preis ab (€/Monat)"
             error={fe.startingPriceCents}
-            hint={hasPricingPlans ? 'Wird aus den Preistarifen unten abgeleitet (günstigster Monatstarif).' : undefined}
+            hint={hasPricingPlans ? 'Nicht bearbeitbar — wird aus den Preistarifen unten abgeleitet (günstigster Monatstarif).' : undefined}
           >
             <input
               type="number"
@@ -297,7 +298,7 @@ export default function ToolForm({ action, vendors, categories, tagGroups = [], 
               step="0.01"
               min="0"
               disabled={hasPricingPlans}
-              style={inputStyle(!!fe.startingPriceCents)}
+              style={inputStyle(!!fe.startingPriceCents, hasPricingPlans)}
             />
           </Field>
 
