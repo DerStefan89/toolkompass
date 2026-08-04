@@ -62,8 +62,14 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
 1. **CI-Gate bauen** — `scripts/check-docs.mjs` (referenzierte Pfade existieren,
    Versionsnummern nur in `package.json`, verbotene Begriffe, CLAUDE.md ≤ 150 Zeilen,
    Groß-/Kleinschreibung von Verweisen) plus `scripts/check-rules.mjs` (`as any`,
-   `<img `, `take` ohne `skip`, `createClient()` in Actions). In `npm run check`
-   und in eine GitHub Action. Offene Entscheidung: blockierend oder warnend?
+   `<img `, `take` ohne `skip`, `createClient()` in Actions) — Letzteres existiert noch
+   nicht, Zyklus-3-Thema. In `npm run check` und in `.github/workflows/ci.yml`.
+   **Entschieden (04.08.2026, Zyklus 3):** blockierend, nicht warnend — Playbook 05
+   definiert ein CI-Pflichttor genau darüber, dass ein PR bei Rot nicht mergen kann;
+   ein Gate, das nicht blockiert, ist kein Pflichttor, sondern eine Beobachtung.
+   Handgriff erledigt (04.08.2026): Branch-Protection-Regel für `main` gesetzt,
+   `check`-Job als "Required status check" markiert — das stand nicht in der
+   Workflow-Datei, sondern in den Repo-Einstellungen.
 5. **Dry-Run-Konvention umstellen** — 9 Scripts schreiben in die DB, wenn `--dry-run`
    vergessen wird. `import-comparisons.ts` macht es richtig (`--execute` als Opt-in).
    Danach die Stand-Zeile in `ARCHITECTURE.md` 6b entfernen.
