@@ -3,7 +3,15 @@
  *
  * Zweck: Liest "**Einstieg:**"-Zeilen aus Content_Website/toolsucher_*.md
  *        und setzt startingPriceCents in der DB — nur für Tools die noch
- *        keinen Preis haben (skip wenn startingPriceCents IS NOT NULL).
+ *        keinen Preis haben (skip wenn startingPriceCents IS NOT NULL) UND die
+ *        keine PricingPlan-Zeilen haben (skip sonst immer, siehe unten).
+ *
+ * Preis-Ableitung (ARCHITECTURE.md, "Preis-Ableitung"):
+ * Hat ein Tool bereits PricingPlan-Zeilen, wird startingPriceCents dort automatisch
+ * abgeleitet und kann bewusst null sein (kein monatlicher Tarif vorhanden). Ohne den
+ * PricingPlan-Skip würde dieses Script einen solchen bewusst-null-Wert beim nächsten
+ * --execute-Lauf mit einem veralteten Markdown-Preis überschreiben (Advisor-Finding 6,
+ * state/advisor-findings-pricing.md).
  *
  * Ausführen:
  *   npx tsx scripts/update-prices.ts             → zeigt was geändert würde (Dry-Run per Default)
@@ -220,7 +228,11 @@ async function main(): Promise<void> {
 
       const tool = await prisma.tool.findUnique({
         where: { slug: entry.slug },
-        select: { slug: true, startingPriceCents: true },
+        select: {
+          slug: true,
+          startingPriceCents: true,
+          _count: { select: { pricingPlans: true } },
+        },
       })
 
       if (!tool) {
@@ -229,6 +241,13 @@ async function main(): Promise<void> {
       }
 
       if (tool.startingPriceCents !== null) {
+        results.push({ ...entry, status: 'skipped' })
+        continue
+      }
+
+      // Tool hat PricingPlan-Zeilen: startingPriceCents wird dort abgeleitet und
+      // gehört diesem Script nicht mehr, auch wenn der aktuelle Wert null ist.
+      if (tool._count.pricingPlans > 0) {
         results.push({ ...entry, status: 'skipped' })
         continue
       }
