@@ -210,15 +210,27 @@ export async function updateTool(
   // publishedAt nur setzen wenn noch nicht vorhanden — nicht bei jedem Edit überschreiben
   const existing = await prisma.tool.findUnique({
     where: { id },
-    select: { publishedAt: true },
+    select: {
+      publishedAt: true,
+      startingPriceCents: true,
+      _count: { select: { pricingPlans: true } },
+    },
   })
+
+  // Hat das Tool bereits PricingPlan-Zeilen, wird startingPriceCents dort abgeleitet
+  // (lib/data/pricing.ts) — ein hier übermittelter Wert wird verworfen, unabhängig
+  // davon, ob das Formularfeld im Client korrekt deaktiviert war (ARCHITECTURE.md,
+  // "Preis-Ableitung"; state/advisor-findings-pricing.md, Finding 4).
+  const startingPriceCents = (existing?._count.pricingPlans ?? 0) > 0
+    ? (existing?.startingPriceCents ?? null)
+    : data.startingPriceCents
 
   try {
     await prisma.tool.update({
       where: { id },
       data: {
         slug: data.slug,
-        startingPriceCents: data.startingPriceCents,
+        startingPriceCents,
         hasFreePlan: data.hasFreePlan,
         isAffiliate: data.isAffiliate,
         published: data.published,

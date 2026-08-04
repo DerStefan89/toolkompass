@@ -157,6 +157,7 @@ export default async function EditToolPage({ params }: Props) {
           categories={categoryOptions}
           tagGroups={tagGroupOptions}
           defaultValues={defaultValues}
+          hasPricingPlans={tool.pricingPlans.length > 0}
         />
       </div>
 
