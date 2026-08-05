@@ -31,18 +31,26 @@ toolkompass/
 │   └── harness/             ← dieses Dateipaket
 ├── state/
 │   ├── gates.md               ← Objective-Gates-Matrix, mit echten Kalibrierungsfunden befüllt
-│   └── assumption-ledger.md   ← Annahmen-Protokoll, 9 Einträge (Anhang B Phase 1, Zyklus 3)
+│   ├── assumption-ledger.md   ← Annahmen-Protokoll, 9 Einträge (Anhang B Phase 1, Zyklus 3)
+│   ├── triggers.md             ← Trigger-Inventar (Playbook 04 §6), sechs reale + zwei geplante Trigger
+│   ├── repo-audit-zyklus4.md   ← Ist-Stand-Scan gegen Playbook 04, erste reale Anwendung von `repo-audit`
+│   └── tasks/                  ← Handoff-Verträge (GOAL/CONTEXT/SCOPE/BUDGET/OUTPUT/ESCALATE je Datei)
 ├── .claude/
 │   ├── settings.json      ← permissions.allow + hooks (PreToolUse-Settings-Guard, PostToolUse-Lint,
 │   │                          UserPromptSubmit-Kontexthygiene)
 │   ├── agents/            ← design-guardian, frontend-reviewer, qa, architecture-advisor — alle read-only
-│   ├── skills/             ← ponytail (vendort), tool-anlegen, repo-audit (alle projekteigen/gevettet)
+│   ├── skills/             ← ponytail (vendort), tool-anlegen, repo-audit, git-flow (alle
+│   │                          projekteigen/gevettet)
 │   ├── commands/            ← lessons.md
 │   └── hooks/               ← session-reminder.js (Kontext-Hygiene), guard-settings.js (blockiert
 │                                Edit/Write auf die geteilte settings.json, s. Regelhierarchie unten)
 ├── scripts/
 │   ├── check-docs.mjs      ← Doku-Gate, Teil von `npm run check`
+│   ├── check-rules.mjs      ← Regel-Gate (Architektur-Regeln aus ARCHITECTURE.md §7), Teil von
+│   │                            `npm run check`
 │   └── _mode.ts             ← Dry-Run-per-Default für schreibende Scripts
+├── .worktreeinclude          ← in jeden neuen Worktree zu kopierende, gitignorierte Dateien (.env,
+│                                .env.local)
 └── .github/workflows/ci.yml ← npm run check + Secret-Scan (gitleaks) bei Push/PR, Required Status
                                  Check auf `main`, ohne Admin-Bypass
 
@@ -54,12 +62,12 @@ Ebenen macht sie technisch:
 1. **Mensch** — Freigabe, Commit, letzte Entscheidung.
 2. **Modell-Evaluator** — `.claude/agents/*` (nur lesend, kein Schreibrecht). `architecture-advisor`
    prüft Pläne vor dem Bauen (Advisor), die anderen drei prüfen fertige Arbeit (Reviewer).
-3. **Deterministische Gates** — CI (`npm run check` inkl. `check-docs.mjs`, plus Secret-Scan per
-   `gitleaks`), Required Status Check auf `main` ohne Admin-Bypass (kein direkter Push mehr
-   möglich, auch nicht für den Repo-Admin — nur Branch + PR + Merge-Button). Lokal zusätzlich zwei
-   Hooks: `PostToolUse` (`npm run lint` bei jedem Edit/Write) und `PreToolUse`
-   (`guard-settings.js`, blockiert Edit/Write auf die geteilte `.claude/settings.json` — Permission-
-   Freigaben gehören nach `settings.local.json`).
+3. **Deterministische Gates** — CI (`npm run check` inkl. `check-docs.mjs` und `check-rules.mjs`,
+   plus Secret-Scan per `gitleaks`), Required Status Check auf `main` ohne Admin-Bypass (kein
+   direkter Push mehr möglich, auch nicht für den Repo-Admin — nur Branch + PR + Merge-Button).
+   Lokal zusätzlich zwei Hooks: `PostToolUse` (`npm run lint` bei jedem Edit/Write) und
+   `PreToolUse` (`guard-settings.js`, blockiert Edit/Write auf die geteilte
+   `.claude/settings.json` — Permission-Freigaben gehören nach `settings.local.json`).
 4. **Permissions/Sandbox** — `.claude/settings.json`.
 
 ## Wie Claude mit dem Harness arbeitet
@@ -81,11 +89,23 @@ Ebenen macht sie technisch:
     blockiert. Für eine echte, gewollte Team-Policy-Änderung den Hook-Eintrag in
     `hooks.PreToolUse` selbst vorübergehend entfernen, Grund im Commit nennen, danach
     wiederherstellen.
+11. Mehrschritt-Aufgaben, die an eine andere Session/Kontext übergeben werden, als
+    Handoff-Vertrag unter `state/tasks/` ablegen (GOAL/CONTEXT/SCOPE/BUDGET/OUTPUT/ESCALATE) —
+    nicht nur als Prosa-Prompt im Fenster, sonst entsteht Context Drift (Muster:
+    `state/tasks/check-rules-geruest.md`).
+12. Für parallele Arbeit an mehreren Tasks: externe git-Worktrees außerhalb des OneDrive-Baums
+    anlegen (nicht das `--worktree`-Flag), weil `.claude` in diesem Ordner OneDrives
+    Cloud-Files-Tag trägt — Details und Belege in `HARNESS-LEARNING-STATE.md`, Abschnitt
+    Zyklus 4.
 
 ## Bekannte Lücken (Kurzfassung — Details in HARNESS-LEARNING-STATE.md)
 
-`scripts/check-rules.mjs` (Architektur-Regel-Gate) existiert weiterhin nicht — einziger noch offener
-Punkt aus der ursprünglichen Zyklus-3-Liste. Der Skill `repo-audit` ist gebaut, aber noch in keinem
-echten Zyklus angewendet worden. Korrektur (04.08.2026): Der Aufbau-Baum oben nannte bis Zyklus 3
-eine Datei `.claude/commands/resume-harness.md`, die im Repo nie existiert hat — entfernt, kein
-Vorhaben dahinter bekannt.
+`scripts/check-rules.mjs` (Architektur-Regel-Gate) existiert jetzt (seit Zyklus 4) und ist
+blockierender Teil von `npm run check` — der einzige noch offene Punkt aus der ursprünglichen
+Zyklus-3-Liste ist damit erledigt. Der Skill `repo-audit` wurde in Zyklus 4 erstmals real auf ein
+Playbook-Thema angewendet (`state/repo-audit-zyklus4.md`), nicht mehr nur gebaut und ungetestet.
+Ein Loop im engeren Sinn (wiederholender, automatisierter Ablauf mit Zeit-/Event-Trigger) existiert
+weiterhin nicht — kein Cron/`schedule:` im Repo, s. `state/triggers.md`, Abschnitt „Geplante
+Trigger". Korrektur (04.08.2026): Der Aufbau-Baum oben nannte bis Zyklus 3 eine Datei
+`.claude/commands/resume-harness.md`, die im Repo nie existiert hat — entfernt, kein Vorhaben
+dahinter bekannt.

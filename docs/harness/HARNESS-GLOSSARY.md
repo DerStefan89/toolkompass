@@ -18,8 +18,8 @@ dieses Projekts. Vollständige Herleitung siehe `Lessons-Learned-Zyklen-1-2-2.5.
 | Tool | Fähigkeit, die Claude aufrufen kann | Verbindet Modell mit Außenwelt | Bash, Read, Edit |
 | MCP | Offener Standard für externe System-Anbindung | Liefert Zugriff, den Skills anleiten | Playbook-Konzept, im Projekt nicht direkt sichtbar |
 | Workflow | Feste Schrittfolge für eine Aufgabe | Wird in Skills/Commands festgehalten | 8-Schritte-Ablauf in `tool-anlegen` |
-| Orchestrator | Rolle, die andere Agenten/Phasen koordiniert | Plant statt selbst zu bauen | In CLAUDE.md genannt, real nicht als Datei vorhanden |
-| Loop | Wiederholender, automatisierter Ablauf mit Evaluator | Skaliert Arbeit über Sessions hinaus | Playbook-04-Thema, noch nicht gebaut |
+| Orchestrator | Rolle, die andere Agenten/Phasen koordiniert | Plant statt selbst zu bauen | Bewusst nicht besetzt — `grep -i orchestr` in `CLAUDE.md` liefert keinen Treffer (Korrektur 05.08.2026, per Repo-Audit `state/repo-audit-zyklus4.md` widerlegt; vorherige Zeile hier behauptete fälschlich das Gegenteil) |
+| Loop | Wiederholender, automatisierter Ablauf mit Evaluator und Zeit-/Event-Trigger | Skaliert Arbeit über Sessions hinaus | Playbook-04-Thema — in Zyklus 4 bewusst nicht gebaut, da kein Zeit-Trigger existiert (`state/triggers.md`, Abschnitt „Geplante Trigger"); Abgrenzung zu Pipeline/Stern in `state/repo-audit-zyklus4.md` Abschnitt 1.4 |
 | Template | Wiederverwendbare Vorlage-Struktur | Beschleunigt neue Projekte/Skills | Geplantes "Template-Repo" |
 | Script | Ausführbarer Code für Daten-/Wartungsaufgaben | Automatisiert wiederkehrende Aufgaben | `check-docs.mjs`, `_mode.ts` |
 | Dry-Run | Lauf, der alles außer Schreiben tut | Verhindert versehentliche Datenänderung | `_mode.ts` |
@@ -55,3 +55,10 @@ dieses Projekts. Vollständige Herleitung siehe `Lessons-Learned-Zyklen-1-2-2.5.
 | Assumption Ledger | Tabelle unausgesprochener Annahmen, von einem frischen Kontext gegen ein reales System erzeugt | Macht Annahmen sichtbar, die niemand hinterfragt hat, bevor sie zum Vorfall werden | `state/assumption-ledger.md`, 9 Einträge (Anhang B Phase 1) |
 | ADR | Kurzdokument pro Architekturentscheidung | Hält "Warum" fest | `docs/adr/0001-namensentscheidung.md` |
 | Prompt-Injection | Fremder Inhalt als Anweisung statt Material gelesen | Grund für eigene Datenblöcke | Relevant für ungeschützte API-Endpunkte |
+| Handoff-Vertrag | Datei mit GOAL/CONTEXT/SCOPE/BUDGET/OUTPUT/ESCALATE für eine Übergabe zwischen Sessions/Kontexten | Verhindert Context Drift beim Weiterreichen einer Aufgabe | `state/tasks/check-rules-geruest.md` |
+| Worktree | Zweites Arbeitsverzeichnis desselben Git-Repos auf einem eigenen Branch | Isolation für parallele Arbeit ohne Zweitschreiber im selben Ordner | Zwei externe Worktrees in Zyklus 4 (Übung 2), außerhalb von OneDrive wegen Cloud-Files-Tag auf `.claude` |
+| Stern (Topologie) | Ein Orchestrator/Mensch verteilt an mehrere unabhängige, parallele Worker/Prüfer | Fächert Arbeit oder Prüfung gleichzeitig auf | Als Prüf-Stern: `frontend-reviewer` + `design-guardian` nach jeder UI-Aufgabe; als Arbeits-Stern real erprobt in Zyklus 4 Übung 2 (zwei Tasks, zwei Worktrees) |
+| Pipeline (Topologie) | A→B→C mit einem Übergabe-Artefakt je Stufe | Macht Zwischenstände prüfbar statt nur das Endergebnis | Plan v1 → Advisor-Findings → Plan v2 → Bau → Review (Zyklus 3, `state/plan-v1-pricing.md` u. a.) |
+| Council (Topologie) | Mehrere unabhängige, adversariale Prüfer auf dasselbe Artefakt | Deckt Lücken auf, die ein einzelner Prüfer übersieht | Ansatzweise vorhanden: vier read-only Subagenten, aber ohne gleichzeitigen Fächer auf ein Artefakt (`state/repo-audit-zyklus4.md`, Konzept 4) |
+| Trigger-Inventar | Tabelle aller Ereignisse, die ein Gate oder eine Aktion auslösen, mit Besitzer/Cap/Eskalation | Macht Auslösung sichtbar, nicht nur die Blockierwirkung | `state/triggers.md`, sechs reale Trigger |
+| Agent Teams | Mehrere Claude-Code-Sitzungen mit geteilter Task-Liste und Mailbox (Peers statt Stern) | Vierte Koordinationsform neben Stern/Pipeline/Council | Experimentell (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), im Projekt bewusst nicht eingesetzt (Rudel-Start-Risiko), s. `state/repo-audit-zyklus4.md` Abschnitt 1.2 |
