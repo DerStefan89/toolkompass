@@ -31,6 +31,18 @@ vom 02.08.2026. Bei wachsendem Angebot wird neu entschieden und `datenschutz.md`
 
 ### 3. Auth
 
+**Admin-Schutz ist dreischichtig (Defense-in-Depth):**
+
+- **Schicht 1 — `proxy.ts`:** Blockiert nicht eingeloggte oder nicht-admin User auf
+  allen `/admin`-Routen bereits vor dem Rendern (Redirect zu `/admin/login` bzw. `/`).
+- **Schicht 2 — `app/admin/layout.tsx`:** Prüft `app_metadata.role` erneut, falls
+  Schicht 1 umgangen wird (User ist im Layout ohnehin schon geladen).
+- **Schicht 3 — `requireAdmin()` in der Server Action:** Letzte Instanz, direkt vor
+  der eigentlichen Mutation.
+
+Jede Schicht muss für sich funktionieren, unabhängig von den anderen — keine Schicht
+darf sich auf eine vorherige verlassen.
+
 - Erste Zeile jeder Admin-Server-Action: `await requireAdmin()`
 - Erste Zeile jeder User-Server-Action: `await requireUser()`
 - Kein direktes `createClient()` + `getUser()` in Actions
