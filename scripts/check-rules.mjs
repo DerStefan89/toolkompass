@@ -28,7 +28,8 @@
  * Text-Regex nicht könnte. Zweite Prüfung hier wäre Doppelarbeit ohne
  * Mehrwert.
  *
- * Aufruf: node scripts/check-rules.mjs   (Stand jetzt NICHT Teil von npm run check)
+ * Aufruf: node scripts/check-rules.mjs   (Teil von npm run check, Vertrag
+ * `state/tasks/check-rules-einbindung.md`)
  * Exit 0 = sauber, Exit 1 = Befund gefunden
  */
 
