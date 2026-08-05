@@ -115,6 +115,14 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
     Abfragen ausführen, kann der Dry-Run Fehler im echten Abfragepfad (falsche
     Kategorie-Slugs, fehlende Relationen) nicht aufdecken, die erst beim Echtlauf
     sichtbar würden.
+22. **`take` ohne `skip` — zehn reale Fundstellen** — beim Bau von
+    `scripts/check-rules.mjs` (Zyklus 4, Playbook 04, Vertrag `check-rules-regeln-2`)
+    per neuer AST-Regel gefunden, kein Fehlalarm, noch nicht bereinigt:
+    `app/page.tsx:45`, `app/kategorien/page.tsx:42`, `app/ratgeber/page.tsx:58`,
+    `app/tools/[slug]/page.tsx:81`, `app/vergleichen/page.tsx:37`,
+    `app/vergleichen/[slug]/page.tsx:100`, `app/vergleichen/[slug]/page.tsx:103`,
+    `app/vergleichen/[slug]/page.tsx:110`, `app/vergleichen/[slug]/page.tsx:122`,
+    `scripts/import-comparisons.ts:444`.
 
 ---
 
