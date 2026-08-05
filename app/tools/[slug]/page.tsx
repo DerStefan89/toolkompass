@@ -79,6 +79,7 @@ export default async function ToolDetailSeite({
         published: true,
       },
       take: 3,
+      skip: 0,
       select: {
         slug: true,
         logoUrl: true,

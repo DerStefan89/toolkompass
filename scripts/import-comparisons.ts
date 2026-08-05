@@ -441,7 +441,7 @@ type ToolMatch = { id: string; slug: string; name: string }
 const toolSelect = {
   id: true,
   slug: true,
-  translations: { where: { locale: 'de' as const }, select: { name: true }, take: 1 },
+  translations: { where: { locale: 'de' as const }, select: { name: true }, take: 1, skip: 0 },
 }
 
 async function findTool(name: string): Promise<ToolMatch | null> {

@@ -43,6 +43,7 @@ export default async function Home() {
       prisma.tool.findMany({
         where: { published: true },
         take: 6,
+        skip: 0,
         orderBy: { publishedAt: 'desc' },
         include: { translations: { where: { locale: 'de' } } },
       }),

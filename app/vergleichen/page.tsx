@@ -35,6 +35,7 @@ export default async function VergleichenSeite() {
           categories: {
             include: { category: { include: { translations: { where: { locale: 'de' } } } } },
             take: 1,
+            skip: 0,
           },
         },
       },
