@@ -86,14 +86,23 @@ Master-Briefing: 06 → 07 → 09 → 08.
   geplante `<img>`-Regel wurde nach Advisor-Review wieder entfernt, weil
   `@next/next/no-img-element` (`eslint.config.mjs`) dasselbe Verbot bereits AST-basiert und
   blockierend abdeckt (Nachtrag in `state/tasks/check-rules-geruest.md`). PRs #10–#14.
-- **Übung 2 (Stern mit Isolation, zwei externe Worktrees):** Zwei Tasks parallel in zwei externen
-  Worktrees gebaut (außerhalb des OneDrive-Baums), je eigener Branch, je eigener PR, kein
-  Merge-Konflikt. Task α: `scripts/seed-rating-criteria.ts` — Dry-Run und Echtlauf nehmen jetzt
-  denselben Codepfad (`findMany()` statt Fake-IDs/`count()`), deckte real zwei Kategorien ohne
-  zugeordnete Tools auf; `qa`-Review mit vier nicht-blockierenden Hinweisen, dokumentiert in
-  `docs/STATUS.md` Punkt 21 (PR #20). Task β: `ARCHITECTURE.md` §3 um den
-  Defense-in-Depth-Block (drei Auth-Schichten: `proxy.ts` → Layout → Server Action) ergänzt,
-  dabei Beleg-Korrektur in `state/assumption-ledger.md` A1 (PR #19).
+- **Übung 2 (Stern, zwei Tasks, zwei externe Worktrees vorbereitet):** Zwei Tasks parallel
+  gebaut, je eigener Branch, je eigener PR, disjunkte Dateimengen, kein Merge-Konflikt. Task α:
+  `scripts/seed-rating-criteria.ts` — Dry-Run und Echtlauf nehmen jetzt denselben Codepfad
+  (`findMany()` statt Fake-IDs/`count()`), deckte real zwei Kategorien ohne zugeordnete Tools
+  auf; `qa`-Review mit vier nicht-blockierenden Hinweisen, dokumentiert in `docs/STATUS.md`
+  Punkt 21 (PR #20). **Isolation für α belegt:** Commit `416a1bf` wurde nachweislich auf dem
+  Branch `feat/seed-dryrun-fix` im externen Worktree selbst erzeugt. Task β: `ARCHITECTURE.md`
+  §3 um den Defense-in-Depth-Block (drei Auth-Schichten: `proxy.ts` → Layout → Server Action)
+  ergänzt, dabei Beleg-Korrektur in `state/assumption-ledger.md` A1 (PR #19). **Isolation für β
+  NICHT belegt:** Der dafür vorbereitete Worktree-Branch `docs/architecture-auth-schichten` hat
+  keinen einzigen eigenen Commit (Stand `480d140`, Ancestor von `main` zum Zeitpunkt der
+  Worktree-Erzeugung) — die eigentliche Arbeit landete auf
+  `docs/zyklus4-auth-schichten-und-ledger-fix`, einem Branch ohne erkennbaren Bezug zum
+  Worktree-Verzeichnis. Ob dieser Branch aus dem Worktree heraus oder von Anfang an im
+  Haupt-Checkout entstand, ist unklar (s. „Noch unsicher" unten). Die übrigen Nachweise
+  (zwei getrennte PRs, disjunkte Dateimengen, kein Merge-Konflikt, Prüfer-Findings) gelten für
+  beide Tasks unverändert — nur die Worktree-Isolation selbst ist nur für α belegt.
 - **Übung 3 (Trigger-Inventar):** `state/triggers.md` neu — sechs reale Trigger mit Beleg,
   Besitzer, Cap-/Eskalationsvorschlag, plus zwei geplante Zeilen (Agent-zu-Agent über
   `state/tasks/`, Zeit/Cron). Abgrenzung zu `state/gates.md` im Dokument selbst festgehalten
@@ -121,8 +130,10 @@ Master-Briefing: 06 → 07 → 09 → 08.
   `take`-ohne-`skip`-Verstöße im Bestand gefunden (roter Zustand), nach Fix `skip: 0` grün belegt
   (PR #13); die in `state/tasks/check-rules-regeln-2.md` gelisteten Fehlalarm-Testfälle
   (u. a. `lib/auth/require-admin.ts`, `lib/auth/require-user.ts`) bleiben nachweislich grün
-- Stern-Topologie mit echter Isolation bestätigt: zwei Tasks in zwei externen Worktrees,
-  disjunkte Dateimengen, zwei getrennte PRs (#19, #20), kein Merge-Konflikt beim Zusammenführen
+- Stern-Topologie bestätigt: zwei Tasks, disjunkte Dateimengen, zwei getrennte PRs (#19, #20),
+  kein Merge-Konflikt beim Zusammenführen. Echte Worktree-Isolation davon nur für Task α belegt
+  (Commit `416a1bf` auf `feat/seed-dryrun-fix` nachweislich im externen Worktree erzeugt) — für
+  Task β nicht (Details s. Zyklus-4-Abschnitt oben, „Isolation für β NICHT belegt")
 - Reparse-Point-Status von `.claude` echt geprüft statt angenommen (Cloud-Files-Tag 0x9000E01A,
   kein Symlink/Junction) — Entscheidung für externe Worktrees dadurch belegt, nicht geraten
 
@@ -136,6 +147,11 @@ Master-Briefing: 06 → 07 → 09 → 08.
   Permission-Dialog genau dazu führt) ist nicht abschließend diagnostiziert — durch den
   Settings-Guard-Hook aber technisch irrelevant geworden (Ebene 2 schlägt die Notwendigkeit,
   Ebene 3 zu verstehen)
+- Ob Task β (Zyklus 4, Übung 2) überhaupt im dafür vorbereiteten Worktree-Verzeichnis gearbeitet
+  hat oder von Anfang an im Haupt-Checkout — der Branch `docs/architecture-auth-schichten` hat
+  keine eigenen Commits, die tatsächliche Arbeit liegt auf einem anderen Branch ohne erkennbaren
+  Bezug zum Worktree. Die gemergten Zyklus-4-Branches wurden im Zuge des Aufräumens nach
+  Zyklus-Ende bereits gelöscht — nicht mehr aus dem Repo rekonstruierbar.
 
 ## Verhaltensregeln für künftige Sessions (aus Zyklus 3, konkret aus echten Vorfällen)
 

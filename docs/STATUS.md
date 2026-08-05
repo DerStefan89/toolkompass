@@ -126,6 +126,33 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
     manuell geändert wurden — keine Warnung; (4) bei leerer Kriterien-Tabelle
     entstehen ~114 redundante Warnzeilen (kosmetisch). Noch nicht als eigener
     Punkt aufgenommen — bei Bedarf neu nummerieren.
+22. **`seed-rating-criteria.ts`: `geschaeftskonto-finanzen` ist vermutlich der
+    Tippfehler, nicht `geschaftskonto-finanzen`** — Z. 91–93 pflegt beide
+    Schreibweisen parallel, mit dem Kommentar „Slug in DB prüfen" (Z. 92).
+    Gegenprobe gegen den echten Seed: `prisma/seed.ts` Z. 470 und
+    `scripts/humanize-batch04.ts` Z. 22 verwenden beide ausschließlich
+    `geschaftskonto-finanzen` (ohne zusätzliches „e"). Die Zeile
+    `geschaeftskonto-finanzen` (Z. 91) trifft damit vermutlich nie eine echte
+    Kategorie — sie dürfte der Tippfehler sein, nicht ihr Gegenstück. Beleg
+    für den ursprünglichen Fund: qa-Hinweis aus Zyklus 4, dokumentiert bei
+    Punkt 21 (Hinweis 2). Noch zu entscheiden: die tote Zeile aus dem Script
+    entfernen, oder als bewusste Absicherung gegen einen künftigen echten
+    Slug-Wechsel stehen lassen.
+23. **`dotenv` druckt seit Version 17.4.0 eine an KI-Agenten adressierte Zeile
+    in stdout** — beim Start wird eine Zeile ausgegeben, die KI-Agenten direkt
+    anspricht ("auth for agents [vestauth.com]"), laut Angaben des
+    dotenv-Autors selbst kein Angriff, aber derselbe Mechanismus wie
+    Prompt-Injection: Text aus einer nicht vertrauenswürdigen Quelle (Terminal-
+    Output eines Pakets), der wie eine Anweisung formuliert ist. Betrifft
+    dieses Repo real: `node_modules/dotenv` liegt aktuell auf `17.4.2`
+    (`package-lock.json`; verschachtelt bei `@sentry/bundler-plugin-core`
+    weiterhin `16.6.1`, unbetroffen). `dotenv` steht nicht als direkte
+    Abhängigkeit in `package.json` — kommt transitiv herein. Beleg: beobachtet
+    beim `npm install` in Zyklus 4; Verhaltensregel dazu in
+    `docs/harness/HARNESS-LEARNING-STATE.md`, Abschnitt „Verhaltensregeln für
+    künftige Sessions (aus Zyklus 4)". Zu entscheiden: die transitive
+    Abhängigkeit per Overrides auf eine Version vor 17.4.0 pinnen, die Ausgabe
+    unterdrücken (falls vom Paket unterstützt), oder bewusst so belassen.
 
 ---
 
