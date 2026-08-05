@@ -97,17 +97,18 @@ export default async function VergleichDetailSeite({
       toolA: {
         include: {
           translations: { where: { locale: 'de' } },
-          affiliateLinks: { where: { isActive: true }, orderBy: { isPrimary: 'desc' }, take: 1 },
+          affiliateLinks: { where: { isActive: true }, orderBy: { isPrimary: 'desc' }, take: 1, skip: 0 },
           categories: {
             include: { category: { include: { translations: { where: { locale: 'de' } } } } },
             take: 1,
+            skip: 0,
           },
         },
       },
       toolB: {
         include: {
           translations: { where: { locale: 'de' } },
-          affiliateLinks: { where: { isActive: true }, orderBy: { isPrimary: 'desc' }, take: 1 },
+          affiliateLinks: { where: { isActive: true }, orderBy: { isPrimary: 'desc' }, take: 1, skip: 0 },
         },
       },
       rows: { orderBy: { sortOrder: 'asc' } },
@@ -119,7 +120,7 @@ export default async function VergleichDetailSeite({
           tool: {
             include: {
               translations: { where: { locale: 'de' } },
-              affiliateLinks: { where: { isActive: true, isPrimary: true }, take: 1 },
+              affiliateLinks: { where: { isActive: true, isPrimary: true }, take: 1, skip: 0 },
             },
           },
         },

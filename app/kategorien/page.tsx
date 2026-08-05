@@ -40,6 +40,7 @@ export default async function KategorienSeite() {
             tool: { include: { translations: { where: { locale: 'de' } } } },
           },
           take: 3,
+          skip: 0,
         },
       },
       orderBy: { sortOrder: 'asc' },

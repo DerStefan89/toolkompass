@@ -56,6 +56,7 @@ export default async function RatgeberSeite() {
             },
           },
           take: 5,
+          skip: 0,
         },
       },
       orderBy: [
