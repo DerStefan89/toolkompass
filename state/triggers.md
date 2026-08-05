@@ -1,0 +1,29 @@
+# Trigger-Architektur (Playbook 04 §6)
+
+## Abgrenzung zu state/gates.md
+`state/gates.md` beschreibt, **was blockiert** (Lint, Typecheck, Doku-Gate,
+Regel-Gate, Secret-Scan, Settings-Guard) — objektive Prüfungen mit einem
+Bestanden/Durchgefallen-Ergebnis.
+
+`state/triggers.md` beschreibt, **was auslöst** — die Ereignisse, die diese
+Prüfungen (oder andere Aktionen) überhaupt erst starten. Ein Gate kann ohne
+einen Trigger, der es aufruft, nie laufen; ein Trigger kann auf ein Gate
+zielen oder auf etwas anderes (z. B. einen Hinweis, eine Zusammenfassung).
+
+## Reale Trigger
+
+| Trigger | Klasse/Quelle | Ziel | Besitzer | Cap (Vorschlag) | Eskalation (Vorschlag) | Beleg (Datei:Zeile) |
+|---|---|---|---|---|---|---|
+| Push auf `main` | Git-Event (`push`) | CI-Job `check` | Stefan | Kein Cap ersichtlich — GitHub Actions Standard-Concurrency, ein Lauf pro Push | Wenn CI 3x hintereinander rot: Branch-Protection-Regel prüfen, Stefan benachrichtigen, keine stillschweigende Ausnahme (Präzedenzfall: Kalibrierungsfund `state/gates.md:12-18`) | `.github/workflows/ci.yml:4-5` (`on.push.branches: [main]`) |
+| Pull Request | Git-Event (`pull_request`) | CI-Job `check` (derselbe Job wie oben, zweiter Auslöser) | Stefan | Kein Cap ersichtlich — ein Lauf pro PR-Update | Wenn CI auf einem PR 3x hintereinander rot bleibt: PR nicht mergen, Stefan benachrichtigen (Required Status Check, s. `state/gates.md:5`) | `.github/workflows/ci.yml:6` (`on.pull_request:`) |
+| `PreToolUse` bei `Edit\|Write` | Claude-Code-Hook | `.claude/hooks/guard-settings.js` (blockiert Schreibzugriff auf `.claude/settings.json`) | Stefan | Kein Cap nötig — rein lokal, kein externer Kostenfaktor, läuft bei jedem Edit/Write-Versuch | Wenn der Hook 3x hintereinander fälschlich blockiert (false positive auf eine nicht gemeinte Datei): Hook-Logik prüfen, Stefan benachrichtigen, Ausnahmeweg s. `state/gates.md:10` | `.claude/settings.json:19-26`; Hook-Logik `.claude/hooks/guard-settings.js:16-19` |
+| `PostToolUse` bei `Edit\|Write` | Claude-Code-Hook | `npm run lint --silent` | Stefan | Kein Cap nötig — lokal, aber bei sehr vielen Edits in Folge ggf. spürbare Latenz pro Edit; Vorschlag: bei merklicher Verzögerung auf Batch-Lint am Iterationsende umstellen | Wenn Lint 3x hintereinander rot bleibt, ohne dass der Code sich sichtbar ändert (Regel-Drift statt echter Fehler): Regel-Basis prüfen, Stefan benachrichtigen | `.claude/settings.json:27-34` |
+| `UserPromptSubmit`, alle 30 Nachrichten | Claude-Code-Hook | `.claude/hooks/session-reminder.js` (Kontext-Hygiene-Hinweis) | Stefan | Bereits selbst gecappt: `INTERVALL = 30`, Hinweis nur bei `zaehler % INTERVALL === 0` | Rein informativ, kein Blockieren vorgesehen — kein technischer Eskalationspfad nötig; falls der Hinweis regelmäßig übersehen wird, wäre das eine Vorgehens-, keine Technikfrage | `.claude/hooks/session-reminder.js:6` (`INTERVALL`), `:24` (Modulo-Bedingung) |
+| `/lessons` Slash-Command | Nutzer-initiiert (manueller Aufruf) | Zusammenfassung der Session für die Playbook-Bibliothek | Stefan | Kein Cap nötig — Nutzer entscheidet selbst, wann aufgerufen wird | Keine Automatisierung dahinter, die entgleisen könnte — kein Eskalationspfad nötig | `.claude/commands/lessons.md:1-3` |
+
+## Geplante Trigger (noch nicht real eingerichtet)
+
+| Trigger | Klasse/Quelle | Ziel | Besitzer | Cap (Vorschlag) | Eskalation (Vorschlag) | Beleg (Datei:Zeile) |
+|---|---|---|---|---|---|---|
+| Agent-zu-Agent-Trigger über `state/tasks/` (geplant) | Datei-Ablage als Auftragsformat — als **Muster** bereits real vorhanden (z. B. `state/tasks/check-rules-einbindung.md` mit GOAL/CONTEXT/SCOPE/BUDGET/OUTPUT/ESCALATE-Feldern), aber ohne automatisierten Watcher/Dispatcher: aktuell liest ein Mensch oder Agent die Datei manuell an, nichts löst beim Ablegen selbsttätig etwas aus | Offen — vermutlich ein weiterer Agent oder Sub-Task | Stefan | Vorschlag: Cap auf gleichzeitig offene Tasks (z. B. max. 1 aktiv pro Verzeichnis, analog zur "Ein Schreiber pro Arbeitsverzeichnis"-Regel aus `CLAUDE.md`) | Vorschlag: wenn ein automatisierter Dispatcher entsteht und 3x hintereinander einen Task falsch zuordnet: Dispatcher deaktivieren, zurück auf manuelles Lesen, Stefan benachrichtigen | Musterdatei: `state/tasks/check-rules-einbindung.md:1-13` (keine Automatisierung im Repo gefunden, die dieses Verzeichnis beobachtet) |
+| Zeit/Cron-Trigger (geplant) | Offen — keine Cron-Konfiguration, kein Scheduler im Repo gefunden | Offen | Stefan | Offen — kein Vorschlag, da Zweck noch nicht definiert | Offen — kein Vorschlag, da Zweck noch nicht definiert | Kein Fund: keine `crontab`, kein `.github/workflows`-Eintrag mit `on.schedule`, kein Cron-Hinweis irgendwo im Repo außerhalb von `node_modules`/`.next`/`.git` (Negativ-Scan durchgeführt) |
