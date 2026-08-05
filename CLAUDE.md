@@ -75,7 +75,7 @@ npx tsx prisma/seed.ts   # Seed-Daten einspielen
 - Jede Iteration ist klein, prüfbar und abgeschlossen
 - Keine großen Funktionspakete auf einmal
 - Erst planen, dann umsetzen
-- Ein Task nach dem anderen — nie parallel
+- Ein Task nach dem anderen pro Arbeitsverzeichnis — mehrere Arbeitsverzeichnisse (Worktrees) dürfen parallel laufen, siehe unten.
 - Ein Schreiber pro Arbeitsverzeichnis. Keine zweite Claude-Sitzung im selben Ordner; parallele Arbeit nur in getrennten git-Worktrees.
 - Iterationsende heißt: `git status` prüfen, Freigabe einholen, committen UND pushen. Gegenstück zur Commit-Freigabe-Regel — eine Bremse ohne Gaspedal erzeugt Halden.
 - Keine Versionsnummern in Prosa. Versionen stehen ausschließlich in `package.json`.
