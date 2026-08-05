@@ -106,15 +106,26 @@ Reihenfolge nach Schaden, nicht nach Aufwand.
     aktuell `actions/checkout@v5` und `actions/setup-node@v5` (beide Node-24-fähig).
     Zum Zeitpunkt des Eintrags sind bei beiden Actions bereits v7-Releases verfügbar.
     Prüfen, ob ein Sprung auf v7 sinnvoll ist.
-21. **`seed-rating-criteria.ts`: Dry-Run mit Fake-IDs statt echter Abfragen** — im
-    Dry-Run werden `ratingCriterion`-IDs als `dry-0`, `dry-1`, … erzeugt statt per
-    `findMany` aus der DB gelesen, und die Tool-Zuweisungen laufen über `count` statt
-    über die tatsächlich zugeordneten Tool-IDs. Der Dry-Run nimmt damit einen anderen
-    Codepfad als der Echtlauf. Das schränkt die Aussagekraft der Vorschau ein: Ein
-    Dry-Run soll zeigen, was der Echtlauf tun würde — wenn beide Modi unterschiedliche
-    Abfragen ausführen, kann der Dry-Run Fehler im echten Abfragepfad (falsche
-    Kategorie-Slugs, fehlende Relationen) nicht aufdecken, die erst beim Echtlauf
-    sichtbar würden.
+21. **`seed-rating-criteria.ts`: Dry-Run mit Fake-IDs statt echter Abfragen** —
+    behoben (05.08.2026). Dry-Run und Echtlauf lesen jetzt beide unbedingt über
+    `ratingCriterion.findMany()` und pro Kategorie `toolCategory.findMany()`; einzige
+    verbleibende Verzweigung ist der Schreib-Call selbst. Beleg: echter Dry-Run-Lauf
+    gegen die DB zeigt reale Tool-Zahlen und deckt real auf, dass die Kategorie-Slugs
+    `geschaeftskonto-finanzen` und `produktivitaet-notizen` keine zugeordneten Tools
+    haben — Vertrag `state/tasks/seed-dryrun-fix.md`.
+    QA-Review (`qa`-Subagent) bestätigt: kein Datenfehler, keine Divergenz Dry-Run/
+    Execute außer dem gewollten Upsert-vor-`findMany`-Timing im Execute-Modus. Vier
+    Hinweise ohne Blockwirkung offen: (1) Dry-Run zeigt bei komplett leerer
+    `ratingCriterion`-Tabelle irreführend „0 Zuweisungen (würden angelegt)" statt
+    darauf hinzuweisen, dass ein Echtlauf ungleich 0 erzeugen würde; (2) das Script
+    kann „Kategorie-Slug existiert nicht" nicht von „Kategorie existiert, hat aber
+    0 Tools" unterscheiden (betrifft auch den doppelten Slug-Eintrag
+    `geschaeftskonto-finanzen`/`geschaftskonto-finanzen`, Zeile 91–93); (3)
+    `ratingCriterion.upsert()` überschreibt bei jedem `--execute`-Lauf `name`/
+    `sortOrder` unbedingt, auch wenn diese über `app/admin/bewertungskriterien`
+    manuell geändert wurden — keine Warnung; (4) bei leerer Kriterien-Tabelle
+    entstehen ~114 redundante Warnzeilen (kosmetisch). Noch nicht als eigener
+    Punkt aufgenommen — bei Bedarf neu nummerieren.
 
 ---
 

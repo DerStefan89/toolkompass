@@ -133,11 +133,17 @@ async function main(): Promise<void> {
     console.log(`  ✅ ${CRITERIA.length} Kriterien upserted`)
   }
 
-  // Kriterien-Map laden (für IDs)
-  const allCriteria = execute
-    ? await prisma.ratingCriterion.findMany({ select: { id: true, slug: true } })
-    : CRITERIA.map((c, i) => ({ id: `dry-${i}`, slug: c.slug }))
+  // Kriterien-Map laden (für IDs) — dieselbe Abfrage in beiden Modi.
+  // Im Dry-Run zeigt sie den Stand VOR dem Upsert; fehlen Kriterien noch,
+  // ist das der wahre Zustand (würden erst per --execute angelegt), keine Lücke.
+  const allCriteria = await prisma.ratingCriterion.findMany({ select: { id: true, slug: true } })
   const criterionBySlug = new Map(allCriteria.map((c) => [c.slug, c.id]))
+  if (!execute) {
+    const fehlend = CRITERIA.filter((c) => !criterionBySlug.has(c.slug)).length
+    if (fehlend > 0) {
+      console.log(`  ℹ️  ${fehlend} Kriterien existieren noch nicht in der DB (würden per --execute angelegt)`)
+    }
+  }
 
   // ── Schritt 2: Tool-Zuweisungen ──
   let totalAssignments = 0
@@ -145,15 +151,13 @@ async function main(): Promise<void> {
   let categoriesSkipped = 0
 
   for (const [catSlug, critSlugs] of Object.entries(CATEGORY_CRITERIA)) {
-    // Alle Tools dieser Kategorie holen
-    const toolCategories = execute
-      ? await prisma.toolCategory.findMany({
-          where: { category: { slug: catSlug } },
-          select: { toolId: true },
-        })
-      : []
+    // Alle Tools dieser Kategorie holen — dieselbe Abfrage in beiden Modi.
+    const toolCategories = await prisma.toolCategory.findMany({
+      where: { category: { slug: catSlug } },
+      select: { toolId: true },
+    })
 
-    if (execute && toolCategories.length === 0) {
+    if (toolCategories.length === 0) {
       // Kategorie existiert nicht oder hat keine Tools
       console.log(`  ⚠️  Kategorie "${catSlug}": keine Tools gefunden — übersprungen`)
       categoriesSkipped++
@@ -174,25 +178,16 @@ async function main(): Promise<void> {
       }
     }
 
-    if (!execute) {
-      // Im Dry-Run die Tool-Anzahl aus der DB holen
-      const count = await prisma.toolCategory.count({ where: { category: { slug: catSlug } } })
-      const assignCount = critSlugs.length * count
-      console.log(`  ${catSlug}: ${count} Tools × ${critSlugs.length} Kriterien = ${assignCount} Zuweisungen`)
-      totalAssignments += assignCount
-      if (count > 0) categoriesMatched++
-      else categoriesSkipped++
-    } else {
-      if (assignments.length > 0) {
-        await prisma.toolRatingCriterion.createMany({
-          data: assignments,
-          skipDuplicates: true,
-        })
-      }
-      console.log(`  ${catSlug}: ${toolIds.length} Tools × ${critSlugs.length} Kriterien = ${assignments.length} Zuweisungen`)
-      totalAssignments += assignments.length
-      categoriesMatched++
+    if (execute && assignments.length > 0) {
+      await prisma.toolRatingCriterion.createMany({
+        data: assignments,
+        skipDuplicates: true,
+      })
     }
+
+    console.log(`  ${catSlug}: ${toolIds.length} Tools × ${critSlugs.length} Kriterien = ${assignments.length} Zuweisungen${!execute ? ' (würden angelegt)' : ''}`)
+    totalAssignments += assignments.length
+    categoriesMatched++
   }
 
   console.log('\n═══════════════════════════════════════════════════')
