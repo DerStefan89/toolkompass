@@ -8,6 +8,7 @@
 | Regel-Gate | `scripts/check-rules.mjs` | Ja | `package.json` Script `check`: `... && node scripts/check-rules.mjs`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben | s. Lint |
 | Secret-Scan | `gitleaks` (Docker-Image, nicht der proprietäre `gitleaks-action`-Wrapper) | Ja | Schritt "Secret-Scan (gitleaks)" im selben CI-Job `check` in `.github/workflows/ci.yml`; fällt der Schritt, fällt der ganze Job, der bereits Required Status Check ist — keine eigene Branch-Protection-Regel nötig | s. Lint |
 | Settings-Guard | `.claude/hooks/guard-settings.js` (PreToolUse-Hook, Matcher `Edit|Write`, registriert in `.claude/settings.json` unter `hooks.PreToolUse`) | Ja — `permissionDecision: "deny"` (nicht `"ask"`, s. Kalibrierungsfund unten); blockiert jede Edit/Write-Ausführung auf `.claude/settings.json`, kein Bypass ohne den Hook selbst zu entfernen | Testfall B (Write auf `docs/_guard-test-scratch.md`, danach gelöscht): Hook lief, kein Treffer, keine Ausgabe, Datei ging normal durch. Testfall A NEU (Edit auf `.claude/settings.json` mit `deny`): Tool-Aufruf scheiterte direkt mit `is_error:true` und Inhalt = `permissionDecisionReason` des Hooks ("Schreibzugriff auf geteilte settings.json blockiert...") — kein `git diff` auf der Datei danach, die Änderung kam nie an. Belegt im Transkript (`"is_error":true,"content":"Schreibzugriff auf geteilte settings.json blockiert..."`). | Absichtliche, legitime Änderung an `.claude/settings.json`: Hook-Eintrag unter `hooks.PreToolUse` in `.claude/settings.json` selbst temporär entfernen (das ist die einzig funktionierende Ausnahme, da der Hook jede andere Editier-Route auf diese Datei blockiert), Grund im Commit nennen, danach Hook wiederherstellen. |
+| Test | Vitest | Ja | `package.json` Script `check`: `... && node scripts/check-rules.mjs && npm run test` (Tests laufen zuletzt); selber CI-Job/Schritt und Branch-Protection-Regel wie oben | s. Lint |
 
 **Kalibrierungsfund (04.08.2026):** Direkt nach dem Einrichten der Required-Status-Check-Regel
 wurde ein Push auf `main` mit der Meldung `Bypassed rule violations ... Required status check
@@ -65,3 +66,17 @@ temporär selbst entfernen, Grund im Commit). Offen: Ob `"ask"` in einer Termina
 tatsächlich funktioniert hätte (dort wäre die ursprünglich gewünschte Rückfrage statt Hard-Deny
 möglich gewesen), ist mit dieser Session nicht geprüft — nicht weiter verfolgt, da außerhalb
 der Grenzen dieses Auftrags ("keine weiteren Fixversuche über deny hinaus").
+
+**Kalibrierungsfund (06.08.2026, Test-Gate):** In `lib/utils/format.test.ts` wurde die
+Assertion `expect(formatPreis(990)).toBe('9,90 €')` bewusst auf `'9,99 €'` verfälscht. `npm run
+check` lieferte danach Exit 1; lint, typecheck, Doku-Gate und Regel-Gate liefen davor jeweils
+sauber durch (`✓ Keine Befunde.`), der Fehlschlag stammte ausschließlich aus dem `test`-Schritt
+(`vitest run`): `AssertionError: expected '9,90 €' to be '9,99 €'` in
+`lib/utils/format.test.ts:6`. Damit ist belegt, dass ein echter Testfehler das Gate rot macht
+und nicht durch einen vorgelagerten Schritt verdeckt wird.
+
+**Gegentest bestanden (06.08.2026, Test-Gate):** Die Assertion wurde exakt auf `'9,90 €'`
+zurückgedreht (`git diff` auf `lib/utils/format.test.ts` danach leer). `npm run check` lief
+erneut komplett durch, Exit 0, alle 21 Tests grün (`Test Files 4 passed (4)`, `Tests 21 passed
+(21)`). Nach Playbook 05 Regel 2 ist damit auch für dieses Gate der rote UND der grüne Zustand
+beobachtet — Gate gilt als belegt.
