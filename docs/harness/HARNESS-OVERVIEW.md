@@ -34,6 +34,8 @@ toolkompass/
 │   ├── assumption-ledger.md   ← Annahmen-Protokoll, 9 Einträge (Anhang B Phase 1, Zyklus 3)
 │   ├── triggers.md             ← Trigger-Inventar (Playbook 04 §6), sechs reale + zwei geplante Trigger
 │   ├── repo-audit-zyklus4.md   ← Ist-Stand-Scan gegen Playbook 04, erste reale Anwendung von `repo-audit`
+│   ├── memory-map.md           ← Info-Typ→Heimat-Tabelle (Playbook 03)
+│   ├── zwischenstand/          ← Aufgaben-Gedächtnis, NICHT committet außer VORLAGE.md (Playbook 03)
 │   └── tasks/                  ← Handoff-Verträge (GOAL/CONTEXT/SCOPE/BUDGET/OUTPUT/ESCALATE je Datei)
 ├── .claude/
 │   ├── settings.json      ← permissions.allow + hooks (PreToolUse-Settings-Guard, PostToolUse-Lint,
@@ -43,7 +45,9 @@ toolkompass/
 │   │                          projekteigen/gevettet)
 │   ├── commands/            ← lessons.md
 │   └── hooks/               ← session-reminder.js (Kontext-Hygiene), guard-settings.js (blockiert
-│                                Edit/Write auf die geteilte settings.json, s. Regelhierarchie unten)
+│                                Edit/Write auf die geteilte settings.json, s. Regelhierarchie unten),
+│                                zwischenstand-laden.js (SessionStart), zwischenstand-pruefen.js
+│                                (PreCompact) — Rückwärts-Handoff (Playbook 03)
 ├── scripts/
 │   ├── check-docs.mjs      ← Doku-Gate, Teil von `npm run check`
 │   ├── check-rules.mjs      ← Regel-Gate (Architektur-Regeln aus ARCHITECTURE.md §7), Teil von
@@ -106,6 +110,10 @@ Ebenen macht sie technisch:
     anlegen (nicht das `--worktree`-Flag), weil `.claude` in diesem Ordner OneDrives
     Cloud-Files-Tag trägt — Details und Belege in `HARNESS-LEARNING-STATE.md`, Abschnitt
     Zyklus 4.
+13. Bei einer Unterbrechung mitten in einer Aufgabe: Zwischenstand in
+    state/zwischenstand/<branch>.md schreiben (Vorlage: state/zwischenstand/VORLAGE.md) —
+    SessionStart lädt ihn in die nächste Sitzung, PreCompact blockiert eine manuelle
+    Compaction ohne frischen Stand.
 
 ## Bekannte Lücken (Kurzfassung — Details in HARNESS-LEARNING-STATE.md)
 
