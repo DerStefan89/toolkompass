@@ -4,7 +4,7 @@
 |---|---|---|---|---|
 | Lint | ESLint | Ja | `package.json` Script `check`: `npm run lint && ...`; CI-Job `check` in `.github/workflows/ci.yml` (Schritt "Lint, Typecheck, Doku-Gate", `run: npm run check`), ausgelöst bei Push auf `main` und bei Pull Requests; Branch-Protection-Regel `main` markiert `check` als Required Status Check (seit 04.08.2026) | Bewusst keine — "Do not allow bypassing the above settings" aktiviert (04.08.2026), auch Admin-Pushes werden geprüft. Abweichung nur durch aktives Ändern dieser Einstellung, sichtbar im Repo-Audit-Log. |
 | Typecheck | `tsc --noEmit` | Ja | `package.json` Script `check`: `... && npm run typecheck && ...`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben | s. Lint |
-| Doku-Gate | `scripts/check-docs.mjs` | Ja | `package.json` Script `check`: `... && node scripts/check-docs.mjs`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben | s. Lint |
+| Doku-Gate | `scripts/check-docs.mjs` | Ja | `package.json` Script `check`: `... && node scripts/check-docs.mjs`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben; seit 06.08.2026 zusätzlich Prüfung 3 (Frische-Regel: kein Datum im Text darf jünger sein als der `Stand dieser Fassung:`-Marker derselben Datei; Geltungsbereich rekursiv `docs/harness/` und `state/` inkl. `state/tasks/`) — Kalibrierungsfund + Gegentest unten | s. Lint |
 | Regel-Gate | `scripts/check-rules.mjs` | Ja | `package.json` Script `check`: `... && node scripts/check-rules.mjs`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben | s. Lint |
 | Secret-Scan | `gitleaks` (Docker-Image, nicht der proprietäre `gitleaks-action`-Wrapper) | Ja | Schritt "Secret-Scan (gitleaks)" im selben CI-Job `check` in `.github/workflows/ci.yml`; fällt der Schritt, fällt der ganze Job, der bereits Required Status Check ist — keine eigene Branch-Protection-Regel nötig | s. Lint |
 | Settings-Guard | `.claude/hooks/guard-settings.js` (PreToolUse-Hook, Matcher `Edit|Write`, registriert in `.claude/settings.json` unter `hooks.PreToolUse`) | Ja — `permissionDecision: "deny"` (nicht `"ask"`, s. Kalibrierungsfund unten); blockiert jede Edit/Write-Ausführung auf `.claude/settings.json`, kein Bypass ohne den Hook selbst zu entfernen | Testfall B (Write auf `docs/_guard-test-scratch.md`, danach gelöscht): Hook lief, kein Treffer, keine Ausgabe, Datei ging normal durch. Testfall A NEU (Edit auf `.claude/settings.json` mit `deny`): Tool-Aufruf scheiterte direkt mit `is_error:true` und Inhalt = `permissionDecisionReason` des Hooks ("Schreibzugriff auf geteilte settings.json blockiert...") — kein `git diff` auf der Datei danach, die Änderung kam nie an. Belegt im Transkript (`"is_error":true,"content":"Schreibzugriff auf geteilte settings.json blockiert..."`). | Absichtliche, legitime Änderung an `.claude/settings.json`: Hook-Eintrag unter `hooks.PreToolUse` in `.claude/settings.json` selbst temporär entfernen (das ist die einzig funktionierende Ausnahme, da der Hook jede andere Editier-Route auf diese Datei blockiert), Grund im Commit nennen, danach Hook wiederherstellen. |
@@ -80,3 +80,24 @@ zurückgedreht (`git diff` auf `lib/utils/format.test.ts` danach leer). `npm run
 erneut komplett durch, Exit 0, alle 21 Tests grün (`Test Files 4 passed (4)`, `Tests 21 passed
 (21)`). Nach Playbook 05 Regel 2 ist damit auch für dieses Gate der rote UND der grüne Zustand
 beobachtet — Gate gilt als belegt.
+
+**Kalibrierungsfund (06.08.2026, Doku-Gate Prüfung 3 — Frische-Regel):**
+`docs/harness/HARNESS-LEARNING-STATE.md` deklarierte in Zeile 4 „Stand dieser Fassung:
+05.08.2026", enthielt aber in den Zeilen 15, 154 und 256 das jüngere Datum 06.08.2026 — ein
+echter, unbeabsichtigter Selbstwiderspruch, kein synthetischer Testfall. `npm run check`
+lieferte danach Exit 1; Lint und Typecheck liefen davor sauber durch, der Fehlschlag stammte
+ausschließlich aus Prüfung 3 in `check-docs.mjs`, mit allen drei Fundstellen gemeldet. Eine
+erste Implementierung zählte jedes Vorkommen der Phrase „Stand dieser Fassung:" als
+Marker — das erzeugte zwei zusätzliche Fehlalarme in Handoff-Verträgen, die den Marker als
+Konvention BESCHREIBEN statt ihn zu SETZEN (`state/tasks/memory-frische-gate.md`,
+`state/advisor-findings-memory-gate.md`). Korrektur: ein Marker-Vorkommen zählt nur, wenn die
+Phrase am Zeilenanfang steht (optional mit Whitespace oder Markdown-Präfix `>`/`-`/`*`) und
+unmittelbar von einem Datum gefolgt wird.
+
+**Gegentest bestanden (06.08.2026, Doku-Gate Prüfung 3):** Nach Korrektur der Stand-Zeile auf
+`06.08.2026` lief `npm run check` erneut komplett durch, Exit 0 — Doku-Gate und Regel-Gate
+beide „✓ Keine Befunde.", alle 21 Tests grün. Von den 22 unter `docs/harness/` und `state/`
+(inkl. `state/tasks/`) geprüften `.md`-Dateien meldete in beiden Läufen nur
+`HARNESS-LEARNING-STATE.md` einen Befund (drei, dann keinen); die übrigen 21 blieben in
+beiden Läufen unverändert ohne Befund. Nach Playbook 05 Regel 2 ist damit auch dieses Gate
+belegt (rot + grün beobachtet).

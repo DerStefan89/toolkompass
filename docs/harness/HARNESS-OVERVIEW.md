@@ -54,6 +54,15 @@ toolkompass/
 └── .github/workflows/ci.yml ← npm run check + Secret-Scan (gitleaks) bei Push/PR, Required Status
                                  Check auf `main`, ohne Admin-Bypass
 
+## Marker „Stand dieser Fassung:“
+
+Eine Zeile, die am Zeilenanfang mit der Phrase `Stand dieser Fassung: TT.MM.JJJJ` (oder
+`JJJJ-MM-TT`) beginnt, erklärt eine Datei für dieses Datum gültig. Das Doku-Gate
+(`check-docs.mjs`, Prüfung 3) erzwingt das: `npm run check` scheitert, wenn irgendwo sonst
+im selben Dokument ein jüngeres Datum steht, ohne dass diese Zeile mitgezogen wurde. Die
+Konvention ist optional — nicht jede Datei unter `docs/harness/` oder `state/` braucht sie
+— und unabhängig vom ADR-Datumsformat (`docs/adr/TEMPLATE.md`, `**Datum:** YYYY-MM-DD`).
+
 ## Regelhierarchie (wichtigste Regel des ganzen Harness)
 
 Eine Regel in CLAUDE.md oder ARCHITECTURE.md ist zunächst nur Text — eine Bitte. Erst eine der vier

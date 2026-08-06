@@ -1,7 +1,7 @@
 <!--
 Ziel-Pfad im Repo: docs/harness/HARNESS-LEARNING-STATE.md
 Diese Datei verändert sich mit jedem abgeschlossenen Zyklus — bei Zyklus-Ende aktualisieren.
-Stand dieser Fassung: 05.08.2026, nach Abschluss von Zyklus 4 (Playbook 04 — Orchestrierung & Loops).
+Stand dieser Fassung: 06.08.2026, nach Abschluss von Zyklus 4 (Playbook 04 — Orchestrierung & Loops).
 -->
 # Harness Learning State
 

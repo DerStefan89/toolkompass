@@ -130,6 +130,110 @@ for (const datei of ['CLAUDE.md', 'ARCHITECTURE.md']) {
   })
 }
 
+// ─── Prüfung 3: Widerspricht ein Datum im Text dem "Stand dieser Fassung:"-Marker? ──
+//
+// Anlass: docs/harness/HARNESS-LEARNING-STATE.md deklariert in Zeile 4 "Stand dieser
+// Fassung: 05.08.2026", enthält aber in den Zeilen 15, 154 und 256 das jüngere Datum
+// 06.08.2026 — ein Selbstwiderspruch, den weder Prüfung 1 noch Prüfung 2 bemerkt.
+//
+// Geltungsbereich: rekursiv docs/harness/ und state/ (inklusive state/tasks/), nur
+// .md-Dateien. sammleDateinamen (oben) sammelt nur nackte Dateinamen ohne Pfad und ist
+// dafür nicht verwendbar — eigene rekursive Sammlung mit vollständigen Pfaden.
+//
+// Anker ist die VOLLE Phrase "Stand dieser Fassung:", nicht das Wort "Stand" allein:
+// state/tasks/vitest-gate-scharf.md:7 und :12 enthalten "Stand 04.08.2026" bzw.
+// "Stand 06.08.2026" — mit einem Anker nur auf "Stand" wäre das ein Fehlalarm. Ebenso
+// docs/harness/HARNESS-LEARNING-STATE.md:100 mit "Stand `480d140`": ein Commit-Hash statt
+// eines Datums hinter demselben Wort.
+//
+// Datumsformate im Text: TT.MM.JJJJ (strikt 2-2-4 Ziffern, z. B. "05.08.2026") und
+// JJJJ-MM-TT (strikt 4-2-2 Ziffern, z. B. "2026-08-02") — die strikten Gruppenlängen
+// verhindern, dass Versionsnummern (siehe Prüfung 2), Zeilenbereiche ("42-43" in
+// state/tasks/check-rules-regeln-2.md:18-21) oder Commit-Hashes (480d140) als Datum
+// gelesen werden. Eine Uhrzeit hinter dem Datum ist erlaubt und ändert am erkannten
+// Datum nichts (Beispiel: HARNESS-LEARNING-STATE.md:130, "2026-08-02 16:56").
+//
+// Ausnahmen: Eine Zeile mit "check-docs-ignore:" wird übersprungen (repliziert aus
+// Prüfung 1/2 oben, Zeilen 74 und 120 — der Mechanismus ist im Bestand pro Prüfung
+// dupliziert, nicht global).
+//
+// Ein Marker-Vorkommen ist eine Aussage einer Datei ÜBER SICH SELBST, keine bloße
+// Erwähnung der Konvention. Deshalb zählt nur eine Zeile, die am Zeilenanfang (optional
+// mit Whitespace oder einem Markdown-Präfix >, - oder *) mit der Phrase beginnt und
+// unmittelbar von einem Datum gefolgt wird. Ohne diese Einschränkung würden Verträge,
+// die den Marker selbst BESCHREIBEN statt SETZEN, fälschlich als (mehrdeutiges)
+// Vorkommen zählen — real beobachtet in state/tasks/memory-frische-gate.md (Zeilen 7,
+// 24, 26, 50, 53 zitieren die Phrase in Prosa/Anführungszeichen, keine davon am
+// Zeilenanfang) und state/advisor-findings-memory-gate.md (Zeilen 11, 13, Tabellenzellen
+// beginnend mit "|"). Zeile 7 dort ("Stand dieser Fassung: 05.08.2026", enthält aber…")
+// zeigt zusätzlich, dass "Phrase unmittelbar gefolgt von einem Datum" allein nicht
+// reicht: ohne Zeilenanfang-Bedingung wäre diese Zeile ein gültiger Marker und Zeile 8
+// (mit dem jüngeren Datum 06.08.2026) ein neuer Fehlalarm gewesen.
+
+const standMarker = 'Stand dieser Fassung:'
+const standDatumsMuster = /\b\d{2}\.\d{2}\.\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g
+const standMarkerZeile = /^\s*[>\-*]?\s*Stand dieser Fassung:\s*(\d{2}\.\d{2}\.\d{4}|\d{4}-\d{2}-\d{2})/
+
+function sammleMarkdownDateien(dir, sammlung = []) {
+  for (const eintrag of readdirSync(dir, { withFileTypes: true })) {
+    if (ausgeschlosseneVerzeichnisse.has(eintrag.name)) continue
+    const pfad = join(dir, eintrag.name)
+    if (eintrag.isDirectory()) {
+      sammleMarkdownDateien(pfad, sammlung)
+    } else if (pfad.endsWith('.md')) {
+      sammlung.push(pfad)
+    }
+  }
+  return sammlung
+}
+
+function parseDatum(treffer) {
+  const de = treffer.match(/^(\d{2})\.(\d{2})\.(\d{4})$/)
+  if (de) return new Date(Number(de[3]), Number(de[2]) - 1, Number(de[1]))
+  const [, jahr, monat, tag] = treffer.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  return new Date(Number(jahr), Number(monat) - 1, Number(tag))
+}
+
+const geprüfteMarkdownDateien = [
+  ...sammleMarkdownDateien('docs/harness'),
+  ...sammleMarkdownDateien('state'),
+]
+
+for (const datei of geprüfteMarkdownDateien) {
+  const zeilen = readFileSync(datei, 'utf-8').split('\n')
+
+  const markerZeilen = []
+  zeilen.forEach((zeile, i) => {
+    if (standMarkerZeile.test(zeile)) markerZeilen.push(i)
+  })
+
+  if (markerZeilen.length === 0) continue
+
+  if (markerZeilen.length > 1) {
+    befunde.push(
+      `${datei}:${markerZeilen[0] + 1}: mehrdeutiger Stand-Marker — "${standMarker}" erscheint mehrfach in dieser Datei`
+    )
+    continue
+  }
+
+  const [markerZeile] = markerZeilen
+  const standTreffer = zeilen[markerZeile].match(standMarkerZeile)[1]
+  const stand = parseDatum(standTreffer)
+
+  zeilen.forEach((zeile, i) => {
+    if (i === markerZeile) return
+    if (zeile.includes('check-docs-ignore:')) return
+
+    for (const treffer of new Set(zeile.match(standDatumsMuster) ?? [])) {
+      if (parseDatum(treffer) > stand) {
+        befunde.push(
+          `${datei}:${i + 1}: Datum ${treffer} ist jünger als "Stand dieser Fassung: ${standTreffer}" (Zeile ${markerZeile + 1})`
+        )
+      }
+    }
+  })
+}
+
 // ─── Ergebnis ───────────────────────────────────────────────────────────────
 if (befunde.length === 0) {
   console.log('✓ Keine Befunde.\n')
