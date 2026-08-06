@@ -54,9 +54,10 @@ npx tsx prisma/seed.ts   # Seed-Daten einspielen
 
 **Nicht im Projekt (nicht verwenden):**
 - Kein Tailwind-Preflight (nur `@import "tailwindcss/utilities"` für PostCSS)
-- Kein Zod (Pflicht vor Cashback-Webhooks in Phase 6)
 - Kein Playwright (Pflicht vor Cashback-Webhooks in Phase 6)
 - Kein Prettier (ESLint reicht)
+
+Zod ist seit Zyklus 6 im Einsatz (app/api/anfrage, app/api/track/[linkId], Muster: specs/zod-eingabevalidierung.md).
 
 ---
 
@@ -80,6 +81,9 @@ npx tsx prisma/seed.ts   # Seed-Daten einspielen
 - Ein Schreiber pro Arbeitsverzeichnis. Keine zweite Claude-Sitzung im selben Ordner; parallele Arbeit nur in getrennten git-Worktrees.
 - Iterationsende heißt: `git status` prüfen, Freigabe einholen, committen UND pushen. Gegenstück zur Commit-Freigabe-Regel — eine Bremse ohne Gaspedal erzeugt Halden.
 - Keine Versionsnummern in Prosa. Versionen stehen ausschließlich in `package.json`.
+- Zuschnitt-Heuristik für Handoff-Verträge (Playbook 06): richtig geschnitten heißt — ein Baudurchgang plus höchstens eine Korrekturrunde ohne Eskalation, mit eigenständig prüfbarem Artefakt (Test + grünes npm run check).
+- Abhängigkeit von einer vorherigen Phase ist kein Zuschnittsfehler, solange sie im CONTEXT-Abschnitt explizit benannt ist.
+- Bei Sonderzeichen/Escape-Sequenzen in Testdaten: Byte-Ebene-Verifikation (Hexdump) gehört in den OUTPUT-Abschnitt — Editor-Anzeige kann täuschen.
 
 ### Definition of Done
 - [ ] Design bleibt treu (Design-Tokens, keine neuen Farben/Schatten)
@@ -161,4 +165,7 @@ Für das Bauen selbst gibt es bewusst keine Rollen-Datei: Stack und Regeln stehe
 
 - Symptom: git add übernimmt manche Dateien stillschweigend nicht  (OneDrive-ReparsePoints) — Logos fehlten dadurch wochenlang im Repo
 - Was tun: Nach jedem git add von Binärdateien (Logos, Bilder): mit git status prüfen, ob sie wirklich staged sind.
+
+- Symptom: eine per Write-Tool erzeugte Datei enthält ein rohes Steuerzeichen (z. B. NUL-Byte) statt der geschriebenen Escape-Sequenz — git diff zeigt danach "Binary files differ" statt eines Zeilen-Diffs.
+- Was tun: bei Testdaten mit Sonderzeichen/Escape-Sequenzen den Dateiinhalt per Hexdump verifizieren, nicht der Editor-Anzeige trauen; Korrektur per Node-Skript auf Byte-Ebene, nicht per erneutem Editor-Write.
 

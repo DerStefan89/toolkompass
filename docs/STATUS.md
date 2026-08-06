@@ -42,14 +42,18 @@ Cashback-Webhooks). Phasennummern in `ARCHITECTURE.md` beziehen sich auf dieses 
 Cashback-Infrastruktur existiert **nicht** — weder Webhooks noch Admin. Die frühere
 Statusdatei behauptete das Gegenteil; korrigiert am 31.07.2026.
 
-Bevor damit begonnen wird, gilt die Regel aus `CLAUDE.md`: Zod und Playwright sind
-weiterhin Pflicht vor dem ersten Webhook, nicht danach. Vitest ist seit
+Bevor damit begonnen wird, gilt die Regel aus CLAUDE.md: Playwright ist weiterhin
+Pflicht vor dem ersten Webhook, nicht danach. Zod ist seit Zyklus 6 (PR #30)
+installiert und für zwei der vier bestehenden Endpunkte im Einsatz. Vitest ist seit
 Zwischenzyklus 4.5 (06.08.2026) eingerichtet und als blockierendes Gate aktiv
 (state/gates.md, Zeile "Test").
 
-**Bestehende Endpunkte:** `/api/anfrage`, `/api/search`, `/api/track/[linkId]`,
-`/auth/confirm`. Alle nehmen Fremddaten entgegen, aktuell ohne Schema-Validierung.
-Kein Geld im Spiel, aber dieselbe Fehlerklasse — bei Gelegenheit prüfen.
+**Bestehende Endpunkte:** /api/anfrage und /api/track/[linkId] validieren
+Fremddaten seit Zyklus 6 per Zod (specs/zod-eingabevalidierung.md). /api/search
+und /auth/confirm nehmen weiterhin Fremddaten ohne Schema-Validierung entgegen
+(Plan v2 deckte nur zwei Fresh-Context-Bau-Phasen ab, siehe
+state/plan-v2-zod-eingabevalidierung.md, Phase 3 und 5 offen). Kein Geld im Spiel,
+aber dieselbe Fehlerklasse — bei Gelegenheit fortsetzen.
 
 ---
 
