@@ -42,14 +42,23 @@ Cashback-Webhooks). Phasennummern in `ARCHITECTURE.md` beziehen sich auf dieses 
 Cashback-Infrastruktur existiert **nicht** — weder Webhooks noch Admin. Die frühere
 Statusdatei behauptete das Gegenteil; korrigiert am 31.07.2026.
 
-Bevor damit begonnen wird, gilt die Regel aus `CLAUDE.md`: Zod, Vitest und Playwright
-sind Pflicht **vor** dem ersten Webhook, nicht danach. Ein Endpunkt, der von außen
-Daten annimmt und über Geldbeträge entscheidet, wird nicht ohne Schema-Validierung
-und Tests gebaut.
+Bevor damit begonnen wird, gilt die Regel aus `CLAUDE.md`: Zod und Playwright sind
+weiterhin Pflicht vor dem ersten Webhook, nicht danach. Vitest ist seit
+Zwischenzyklus 4.5 (06.08.2026) eingerichtet und als blockierendes Gate aktiv
+(state/gates.md, Zeile "Test").
 
 **Bestehende Endpunkte:** `/api/anfrage`, `/api/search`, `/api/track/[linkId]`,
 `/auth/confirm`. Alle nehmen Fremddaten entgegen, aktuell ohne Schema-Validierung.
 Kein Geld im Spiel, aber dieselbe Fehlerklasse — bei Gelegenheit prüfen.
+
+---
+
+## Test-Gate (seit Zwischenzyklus 4.5)
+
+Vitest eingerichtet, sechstes blockierendes Gate in `npm run check` und CI.
+Details, Kalibrierung und Ausnahmeprozess: `state/gates.md`. Tests:
+`lib/utils/format.test.ts`, `lib/utils/form.test.ts`,
+`lib/utils/pagination.test.ts`, `lib/data/pricing.test.ts`.
 
 ---
 
