@@ -127,11 +127,22 @@ export async function GET(
     return NextResponse.json({ error: 'Ungültige Anfrage.' }, { status: 400 })
   }
 
-  // Link laden
-  const link = await prisma.affiliateLink.findUnique({
-    where:  { id: linkId },
-    select: { url: true, isActive: true },
-  })
+  // Link laden — DB-Fehler (z. B. ungültige Bytes in linkId) degradieren
+  // wie ein unbekannter Link, statt den Request mit 500 abzubrechen.
+  let link: { url: string; isActive: boolean } | null
+  try {
+    link = await prisma.affiliateLink.findUnique({
+      where:  { id: linkId },
+      select: { url: true, isActive: true },
+    })
+  } catch (error) {
+    console.error('[track]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
+    return NextResponse.redirect(home, { status: 302 })
+  }
 
   // Unbekannter oder inaktiver Link → zur Startseite
   if (!link || !link.isActive) {

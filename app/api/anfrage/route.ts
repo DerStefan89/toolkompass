@@ -29,12 +29,12 @@ const inquirySchema = z.object({
     .min(1)
     .refine((value) => value.includes('@') && value.includes('.')),
   description: z.string().trim().min(1),
-  companyType: z.string().trim().optional(),
-  targetUsers: z.string().trim().optional(),
-  features: z.string().trim().optional(),
-  examples: z.string().trim().optional(),
-  budget: z.string().trim().optional(),
-  timeline: z.string().trim().optional(),
+  companyType: z.string().trim().nullish(),
+  targetUsers: z.string().trim().nullish(),
+  features: z.string().trim().nullish(),
+  examples: z.string().trim().nullish(),
+  budget: z.string().trim().nullish(),
+  timeline: z.string().trim().nullish(),
 })
 
 // ─── Rate-Limit (in-memory, sliding window) ──────────────────────────────────

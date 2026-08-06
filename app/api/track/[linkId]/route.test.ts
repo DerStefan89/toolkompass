@@ -59,4 +59,13 @@ describe('GET /api/track/[linkId]', () => {
     expect(response.status).toBe(400)
     expect(mockedPrisma.affiliateLink.findUnique).not.toHaveBeenCalled()
   })
+
+  it('F3: NUL-Byte in linkId, findUnique wirft Error → Status 302, Redirect zur Startseite statt 500', async () => {
+    mockedPrisma.affiliateLink.findUnique.mockRejectedValue(new Error('invalid byte sequence'))
+
+    const response = await callGet('foo\u0000bar', browserHeaders)
+
+    expect(response.status).toBe(302)
+    expect(response.headers.get('location')).toBe('http://localhost/')
+  })
 })

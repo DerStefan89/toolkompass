@@ -96,4 +96,19 @@ describe('POST /api/anfrage', () => {
     expect(json).toEqual({ success: true })
     expect(mockedPrisma.inquiry.create).not.toHaveBeenCalled()
   })
+
+  it('F2: companyType explizit null → Status 200, success:true (gleichwertig zu fehlendem Feld)', async () => {
+    const response = await POST(
+      postRequest({
+        name: 'Max Mustermann',
+        email: 'max@example.com',
+        description: 'Ein Tool für X',
+        companyType: null,
+      })
+    )
+    const json = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(json).toEqual({ success: true })
+  })
 })
