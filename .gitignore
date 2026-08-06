@@ -56,3 +56,7 @@ Toolsucher_fehlende_Logos_PNG/
 
 # Generierter Import-Bericht, entsteht bei jedem Lauf neu
 /Content_Website/_import-report.json
+
+# Zwischenstand (Rückwärts-Handoff): Vorlage bleibt versioniert, echte Stände nicht
+state/zwischenstand/*
+!state/zwischenstand/VORLAGE.md

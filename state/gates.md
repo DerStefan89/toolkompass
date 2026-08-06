@@ -9,6 +9,7 @@
 | Secret-Scan | `gitleaks` (Docker-Image, nicht der proprietäre `gitleaks-action`-Wrapper) | Ja | Schritt "Secret-Scan (gitleaks)" im selben CI-Job `check` in `.github/workflows/ci.yml`; fällt der Schritt, fällt der ganze Job, der bereits Required Status Check ist — keine eigene Branch-Protection-Regel nötig | s. Lint |
 | Settings-Guard | `.claude/hooks/guard-settings.js` (PreToolUse-Hook, Matcher `Edit|Write`, registriert in `.claude/settings.json` unter `hooks.PreToolUse`) | Ja — `permissionDecision: "deny"` (nicht `"ask"`, s. Kalibrierungsfund unten); blockiert jede Edit/Write-Ausführung auf `.claude/settings.json`, kein Bypass ohne den Hook selbst zu entfernen | Testfall B (Write auf `docs/_guard-test-scratch.md`, danach gelöscht): Hook lief, kein Treffer, keine Ausgabe, Datei ging normal durch. Testfall A NEU (Edit auf `.claude/settings.json` mit `deny`): Tool-Aufruf scheiterte direkt mit `is_error:true` und Inhalt = `permissionDecisionReason` des Hooks ("Schreibzugriff auf geteilte settings.json blockiert...") — kein `git diff` auf der Datei danach, die Änderung kam nie an. Belegt im Transkript (`"is_error":true,"content":"Schreibzugriff auf geteilte settings.json blockiert..."`). | Absichtliche, legitime Änderung an `.claude/settings.json`: Hook-Eintrag unter `hooks.PreToolUse` in `.claude/settings.json` selbst temporär entfernen (das ist die einzig funktionierende Ausnahme, da der Hook jede andere Editier-Route auf diese Datei blockiert), Grund im Commit nennen, danach Hook wiederherstellen. |
 | Test | Vitest | Ja | `package.json` Script `check`: `... && node scripts/check-rules.mjs && npm run test` (Tests laufen zuletzt); selber CI-Job/Schritt und Branch-Protection-Regel wie oben | s. Lint |
+| Zwischenstand-Handoff | `.claude/hooks/zwischenstand-laden.js` (SessionStart) und `.claude/hooks/zwischenstand-pruefen.js` (PreCompact) | Nur bei trigger=manual und veraltetem/fehlendem Zwischenstand; bei trigger=auto nie (nur Warnung) | Verweis auf `state/tasks/zwischenstand-geruest.md` und den Nachtrag „NACHTRAG (06.08.2026) — Kalibrierung" darin | Zwischenstand aktualisieren (Zeile „Zuletzt aktualisiert:"), dann erneut versuchen |
 
 **Kalibrierungsfund (04.08.2026):** Direkt nach dem Einrichten der Required-Status-Check-Regel
 wurde ein Push auf `main` mit der Meldung `Bypassed rule violations ... Required status check
@@ -101,3 +102,22 @@ beide „✓ Keine Befunde.", alle 21 Tests grün. Von den 22 unter `docs/harnes
 `HARNESS-LEARNING-STATE.md` einen Befund (drei, dann keinen); die übrigen 21 blieben in
 beiden Läufen unverändert ohne Befund. Nach Playbook 05 Regel 2 ist damit auch dieses Gate
 belegt (rot + grün beobachtet).
+
+**Kalibrierungsfund (06.08.2026, Zwischenstand-Handoff):** Rot und grün für die
+SessionStart-Injektion sind beide belegt: mit einer Zwischenstand-Datei unter falschem
+Dateinamen (Branch ≠ Slug) blieb eine frische Sitzung bei der Kanarienprobe stumm
+("KEIN CODEWORT"); mit der Datei unter korrektem, aus `git rev-parse --abbrev-ref HEAD`
+abgeleitetem Dateinamen nannte eine frische Sitzung das im Inhalt hinterlegte Codewort
+korrekt. Die Blockade in `zwischenstand-pruefen.js` (`trigger=manual`, veralteter
+Zeitstempel) ist ebenfalls belegt, inklusive eines echten Fundes unterwegs: ein
+zukunftsdatierter Test-Zeitstempel lieferte fälschlich "frisch", weil die
+Alter-Berechnung negative Differenzen nicht abfängt — kein Skriptfehler, sondern ein
+in der Aufgabenstellung nicht vorgesehener Eingabefall. Nach Korrektur auf einen
+Zeitstempel klar vor der Systemzeit griff die Blockade wie erwartet. Offene
+Unsicherheit, bewusst nicht geschlossen: ob eine echte `/compact`-Ausführung in Claude
+Code das Top-Level-Feld `decision` von `PreCompact` tatsächlich respektiert, ist NICHT
+geprüft — ein Testversuch scheiterte an zu kurzem Sitzungsverlauf ("Not enough messages
+to compact"), und die offizielle Doku bestätigt die Nutzung von `decision`/`reason`
+nur allgemein ("by some events"), nicht namentlich für `PreCompact`. Nach Playbook 05
+Regel 2 gilt dieser Teilaspekt des Gates deshalb NICHT als belegt; die Skript-Logik
+selbst (rot + grün) schon. Details in `state/tasks/zwischenstand-geruest.md`.
