@@ -131,11 +131,12 @@ Exit 0). PR #23, gemergt.
 - Beide Hooks bestätigt über den vollständigen `hooks`-Block in `.claude/settings.json`
 - Secret-Scan bestätigt über echten Gegentest: AWS-Beispiel-Key wurde fälschlich allowlistet (Fund),
   zufälliger Fake-Key hat den CI-Job korrekt scheitern lassen (Beleg im CI-Log)
-- Branch Protection bestätigt über echten Gegentest: erster Push wurde per Admin-Bypass durchgelassen
-  (Fund), nach „Do not allow bypassing" hat derselbe Push-Versuch korrekt abgelehnt
-- Settings-Guard-Hook bestätigt über echten Gegentest: `"ask"` lief durch ohne Rückfrage (Fund, Issue
-  #13339 per `WebFetch` gegen die echte GitHub-Issue-URL verifiziert), `"deny"` hat den Edit-Aufruf
-  nachweislich mit `is_error:true` scheitern lassen (Transkript-Beleg in `state/gates.md`)
+- Branch Protection bestätigt über echten Gegentest (rot: Admin-Bypass durchgelassen; grün: nach
+  „Do not allow bypassing" korrekt abgelehnt). Details und Belege: state/gates.md:14-29
+  ("Kalibrierungsfund (04.08.2026):").
+- Settings-Guard-Hook bestätigt über echten Gegentest (rot: `"ask"` lief durch ohne Rückfrage; grün:
+  `"deny"` hat den Edit-Aufruf scheitern lassen). Details und Belege: state/gates.md:31-69
+  ("Kalibrierungsfund (04.08.2026, Settings-Guard):" bis "... Fortsetzung — `ask` → `deny`):").
 - Pricing-Ableitung live gegen laufenden Dev-Server verifiziert (Preis-Update, Cross-Page-Freshness,
   Löschen des letzten Tarifs) — nicht nur code-verifiziert
 - Regel-Gate (`check-rules.mjs`) bestätigt über echten Gegentest: zehn reale
@@ -148,10 +149,9 @@ Exit 0). PR #23, gemergt.
   Task β nicht (Details s. Zyklus-4-Abschnitt oben, „Isolation für β NICHT belegt")
 - Reparse-Point-Status von `.claude` echt geprüft statt angenommen (Cloud-Files-Tag 0x9000E01A,
   kein Symlink/Junction) — Entscheidung für externe Worktrees dadurch belegt, nicht geraten
-- Test-Gate bestätigt über echten Gegentest: bewusst gebrochene Assertion in format.test.ts ließ
-  npm run check mit Exit 1 fehlschlagen, Fehlermeldung nachweislich aus dem vitest-Schritt (nicht
-  aus Lint/Typecheck/Doku-Gate/Regel-Gate davor); zurückgedreht lief npm run check wieder mit
-  Exit 0 und 21/21 Tests grün (state/gates.md, Kalibrierungsfund + Gegentest 06.08.2026)
+- Test-Gate bestätigt über echten Gegentest (rot: bewusst gebrochene Assertion ließ npm run check
+  mit Exit 1 fehlschlagen; grün: zurückgedreht lief npm run check wieder mit Exit 0). Details und
+  Belege: state/gates.md:71-83 ("Kalibrierungsfund (06.08.2026, Test-Gate):").
 
 ## Noch unsicher / nicht aus dem Repo rekonstruierbar
 
