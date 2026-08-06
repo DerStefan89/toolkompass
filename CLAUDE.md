@@ -46,7 +46,8 @@ npm run build            # Produktions-Build
 npm run start            # Produktions-Server lokal
 npm run lint             # ESLint
 npm run typecheck        # tsc --noEmit
-npm run check            # lint + typecheck — das Tor vor jedem Commit
+npm run test             # Vitest Unit-Tests
+npm run check            # lint, typecheck, Doku-Gate, Regel-Gate, Tests — das Tor vor jedem Commit
 npx prisma generate      # Prisma-Client nach Schema-Änderung neu erzeugen
 npx tsx prisma/seed.ts   # Seed-Daten einspielen
 ```
@@ -54,7 +55,7 @@ npx tsx prisma/seed.ts   # Seed-Daten einspielen
 **Nicht im Projekt (nicht verwenden):**
 - Kein Tailwind-Preflight (nur `@import "tailwindcss/utilities"` für PostCSS)
 - Kein Zod (Pflicht vor Cashback-Webhooks in Phase 6)
-- Kein Playwright, kein Vitest (Pflicht vor Cashback-Webhooks in Phase 6)
+- Kein Playwright (Pflicht vor Cashback-Webhooks in Phase 6)
 - Kein Prettier (ESLint reicht)
 
 ---
