@@ -12,6 +12,7 @@ Stand dieser Fassung: 05.08.2026, nach Abschluss von Zyklus 4 (Playbook 04 — O
 - **Zyklus 2.5** (Sanierungsdurchgang) — 🚪✅ bestanden (30.07.–02.08.2026)
 - **Zyklus 3** (Playbook 05 — Qualität & Security) — 🚪✅ bestanden (04.08.2026)
 - **Zyklus 4** (Playbook 04 — Orchestrierung & Loops) — 🚪✅ bestanden (05.08.2026)
+- **Zwischenzyklus 4.5** (Verhaltens-Gate) — 🚪✅ bestanden (06.08.2026)
 
 **Nicht begonnen:** Zyklus 5 (Playbook 03 — Memory & State), 🚪⬜. Reihenfolge danach laut
 Master-Briefing: 06 → 07 → 09 → 08.
@@ -110,6 +111,17 @@ Master-Briefing: 06 → 07 → 09 → 08.
 - **Neuer Skill:** `.claude/skills/git-flow/SKILL.md` — der in diesem Zyklus fünfmal wiederholte
   Commit/Push/PR-Ablauf, nach der Beförderungsregel aus Anhang A konserviert (PR #15).
 
+### Zwischenzyklus 4.5 (Verhaltens-Gate)
+
+Vitest eingerichtet über drei Handoff-Verträge (`state/tasks/vitest-geruest.md`,
+`vitest-prisma-grenze.md`, `vitest-gate-scharf.md`), 21 Tests. Advisor-Pass VOR dem Bau
+(`state/advisor-findings-vitest.md`, 7 Befunde, Urteil "Freigegeben mit Hinweisen") fand real
+eine Kollision mit dem bestehenden Regel-Gate (take-ohne-skip-Fehlalarm bei
+Teil-Objekt-Assertions), vor dem Bau in Vertrag 1 eingearbeitet statt erst beim
+Scharfschalten entdeckt. Gate kalibriert nach Playbook-05-Regel 2 (rot: bewusst gebrochene
+Assertion, Exit 1, Fehlermeldung nachweislich aus dem test-Schritt; grün: zurückgedreht,
+Exit 0). PR #23, gemergt.
+
 ## Praktisch getestet (Nachweis im Repo vorhanden)
 
 - CI läuft nachweislich bei Push/PR und prüft Lint + Typecheck + Doku-Gate
@@ -136,6 +148,10 @@ Master-Briefing: 06 → 07 → 09 → 08.
   Task β nicht (Details s. Zyklus-4-Abschnitt oben, „Isolation für β NICHT belegt")
 - Reparse-Point-Status von `.claude` echt geprüft statt angenommen (Cloud-Files-Tag 0x9000E01A,
   kein Symlink/Junction) — Entscheidung für externe Worktrees dadurch belegt, nicht geraten
+- Test-Gate bestätigt über echten Gegentest: bewusst gebrochene Assertion in format.test.ts ließ
+  npm run check mit Exit 1 fehlschlagen, Fehlermeldung nachweislich aus dem vitest-Schritt (nicht
+  aus Lint/Typecheck/Doku-Gate/Regel-Gate davor); zurückgedreht lief npm run check wieder mit
+  Exit 0 und 21/21 Tests grün (state/gates.md, Kalibrierungsfund + Gegentest 06.08.2026)
 
 ## Noch unsicher / nicht aus dem Repo rekonstruierbar
 
@@ -208,6 +224,23 @@ Master-Briefing: 06 → 07 → 09 → 08.
   21 erneut — auch hier hat die Eskalationsregel ("die echte Fundstelle gewinnt") gegriffen, nicht
   die Übernahme der Vorgabe.
 
+## Verhaltensregeln für künftige Sessions (aus Zwischenzyklus 4.5, konkret aus echten Funden)
+
+- Ein neues Test-Gate kann mit einem bestehenden Text-/AST-Regel-Gate kollidieren, wenn Testcode
+  dieselben Muster wie Produktivcode verwendet. Hier: `{ page, pageSize, skip, take }`-Rückgabewerte
+  lösten die take-ohne-skip-Regel aus scripts/check-rules.mjs fälschlich aus, sobald ein Test nur
+  einen Teil des Objekts prüfte (toMatchObject). Vollständige Objektvergleiche (toEqual) vermeiden
+  den Fehlalarm. Der Advisor-Pass fand das VOR dem Bau — sonst wäre es erst beim Scharfschalten
+  (Vertrag 3) als scheinbar unerklärlicher Rot-Zustand aufgetaucht.
+- Config-Annahmen gelten erst nach dem ersten echten Gebrauch als belegt, nicht nach dem Schreiben
+  der Config. Der Pfad-Alias in vitest.config.mts wurde in Vertrag 1 angelegt, aber nicht benutzt
+  (Testdateien importierten relativ) — erst der `@/lib/prisma`-Import in Vertrag 2 war der echte
+  Test.
+- Die in Zyklus 3 dokumentierte Regel "Cross-Environment-Git-Diffs nicht blind glauben" wurde in
+  diesem Zyklus real reproduziert (CRLF-Rauschen aus einer gemounteten Linux-Sandbox zeigte sechs
+  Dateien fälschlich als "modified", die in der nativen Session unverändert waren) — zweite
+  Bestätigung derselben Regel, kein neuer Fund.
+
 ## Voraussetzungen und nächste Schritte für Zyklus 5
 
 Zyklus 4 (Playbook 04 — Orchestrierung & Loops) ist abgeschlossen: Handoff-Verträge unter
@@ -219,3 +252,6 @@ Zeile „Loop". Nächster Zyklus laut Reihenfolge in `00-MASTER-BRIEFING.md`: Pl
 (Memory & State). Kein bekannter Blocker. Offen bleibt die in `state/repo-audit-zyklus4.md`
 Abschnitt 1.4 aufgeworfene, bewusst ungeklärte Frage, ob der Executor/Advisor-Pipeline-Durchlauf
 aus Zyklus 3 bereits als Loop im Playbook-Sinn zählt — nicht blockierend für Zyklus 5.
+
+Zwischenzyklus 4.5 ist ebenfalls abgeschlossen (06.08.2026) — das Test-Gate (Vitest, 21 Tests)
+ist ab jetzt Teil der Baseline, die jede künftige Änderung grün halten muss.
