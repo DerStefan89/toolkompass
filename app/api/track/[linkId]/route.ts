@@ -20,7 +20,16 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
+import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
+
+// ─── Validierung ──────────────────────────────────────────────────────────────
+
+/**
+ * Nur Leerstring-Prüfung, bewusst keine Formatprüfung (z. B. cuid()) —
+ * siehe specs/zod-eingabevalidierung.md, Abschnitt "Entschieden" zu V12.
+ */
+const linkIdSchema = z.string().trim().min(1)
 
 // ─── Bot-Erkennung ────────────────────────────────────────────────────────────
 
@@ -110,6 +119,12 @@ export async function GET(
     }
   } else {
     console.warn('[track] no IP detectable')
+  }
+
+  // linkId-Prüfung (nur Leerstring, siehe Kommentar bei linkIdSchema)
+  const parsedLinkId = linkIdSchema.safeParse(linkId)
+  if (!parsedLinkId.success) {
+    return NextResponse.json({ error: 'Ungültige Anfrage.' }, { status: 400 })
   }
 
   // Link laden
