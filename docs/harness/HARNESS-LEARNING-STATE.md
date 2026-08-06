@@ -1,7 +1,7 @@
 <!--
 Ziel-Pfad im Repo: docs/harness/HARNESS-LEARNING-STATE.md
 Diese Datei verändert sich mit jedem abgeschlossenen Zyklus — bei Zyklus-Ende aktualisieren.
-Stand dieser Fassung: 06.08.2026, nach Abschluss von Zyklus 4 (Playbook 04 — Orchestrierung & Loops).
+Stand dieser Fassung: 06.08.2026, nach Abschluss von Zyklus 5 (Playbook 03 — Memory & State).
 -->
 # Harness Learning State
 
@@ -13,9 +13,10 @@ Stand dieser Fassung: 06.08.2026, nach Abschluss von Zyklus 4 (Playbook 04 — O
 - **Zyklus 3** (Playbook 05 — Qualität & Security) — 🚪✅ bestanden (04.08.2026)
 - **Zyklus 4** (Playbook 04 — Orchestrierung & Loops) — 🚪✅ bestanden (05.08.2026)
 - **Zwischenzyklus 4.5** (Verhaltens-Gate) — 🚪✅ bestanden (06.08.2026)
+- **Zyklus 5** (Playbook 03 — Memory & State) — 🚪✅ bestanden (06.08.2026)
 
-**Nicht begonnen:** Zyklus 5 (Playbook 03 — Memory & State), 🚪⬜. Reihenfolge danach laut
-Master-Briefing: 06 → 07 → 09 → 08.
+**Nicht begonnen:** Zyklus 6 (Playbook 06 — Entwicklungs-Methodik), 🚪⬜. Reihenfolge danach laut
+Master-Briefing: 6.5 → 07 → 09 → 08.
 
 ## Bereits gelernt und gebaut (mit Repo-Nachweis)
 
@@ -122,6 +123,32 @@ Scharfschalten entdeckt. Gate kalibriert nach Playbook-05-Regel 2 (rot: bewusst 
 Assertion, Exit 1, Fehlermeldung nachweislich aus dem test-Schritt; grün: zurückgedreht,
 Exit 0). PR #23, gemergt.
 
+### Zyklus 5 (Playbook 03 — Memory & State)
+
+- **Übung 3 (Frische-Regel im Doku-Gate):** `scripts/check-docs.mjs` um eine dritte Prüfung
+  ergänzt (Stand-Marker muss mindestens so aktuell sein wie jedes andere Datum im Dokument),
+  Kalibrierungsabsatz in `state/gates.md`. Nachweis: `state/tasks/memory-frische-gate.md`,
+  `state/advisor-findings-memory-gate.md`. PR #25, gemergt.
+- **Übung 1 (Rückwärts-Handoff):** `state/zwischenstand/` (per `.gitignore` ungetrackt bis auf
+  `VORLAGE.md`), `.claude/hooks/zwischenstand-laden.js` (SessionStart) und
+  `.claude/hooks/zwischenstand-pruefen.js` (PreCompact) neu, dazu eine Zeile
+  "Zwischenstand-Handoff" in `state/gates.md`. Nachweis: `state/tasks/zwischenstand-geruest.md`,
+  `state/advisor-findings-zwischenstand.md`. PR #26, gemergt.
+- **Übung 2 (Memory-Map):** `state/memory-map.md` neu (14 Info-Typen mit Schreib-Heimat).
+  Drei Bullet-Punkte in "## Praktisch getestet" (Branch-Protection, Settings-Guard, Test-Gate)
+  von Detail-Prosa auf Verweise nach `state/gates.md` gekürzt. Nachweis:
+  `state/tasks/memory-map-geruest.md`, `state/advisor-findings-memory-map.md`. PR #27, gemergt.
+- **Zusätzlich, ungeplant (Settings-Leck):** Die globale `~/.claude/settings.json` (außerhalb
+  dieses Repos) enthielt pauschale Freigaben für `git push`, `git commit`, `Read(//c/**)` und
+  `Read(//c/Users/stefa/**)` — entfernt, Gegentest bestanden (`git push` löst seither eine
+  Rückfrage aus). `state/triggers.md` um zwei reale Trigger ergänzt (SessionStart- und
+  PreCompact-Hook aus Übung 1, ursprünglich vergessen, nachträglich gefunden und ergänzt).
+- **Websuche-Nachträge (Playbook-Regel 5) zu Playbook 03:** AutoDream präzisiert (24h UND
+  mindestens 5 Sessions, vierphasig, MEMORY.md + Topic-Dateien, Index unter 200 Zeilen);
+  claude-mem-Sicherheitsrisiko ergänzt (Community-Audit Februar 2026, HIGH risk,
+  unauthentifizierte lokale HTTP-API Port 37777); Dreams-API weiterhin Research Preview,
+  bestätigt.
+
 ## Praktisch getestet (Nachweis im Repo vorhanden)
 
 - CI läuft nachweislich bei Push/PR und prüft Lint + Typecheck + Doku-Gate
@@ -152,6 +179,20 @@ Exit 0). PR #23, gemergt.
 - Test-Gate bestätigt über echten Gegentest (rot: bewusst gebrochene Assertion ließ npm run check
   mit Exit 1 fehlschlagen; grün: zurückgedreht lief npm run check wieder mit Exit 0). Details und
   Belege: state/gates.md:71-83 ("Kalibrierungsfund (06.08.2026, Test-Gate):").
+- Zwischenstand-Handoff bestätigt über echte Kanarienprobe (rot: Zwischenstand unter falschem
+  Dateinamen angelegt, frische Sitzung antwortete korrekt "KEIN CODEWORT"; grün: Zwischenstand
+  unter dem korrekten, aus `git rev-parse --abbrev-ref HEAD` abgeleiteten Dateinamen angelegt,
+  frische Sitzung nannte das Codewort korrekt). Realer Blockade-Fund dabei: ein erster
+  Zukunfts-Zeitstempel (`11:00` bei Systemzeit `14:18`) ergab eine negative Zeitdifferenz und
+  wurde dadurch fälschlich als frisch gelesen — nach Korrektur auf einen Zeitstempel klar vor der
+  Systemzeit lieferte `zwischenstand-pruefen.js` die erwartete Blockade. Details:
+  `state/tasks/zwischenstand-geruest.md`, Nachtrag.
+- Memory-Map-Dublette bestätigt gefunden und aufgeräumt (Gate-Kalibrierungsbelege in
+  `state/gates.md` UND `HARNESS-LEARNING-STATE.md`, drei Bullet-Punkte auf Verweise gekürzt).
+  Der Advisor-Pass vor dem Bau fand dabei eine zweite, vom ursprünglichen Plan nicht erfasste
+  Dublette (Settings-Guard-Vorfall in "Bereits gelernt und gebaut", Zyklus 3) — bewusst NICHT
+  aufgeräumt, da andere Rolle (Baugeschichte statt Evidenz-Katalog). Details:
+  `state/advisor-findings-memory-map.md`, Befund a2.
 
 ## Noch unsicher / nicht aus dem Repo rekonstruierbar
 
@@ -168,6 +209,10 @@ Exit 0). PR #23, gemergt.
   keine eigenen Commits, die tatsächliche Arbeit liegt auf einem anderen Branch ohne erkennbaren
   Bezug zum Worktree. Die gemergten Zyklus-4-Branches wurden im Zuge des Aufräumens nach
   Zyklus-Ende bereits gelöscht — nicht mehr aus dem Repo rekonstruierbar.
+- Ob eine ECHTE `/compact` das Top-Level-Feld `decision` bei `PreCompact` respektiert und die
+  Verdichtung tatsächlich stoppt — ein Testversuch scheiterte an "Not enough messages to
+  compact", die offizielle Doku bestätigt das Verhalten für `PreCompact` nicht namentlich.
+  Details: `state/tasks/zwischenstand-geruest.md`, Nachtrag.
 
 ## Verhaltensregeln für künftige Sessions (aus Zyklus 3, konkret aus echten Vorfällen)
 
@@ -241,17 +286,23 @@ Exit 0). PR #23, gemergt.
   Dateien fälschlich als "modified", die in der nativen Session unverändert waren) — zweite
   Bestätigung derselben Regel, kein neuer Fund.
 
-## Voraussetzungen und nächste Schritte für Zyklus 5
+## Verhaltensregeln für künftige Sessions (aus Zyklus 5, konkret aus echten Funden)
 
-Zyklus 4 (Playbook 04 — Orchestrierung & Loops) ist abgeschlossen: Handoff-Verträge unter
-`state/tasks/` real erprobt (Übung 1), eine Stern-Topologie mit zwei echt isolierten, externen
-Worktrees durchgeführt (Übung 2), ein Trigger-Inventar erstellt (Übung 3). Ein Loop im engeren
-Sinn (wiederholender, automatisierter Ablauf mit Evaluator und Zeit-/Event-Trigger) wurde bewusst
-nicht gebaut — kein Zeit-Trigger existiert im Repo, s. `docs/harness/HARNESS-GLOSSARY.md`,
-Zeile „Loop". Nächster Zyklus laut Reihenfolge in `00-MASTER-BRIEFING.md`: Playbook 03
-(Memory & State). Kein bekannter Blocker. Offen bleibt die in `state/repo-audit-zyklus4.md`
-Abschnitt 1.4 aufgeworfene, bewusst ungeklärte Frage, ob der Executor/Advisor-Pipeline-Durchlauf
-aus Zyklus 3 bereits als Loop im Playbook-Sinn zählt — nicht blockierend für Zyklus 5.
+- **Ein Advisor-Pass kann eine zweite, vom Menschen übersehene Dublette finden, nicht nur die im
+  Auftrag benannte.** Plan v1 für die Memory-Map-Bereinigung nannte nur die
+  Branch-Protection-Dublette; der `architecture-advisor` fand zusätzlich die Settings-Guard-Stelle
+  in "Bereits gelernt und gebaut" (Befund a2, `state/advisor-findings-memory-map.md`) — ein Plan
+  gilt erst nach der Advisor-Prüfung als vollständig, nicht beim Schreiben.
+- **Ein künstlicher Test-Zeitstempel kann in der Zukunft statt Vergangenheit liegen und dadurch
+  das Gegenteil des gewollten Zustands erzeugen.** Beim Zwischenstand-Gegentest lag der erste
+  "veraltete" Zeitstempel (`11:00`) nach der echten Systemzeit (`14:18`) — die negative
+  Zeitdifferenz wurde fälschlich als "frisch" gelesen. Vor jedem Alters-Test die Systemzeit
+  gegenprüfen.
 
-Zwischenzyklus 4.5 ist ebenfalls abgeschlossen (06.08.2026) — das Test-Gate (Vitest, 21 Tests)
-ist ab jetzt Teil der Baseline, die jede künftige Änderung grün halten muss.
+## Voraussetzungen und nächste Schritte für Zyklus 6
+
+Zyklus 5 (Playbook 03 — Memory & State) ist abgeschlossen: Frische-Regel im Doku-Gate (Übung 3,
+PR #25), Rückwärts-Handoff über SessionStart-/PreCompact-Hooks (Übung 1, PR #26), Memory-Map mit
+aufgeräumter Gate-Kalibrierungs-Dublette (Übung 2, PR #27). Nächster Zyklus laut Reihenfolge in
+`00-MASTER-BRIEFING.md`: Playbook 06 (Entwicklungs-Methodik). Kein bekannter Blocker.
+
