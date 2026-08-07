@@ -1,7 +1,7 @@
 <!--
 Ziel-Pfad im Repo: docs/harness/HARNESS-LEARNING-STATE.md
 Diese Datei verändert sich mit jedem abgeschlossenen Zyklus — bei Zyklus-Ende aktualisieren.
-Stand dieser Fassung: 06.08.2026, nach Abschluss von Zyklus 5 (Playbook 03 — Memory & State).
+Stand dieser Fassung: 07.08.2026, nach Abschluss von Zyklus 6 (Playbook 06 — Entwicklungs-Methodik).
 -->
 # Harness Learning State
 
@@ -14,9 +14,10 @@ Stand dieser Fassung: 06.08.2026, nach Abschluss von Zyklus 5 (Playbook 03 — M
 - **Zyklus 4** (Playbook 04 — Orchestrierung & Loops) — 🚪✅ bestanden (05.08.2026)
 - **Zwischenzyklus 4.5** (Verhaltens-Gate) — 🚪✅ bestanden (06.08.2026)
 - **Zyklus 5** (Playbook 03 — Memory & State) — 🚪✅ bestanden (06.08.2026)
+- **Zyklus 6** (Playbook 06 — Entwicklungs-Methodik) — 🚪✅ bestanden (07.08.2026)
 
-**Nicht begonnen:** Zyklus 6 (Playbook 06 — Entwicklungs-Methodik), 🚪⬜. Reihenfolge danach laut
-Master-Briefing: 6.5 → 07 → 09 → 08.
+**Nicht begonnen:** Zwischenzyklus 6.5 (Template & Werkzeuge), 🚪⬜. Reihenfolge danach laut
+Master-Briefing: 07 → 09 → 08.
 
 ## Bereits gelernt und gebaut (mit Repo-Nachweis)
 
@@ -149,6 +150,69 @@ Exit 0). PR #23, gemergt.
   unauthentifizierte lokale HTTP-API Port 37777); Dreams-API weiterhin Research Preview,
   bestätigt.
 
+### Zyklus 6 (Playbook 06 — Entwicklungs-Methodik)
+
+- **Übung 1 (Kernzyklus an der Zod-Eingabevalidierung):** Vollständiger Durchlauf
+  Spec → Plan v1 → `architecture-advisor`-Findings → Plan v2 → Umsetzung →
+  qa-Review-Fixes für drei der vier in der Spec (`specs/zod-eingabevalidierung.md`,
+  V1–V15) genannten Route-Handler: `app/api/anfrage/route.ts` (V1–V6, Zod-Schema
+  `inquirySchema`, `safeParse` Zeile 98), `app/api/search/route.ts` (V7–V9,
+  Zod-Schema `searchQuerySchema`, `safeParse` Zeile 83, bewusst als
+  Konsistenz-Phase ohne Verhaltensänderung) und `app/api/track/[linkId]/route.ts`
+  (V10–V12, Zod-Schema `linkIdSchema`, `safeParse` Zeile 125). `app/auth/confirm/
+  route.ts` (V13–V15) bleibt offen: kein Zod-Import, `type` wird weiterhin
+  ungeprüft per `as EmailOtpType | null` gecastet (Zeile 37) — Phase 5 aus
+  `state/plan-v2-zod-eingabevalidierung.md` wurde nicht umgesetzt. Deckungsgleich
+  mit `docs/STATUS.md` Zeile 47 und `HARNESS-GLOSSARY.md` Zeile 34 ("drei von vier
+  Endpunkten", `/auth/confirm` offen). Der Advisor traf den Plan am
+  härtesten bei einer plausibel wirkenden, aber technisch falschen Alternative
+  (`typeof body === 'object'` fängt `null` nicht ab — genau der Fall, den V1
+  verlangt; der Fehler wäre erst im Betrieb aufgefallen, nicht beim Bauen). Phase 3
+  (search-Route) erwies sich als Konsistenz-Phase ohne Verhaltensänderung, weil `q`
+  über die Web-API bereits `string | null` ist — auch das fand der Advisor, nicht
+  der Plan; die Phase blieb bewusst bestehen, aber umbenannt und als bei Zeitdruck
+  streichbar gekennzeichnet. Nachweis: `specs/zod-eingabevalidierung.md`,
+  `state/plan-v1-zod-eingabevalidierung.md`,
+  `state/plan-v2-zod-eingabevalidierung.md`,
+  `state/advisor-findings-zod-eingabevalidierung.md`,
+  `state/tasks/zod-phase1-2-anfrage.md`, `state/tasks/zod-phase3-search.md`,
+  `state/tasks/zod-phase4-track.md`, `state/tasks/zod-review-fixes.md`, Tests unter
+  `app/api/anfrage/route.test.ts`, `app/api/search/route.test.ts`,
+  `app/api/track/[linkId]/route.test.ts`. PR #30.
+- **Übung 2 (Zuschnitt-Heuristik in CLAUDE.md):** Aus der Kunden-PO-Erklärung
+  (Scrum-Wissen bleibt gültig, aber die User Story wird zur Spec mit prüfbaren
+  Aussagen und einem Abschnitt, den Scrum nicht kennt — Nicht-Ziele, damit ein
+  hilfsbereiter Agent nicht nebenan gleich mitrepariert) entstand die jetzt
+  verbindliche Zuschnitt-Heuristik für Handoff-Verträge: ein Baudurchgang plus
+  höchstens eine Korrekturrunde ohne Eskalation, mit eigenständig prüfbarem
+  Artefakt (Test + grünes `npm run check`); Abhängigkeit von einer vorherigen
+  Phase ist kein Zuschnittsfehler, solange sie im CONTEXT-Abschnitt explizit
+  benannt ist. Nachweis: `CLAUDE.md` Zeilen 84–86. PR #30.
+- **Übung 3 (Framework-Sichtung Superpowers):** `github.com/obra/superpowers` an
+  einer trivialen Aufgabe geprüft, nach der Auswahlprozedur aus
+  `.claude/skills/werkzeug-auswahl/SKILL.md`. Ergebnis: „trial, eng begrenzt" —
+  zwei Stärken (Zeremonie skaliert mit Aufgabengröße; Methodik auffindbar statt
+  verstreut), zwei verdeckte Risiken (die Auslassung von Plan/Review wurde nicht
+  berichtet; ein eigenständiger Commit ohne Rückfrage kollidiert mit „keine
+  Commits ohne explizite Freigabe"), ein ungeprüfter Bereich (die Zwei-Stufen-
+  Review oberhalb von trivial wurde im beobachteten Lauf nie aktiv). Nicht
+  einsetzbar für Aufgaben mit Blast Radius, das Template-Repo selbst oder überall,
+  wo ohne Freigabe committet werden könnte. Nachweis:
+  `state/framework-sichtung-superpowers.md`, `state/tooling.md` (Abschnitt
+  „Bewusst nicht installiert"). PR #33.
+- **Zusätzlich, vorgezogen aus Zwischenzyklus 6.5 (Template & Werkzeuge):**
+  `state/tooling.md` als Tooling-Bestandstabelle neu angelegt (vier aktive
+  Skills: `git-flow`, `ponytail`, `repo-audit`, `tool-anlegen`) und die
+  Auswahlprozedur selbst als vendorter Skill `werkzeug-auswahl` übernommen (aus
+  `DerStefan89/claude-playbook`, Stand 07.08.2026, Commit `57ca0e7`) statt als
+  Prosa-Dokument geführt. Nachweis: `state/tooling.md`,
+  `.claude/skills/werkzeug-auswahl/SKILL.md`. PR #31.
+
+**Tor-Abnahme-Hinweis:** Die zweite Tor-Bedingung (Agile-Übersetzungstabelle frei
+anwenden) wurde nicht vom Nutzer selbst demonstriert, sondern vom Coach erklärt —
+Tor dennoch als bestanden gewertet, da alle drei Praxisnachweise vollständig als
+Artefakte vorliegen. Gleiches Vorgehen wie bei Zyklus 5.
+
 ## Praktisch getestet (Nachweis im Repo vorhanden)
 
 - CI läuft nachweislich bei Push/PR und prüft Lint + Typecheck + Doku-Gate
@@ -193,6 +257,15 @@ Exit 0). PR #23, gemergt.
   Dublette (Settings-Guard-Vorfall in "Bereits gelernt und gebaut", Zyklus 3) — bewusst NICHT
   aufgeräumt, da andere Rolle (Baugeschichte statt Evidenz-Katalog). Details:
   `state/advisor-findings-memory-map.md`, Befund a2.
+- Zod-Route-Tests bestätigt: qa-Review-Findings F2 (optionale Felder in
+  `app/api/anfrage/route.ts` akzeptieren jetzt explizites `null` gleichwertig zu
+  fehlendem Feld — `.nullish()` statt `.optional()`) und F3 (ein DB-Fehler bei
+  `prisma.affiliateLink.findUnique`, z. B. ein NUL-Byte in `linkId`, wird
+  abgefangen und degradiert zu einem 302-Redirect zur Startseite statt einer
+  unbehandelten Exception) führten je zu Fix und neuem Testfall (Commit
+  `c0115aa`). Alle drei Route-Testdateien (`app/api/anfrage/route.test.ts`,
+  `app/api/search/route.test.ts`, `app/api/track/[linkId]/route.test.ts`) laufen
+  grün. Details: `state/tasks/zod-review-fixes.md`.
 
 ## Noch unsicher / nicht aus dem Repo rekonstruierbar
 
@@ -213,6 +286,24 @@ Exit 0). PR #23, gemergt.
   Verdichtung tatsächlich stoppt — ein Testversuch scheiterte an "Not enough messages to
   compact", die offizielle Doku bestätigt das Verhalten für `PreCompact` nicht namentlich.
   Details: `state/tasks/zwischenstand-geruest.md`, Nachtrag.
+- Ob der vollständige qa-Review-Text zu Zyklus-6-Übung 1 (Findings F2, F3 u. a.) je
+  als eigene Datei festgehalten wurde: nein — `state/tasks/zod-review-fixes.md`
+  verweist auf den Chat-Verlauf der Session, die den Review durchgeführt hat;
+  erhalten sind nur die Findings in Form von Fix und Test, nicht der vollständige
+  Befund-Text. Verstößt gegen den Grundsatz aus Playbook 03 („die Platte ist das
+  Gedächtnis").
+- Ob der in `state/tasks/zod-review-fixes.md` (OUTPUT-Abschnitt, Zeile 38-41)
+  verlangte rote Gegentest-Nachweis für den NUL-Byte-Test tatsächlich
+  durchgeführt wurde: kein Beleg auf der Platte. Commit `c0115aa` bündelt Fix
+  und Test in einem einzigen Commit ohne roten Zwischenstand; weder
+  `state/gates.md` noch die Commit-Nachricht noch eine andere Datei im Repo
+  dokumentieren einen Lauf mit entferntem Fix und fehlschlagendem Test. Belegt
+  ist nur: Fix und Testfall existieren, alle drei Testdateien laufen grün.
+- Ursache des Vitest-Ausfalls vom 07.08.2026 (alle Testdateien scheiterten beim
+  Import — "Vitest failed to find the runner" — ohne dass Testcode oder
+  Konfiguration geändert worden waren, ~20 Minuten später ohne jede Änderung
+  wieder grün) ist ungeklärt. Verdacht auf OneDrive-Synchronisation während des
+  Laufs, nicht belegt. Details: vierte bekannte Falle in `CLAUDE.md`.
 
 ## Verhaltensregeln für künftige Sessions (aus Zyklus 3, konkret aus echten Vorfällen)
 
@@ -299,10 +390,36 @@ Exit 0). PR #23, gemergt.
   Zeitdifferenz wurde fälschlich als "frisch" gelesen. Vor jedem Alters-Test die Systemzeit
   gegenprüfen.
 
-## Voraussetzungen und nächste Schritte für Zyklus 6
+## Verhaltensregeln für künftige Sessions (aus Zyklus 6, konkret aus echten Funden)
 
-Zyklus 5 (Playbook 03 — Memory & State) ist abgeschlossen: Frische-Regel im Doku-Gate (Übung 3,
-PR #25), Rückwärts-Handoff über SessionStart-/PreCompact-Hooks (Übung 1, PR #26), Memory-Map mit
-aufgeräumter Gate-Kalibrierungs-Dublette (Übung 2, PR #27). Nächster Zyklus laut Reihenfolge in
-`00-MASTER-BRIEFING.md`: Playbook 06 (Entwicklungs-Methodik). Kein bekannter Blocker.
+- **Ein plausibel wirkender Fix-Vorschlag kann technisch falsch sein, ohne dass es
+  beim Bauen auffällt.** Der Advisor verwarf im Zyklus-6-Plan die Alternative
+  `typeof body === 'object'` als Guard gegen `body === null` — sie liest sich
+  richtig, ist es aber nicht (`typeof null === 'object'` in JavaScript), und genau
+  `body === null` ist der Fall, den V1 verlangt. Der Fehler wäre nicht beim Bauen
+  aufgefallen, sondern erst im Betrieb. Details:
+  `state/advisor-findings-zod-eingabevalidierung.md`, Finding 1.
+- **Falscher Zuschnitt zeigt sich manchmal erst am fehlenden Nutzen, nicht an
+  einem Fehler.** Phase 3 (search-Route) im Zyklus-6-Plan lieferte keine
+  Verhaltensänderung, weil `q` über die Web-API bereits `string | null` ist —
+  bemerkt hat das der Advisor, nicht der Plan. Die Phase blieb bewusst bestehen,
+  aber als „Konsistenz-Phase ohne Verhaltensänderung" umbenannt und mit dem
+  Hinweis versehen, dass sie bei Zeitdruck streichbar ist. Details:
+  `state/plan-v2-zod-eingabevalidierung.md`, Phase 3.
+- **Eine User Story wird zur Spec durch einen Abschnitt, den Scrum nicht kennt:
+  Nicht-Ziele.** Scrum-Wissen des Kunden-PO bleibt gültig, aber die Übersetzung in
+  eine Spec mit prüfbaren Aussagen braucht zusätzlich explizite Nicht-Ziele — sie
+  halten die Arbeit klein, weil ein hilfsbereiter Agent sonst nebenan gleich
+  mitrepariert. Details: `specs/zod-eingabevalidierung.md`, Abschnitt
+  „Nicht-Ziele".
+
+## Voraussetzungen und nächste Schritte für Zwischenzyklus 6.5
+
+Zyklus 6 (Playbook 06 — Entwicklungs-Methodik) ist abgeschlossen: Kernzyklus an der
+Zod-Eingabevalidierung (Übung 1, PR #30), Zuschnitt-Heuristik in CLAUDE.md (Übung 2,
+PR #30), Framework-Sichtung Superpowers (Übung 3, PR #33), plus vorgezogen aus
+Zwischenzyklus 6.5 das Tooling-Bestandsgerüst und der vendorte Skill
+`werkzeug-auswahl` (PR #31). Nächster Zyklus laut Reihenfolge in
+`00-MASTER-BRIEFING.md`: Zwischenzyklus 6.5 (Template & Werkzeuge), danach
+07 → 09 → 08. Kein bekannter Blocker.
 
