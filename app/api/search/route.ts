@@ -14,11 +14,23 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 
 // Such-API: Node-Runtime (Prisma) und nie cachen.
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+
+// ─── Validierung ──────────────────────────────────────────────────────────────
+
+/**
+ * Nur Typ-Prüfung (string | null) — q ist über die Web-API bereits statisch so
+ * typisiert, das Schema ändert kein Verhalten (Konsistenz mit den anderen drei
+ * Routen, siehe specs/zod-eingabevalidierung.md V7-V9). Kürzung auf
+ * MAX_QUERY_LENGTH und der Mindestlängen-Check bleiben eigenständige
+ * Anwendungslogik-Schritte danach.
+ */
+const searchQuerySchema = z.string().nullable()
 
 // ─── Rate-Limit (gleiche Architektur wie app/api/track/[linkId]/route.ts) ────
 
@@ -67,8 +79,14 @@ export async function GET(request: NextRequest) {
     return new NextResponse(null, { status: 429 })
   }
 
+  // Typ-Prüfung (Konsistenz mit den anderen Routen, keine Verhaltensänderung — siehe V7-V9)
+  const parsedQuery = searchQuerySchema.safeParse(request.nextUrl.searchParams.get('q'))
+  if (!parsedQuery.success) {
+    return NextResponse.json({ error: 'Ungültige Anfrage.' }, { status: 400 })
+  }
+
   // Query kappen und validieren
-  const q = (request.nextUrl.searchParams.get('q')?.trim() ?? '').slice(0, MAX_QUERY_LENGTH)
+  const q = (parsedQuery.data?.trim() ?? '').slice(0, MAX_QUERY_LENGTH)
 
   if (q.length < 2) {
     return NextResponse.json([])

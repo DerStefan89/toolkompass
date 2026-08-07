@@ -20,7 +20,16 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
+import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
+
+// ─── Validierung ──────────────────────────────────────────────────────────────
+
+/**
+ * Nur Leerstring-Prüfung, bewusst keine Formatprüfung (z. B. cuid()) —
+ * siehe specs/zod-eingabevalidierung.md, Abschnitt "Entschieden" zu V12.
+ */
+const linkIdSchema = z.string().trim().min(1)
 
 // ─── Bot-Erkennung ────────────────────────────────────────────────────────────
 
@@ -112,11 +121,28 @@ export async function GET(
     console.warn('[track] no IP detectable')
   }
 
-  // Link laden
-  const link = await prisma.affiliateLink.findUnique({
-    where:  { id: linkId },
-    select: { url: true, isActive: true },
-  })
+  // linkId-Prüfung (nur Leerstring, siehe Kommentar bei linkIdSchema)
+  const parsedLinkId = linkIdSchema.safeParse(linkId)
+  if (!parsedLinkId.success) {
+    return NextResponse.json({ error: 'Ungültige Anfrage.' }, { status: 400 })
+  }
+
+  // Link laden — DB-Fehler (z. B. ungültige Bytes in linkId) degradieren
+  // wie ein unbekannter Link, statt den Request mit 500 abzubrechen.
+  let link: { url: string; isActive: boolean } | null
+  try {
+    link = await prisma.affiliateLink.findUnique({
+      where:  { id: linkId },
+      select: { url: true, isActive: true },
+    })
+  } catch (error) {
+    console.error('[track]', error)
+    if (process.env.SENTRY_DSN) {
+      const { captureException } = await import('@sentry/nextjs')
+      captureException(error)
+    }
+    return NextResponse.redirect(home, { status: 302 })
+  }
 
   // Unbekannter oder inaktiver Link → zur Startseite
   if (!link || !link.isActive) {

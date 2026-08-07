@@ -9,10 +9,33 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+
+// ─── Validierung ──────────────────────────────────────────────────────────────
+
+/**
+ * E-Mail-Prüfung bewusst so einfach wie app/einloggen/actions.ts:38
+ * (enthält @ und .), nicht RFC-strikt.
+ */
+const inquirySchema = z.object({
+  name: z.string().trim().min(1),
+  email: z
+    .string()
+    .trim()
+    .min(1)
+    .refine((value) => value.includes('@') && value.includes('.')),
+  description: z.string().trim().min(1),
+  companyType: z.string().trim().nullish(),
+  targetUsers: z.string().trim().nullish(),
+  features: z.string().trim().nullish(),
+  examples: z.string().trim().nullish(),
+  budget: z.string().trim().nullish(),
+  timeline: z.string().trim().nullish(),
+})
 
 // ─── Rate-Limit (in-memory, sliding window) ──────────────────────────────────
 
@@ -52,42 +75,48 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  let body: Record<string, unknown>
+  let json: unknown
   try {
-    body = await request.json()
+    json = await request.json()
   } catch {
     return NextResponse.json({ error: 'Ungültige Anfrage.' }, { status: 400 })
   }
 
+  if (json === null || typeof json !== 'object' || Array.isArray(json)) {
+    return NextResponse.json({ error: 'Ungültige Anfrage.' }, { status: 400 })
+  }
+  const body = json as Record<string, unknown>
+
   // Honeypot: befülltes Feld = Bot → still verwerfen (kein Fehler)
+  // Bewusst außerhalb des Zod-Schemas, lose Koerzion bleibt unverändert
+  // (Bot-Filter-Verhalten ist Bestandsschutz, keine Eingabevalidierung).
   const honeypot = String(body._honeypot ?? '')
   if (honeypot.length > 0) {
     return NextResponse.json({ success: true })
   }
 
-  const name = String(body.name ?? '').trim()
-  const email = String(body.email ?? '').trim()
-  const description = String(body.description ?? '').trim()
-
-  if (!name || !email || !description) {
+  const parsed = inquirySchema.safeParse(body)
+  if (!parsed.success) {
     return NextResponse.json(
       { error: 'Name, E-Mail und Beschreibung sind Pflichtfelder.' },
       { status: 400 }
     )
   }
+  const { name, email, description, companyType, targetUsers, features, examples, budget, timeline } =
+    parsed.data
 
   try {
     await prisma.inquiry.create({
       data: {
         name,
         email,
-        companyType: String(body.companyType ?? '').trim() || null,
+        companyType: companyType || null,
         description,
-        targetUsers: String(body.targetUsers ?? '').trim() || null,
-        features: String(body.features ?? '').trim() || null,
-        examples: String(body.examples ?? '').trim() || null,
-        budget: String(body.budget ?? '').trim() || null,
-        timeline: String(body.timeline ?? '').trim() || null,
+        targetUsers: targetUsers || null,
+        features: features || null,
+        examples: examples || null,
+        budget: budget || null,
+        timeline: timeline || null,
       },
     })
     return NextResponse.json({ success: true })
