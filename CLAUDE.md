@@ -169,3 +169,6 @@ Für das Bauen selbst gibt es bewusst keine Rollen-Datei: Stack und Regeln stehe
 - Symptom: eine per Write-Tool erzeugte Datei enthält ein rohes Steuerzeichen (z. B. NUL-Byte) statt der geschriebenen Escape-Sequenz — git diff zeigt danach "Binary files differ" statt eines Zeilen-Diffs.
 - Was tun: bei Testdaten mit Sonderzeichen/Escape-Sequenzen den Dateiinhalt per Hexdump verifizieren, nicht der Editor-Anzeige trauen; Korrektur per Node-Skript auf Byte-Ebene, nicht per erneutem Editor-Write.
 
+- Symptom: `git status` meldet Dutzende unangetasteter Dateien als geändert, der Diff zeigt jede Zeile als ersetzt (gleiche Zahl Einfügungen und Löschungen) — tritt auf, wenn dasselbe Repo aus einer Linux-Umgebung betrachtet wird (gemountetes Windows-Verzeichnis). Ursache: Arbeitskopie hat CRLF, die Git-Datenbank LF, und `core.autocrlf` ist dort nicht gesetzt.
+- Was tun: Nicht von der Linux-Seite aus stagen oder committen — ein `git add -A` dort checkt hunderte Scheinänderungen ein. Windows-Git ist die maßgebliche Sicht. Zum Gegenprüfen aus Linux: `git diff --ignore-cr-at-eol` oder `file <datei>` gegen `git show HEAD:<datei> | cat -A`.
+
