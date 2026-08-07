@@ -11,7 +11,7 @@ dieses Projekts. Vollständige Herleitung siehe `Lessons-Learned-Zyklen-1-2-2.5.
 | Token | Kleinste abgerechnete Texteinheit | Kostenbasis | Jede geladene Datei zählt |
 | CLAUDE.md | Immer geladene Projekt-Bibel | Stabiles Grundwissen jeder Runde | `toolkompass/CLAUDE.md` |
 | ARCHITECTURE.md | Verbindliche Code-Konventionen | Einheitliche Architekturentscheidungen | Tabelle "Verboten/Erlaubt" |
-| Skill | Fähigkeit, die erst bei Bedarf lädt | Spart Tokens bis zum Bedarf | `tool-anlegen`, `ponytail`, `repo-audit` |
+| Skill | Fähigkeit, die erst bei Bedarf lädt | Spart Tokens bis zum Bedarf | `tool-anlegen`, `ponytail`, `repo-audit`, `git-flow`, `werkzeug-auswahl` |
 | Agent / Subagent | Agent mit eigenem, isoliertem Kontext | Prüft unabhängig vom Hauptagenten | `design-guardian`, `frontend-reviewer`, `qa`, `architecture-advisor` |
 | Command | Per `/name` aufrufbarer, vordefinierter Prompt | Standardisiert wiederkehrende Anfragen | `.claude/commands/lessons.md` |
 | Hook | Script, das bei einem Lifecycle-Event IMMER läuft | Setzt Regeln technisch durch | `session-reminder.js`, PostToolUse-Lint-Hook |
@@ -23,7 +23,7 @@ dieses Projekts. Vollständige Herleitung siehe `Lessons-Learned-Zyklen-1-2-2.5.
 | Template | Wiederverwendbare Vorlage-Struktur | Beschleunigt neue Projekte/Skills | Geplantes "Template-Repo" |
 | Script | Ausführbarer Code für Daten-/Wartungsaufgaben | Automatisiert wiederkehrende Aufgaben | `check-docs.mjs`, `_mode.ts` |
 | Dry-Run | Lauf, der alles außer Schreiben tut | Verhindert versehentliche Datenänderung | `_mode.ts` |
-| Test | Automatisierte Verhaltensprüfung | Fängt Regressionen | Aktuell keiner im Projekt |
+| Test | Automatisierte Verhaltensprüfung | Fängt Regressionen | Vitest, blockierend in `npm run check` seit Zwischenzyklus 4.5 |
 | Linting | Automatisierte Stilprüfung | Deterministisches Gate | `npm run lint` |
 | Typecheck | Prüfung der Typkonsistenz | Deterministisches Gate | `npm run typecheck` |
 | Build | Erzeugt lauffähiges Artefakt aus Quellcode | Muss fehlerfrei laufen vor Deploy | `next build` |
@@ -31,7 +31,7 @@ dieses Projekts. Vollständige Herleitung siehe `Lessons-Learned-Zyklen-1-2-2.5.
 | CI-Gate | CI-Prüfung, die das Mergen blockiert | Macht Regel technisch statt höflich | `npm run check` in `ci.yml` |
 | Pre-Commit | Prüfung vor lokalem Commit | Fängt Fehler vor dem Repo | Im Projekt nicht gefunden |
 | Permission | Explizit erteilte Erlaubnis | Ebene 1 der Qualitätspyramide | `.claude/settings.json` |
-| Validierung | Prüfen, ob Eingabe/Zustand Regeln entspricht | Schützt Vertrauensgrenzen | Für API-Endpunkte noch offen |
+| Validierung | Prüfen, ob Eingabe/Zustand Regeln entspricht | Schützt Vertrauensgrenzen | Zod an drei von vier Endpunkten, `/auth/confirm` offen, Muster in `specs/zod-eingabevalidierung.md` |
 | Verifikation | Prüfen, ob Behauptung mit Wirklichkeit übereinstimmt | Grundhaltung der Analyse | Agent-Tabelle vs. Realität |
 | Guardrail | Leitplanke gegen riskante Aktionen | Trennt vertrauenswürdige von fremden Inhalten | Konzeptionell, noch nicht gebaut |
 | Single Source of Truth | Ein Fakt hat genau eine Heimat | Verhindert Drift | `docs/STATUS.md` für Phasenstand |

@@ -35,13 +35,16 @@ toolkompass/
 │   ├── triggers.md             ← Trigger-Inventar (Playbook 04 §6), sechs reale + zwei geplante Trigger
 │   ├── repo-audit-zyklus4.md   ← Ist-Stand-Scan gegen Playbook 04, erste reale Anwendung von `repo-audit`
 │   ├── memory-map.md           ← Info-Typ→Heimat-Tabelle (Playbook 03)
+│   ├── tooling.md              ← Werkzeug-Bestand inkl. Abschnitt „Bewusst nicht installiert“
+│   ├── framework-sichtung-superpowers.md ← Nachweis für Playbook-06-Übung 3 (5-Zeilen-Vergleich + Entscheidung)
 │   ├── zwischenstand/          ← Aufgaben-Gedächtnis, NICHT committet außer VORLAGE.md (Playbook 03)
 │   └── tasks/                  ← Handoff-Verträge (GOAL/CONTEXT/SCOPE/BUDGET/OUTPUT/ESCALATE je Datei)
 ├── .claude/
 │   ├── settings.json      ← permissions.allow + hooks (PreToolUse-Settings-Guard, PostToolUse-Lint,
 │   │                          UserPromptSubmit-Kontexthygiene)
 │   ├── agents/            ← design-guardian, frontend-reviewer, qa, architecture-advisor — alle read-only
-│   ├── skills/             ← ponytail (vendort), tool-anlegen, repo-audit, git-flow (alle
+│   ├── skills/             ← ponytail (vendort), tool-anlegen, repo-audit, git-flow,
+│   │                          werkzeug-auswahl (vendored aus claude-playbook) (alle
 │   │                          projekteigen/gevettet)
 │   ├── commands/            ← lessons.md
 │   └── hooks/               ← session-reminder.js (Kontext-Hygiene), guard-settings.js (blockiert
