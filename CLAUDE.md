@@ -57,7 +57,7 @@ npx tsx prisma/seed.ts   # Seed-Daten einspielen
 - Kein Playwright (Pflicht vor Cashback-Webhooks in Phase 6)
 - Kein Prettier (ESLint reicht)
 
-Zod ist seit Zyklus 6 im Einsatz (app/api/anfrage, app/api/track/[linkId], Muster: specs/zod-eingabevalidierung.md).
+Zod ist seit Zyklus 6 im Einsatz (app/api/anfrage, app/api/search, app/api/track/[linkId], Muster: specs/zod-eingabevalidierung.md).
 
 ---
 
