@@ -16,7 +16,9 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version-file: package.json
-          cache: 'npm'
+          # cache: 'npm' erst wieder aktivieren, sobald das Projekt echte
+          # Abhängigkeiten und eine package-lock.json hat — sonst bricht
+          # setup-node mit "Dependencies lock file is not found" ab.
 
       - name: Abhängigkeiten installieren
         run: npm ci
