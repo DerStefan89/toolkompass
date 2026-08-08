@@ -287,6 +287,54 @@ for (const { quelle, ziel } of dokumentPaare) {
   }
 }
 
+// ─── Prüfung 5: Hedging-Wort ohne Evidenz-Marker im selben Absatz? ──────────
+//
+// Anlass: Berichtsdateien unter state/ markieren unsichere Aussagen mit [Fakt],
+// [Schlussfolgerung], [Annahme] oder [offene Unsicherheit] — ein Hedging-Wort wie
+// "vermutlich" ohne einen dieser Marker im selben Absatz ist eine getarnte, nicht
+// als solche gekennzeichnete Vermutung.
+//
+// Vergleich ist ABSATZWEISE (durch Leerzeile getrennter Block), nicht zeilenweise:
+// state/advisor-findings-pricing.md:82-87 zeigt ein korrekt markiertes Finding, bei
+// dem Marker und Hedging-Wort durch einen Markdown-Zeilenumbruch desselben Absatzes
+// getrennt sind — eine zeilenweise Prüfung würde dieses korrekte Finding fälschlich
+// melden.
+//
+// Geltungsbereich ist NICHT rekursiv: nur direkte Kinder von state/, deren Name auf
+// .md endet und "advisor-findings-" oder "review" enthält. state/tasks/** bleibt
+// außerhalb, auch wenn ein Dateiname dort "review" enthält.
+//
+// Ausnahmen: "check-docs-ignore:" im selben Absatz wird übersprungen (repliziert
+// aus Prüfung 1/2/3/4, wie dort begründet).
+
+const hedgingWortMuster = /\b(vermutlich|wahrscheinlich|offenbar|scheinbar|anscheinend)\b/i
+const evidenzMarkerMuster = /\[(Fakt|Schlussfolgerung|Annahme|offene Unsicherheit)\b/
+
+const hedgingKandidaten = readdirSync('state', { withFileTypes: true })
+  .filter(
+    (eintrag) =>
+      eintrag.isFile() &&
+      eintrag.name.endsWith('.md') &&
+      (eintrag.name.includes('advisor-findings-') || eintrag.name.includes('review'))
+  )
+  .map((eintrag) => join('state', eintrag.name))
+
+for (const datei of hedgingKandidaten) {
+  const inhalt = readFileSync(datei, 'utf-8')
+  const absätze = inhalt.split(/\n\s*\n/)
+
+  for (const absatz of absätze) {
+    if (!hedgingWortMuster.test(absatz)) continue
+    if (evidenzMarkerMuster.test(absatz)) continue
+    if (absatz.includes('check-docs-ignore:')) continue
+
+    const auszug = absatz.trim().slice(0, 80)
+    befunde.push(
+      `${datei}: "${auszug}" — Hedging-Wort ohne Evidenz-Marker im selben Absatz — Marker ergänzen oder Formulierung schärfen`
+    )
+  }
+}
+
 // ─── Ergebnis ───────────────────────────────────────────────────────────────
 if (befunde.length === 0) {
   console.log('✓ Keine Befunde.\n')
