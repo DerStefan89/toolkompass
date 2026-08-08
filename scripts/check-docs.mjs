@@ -234,6 +234,107 @@ for (const datei of geprüfteMarkdownDateien) {
   })
 }
 
+// ─── Prüfung 4: Zieht ein Dokument-Paar den Marker der Zieldatei nach? ──────
+//
+// Anlass: docs/harness/HARNESS-CHANGELOG.md kann ein jüngeres Datum enthalten als
+// der "Stand dieser Fassung:"-Marker in docs/harness/HARNESS-LEARNING-STATE.md —
+// eine Auslassung, die Prüfung 3 nicht erfasst, weil sie nur INNERHALB einer Datei
+// vergleicht, nicht ZWISCHEN zwei Dateien.
+//
+// Aus quelle wird der gesamte Dateiinhalt nach Datumstreffern durchsucht (der
+// Changelog hat keinen eigenen Marker, nur Tabellenzeilen) und das Maximum gebildet —
+// Zellen mit zwei Daten (HARNESS-CHANGELOG.md:8, "2026-07-30 – 2026-08-02") liefern
+// zwei Treffer, beide fließen ins Maximum ein. Aus ziel wird der Stand-Marker wie in
+// Prüfung 3 gelesen. parseDatum() und standDatumsMuster werden aus Prüfung 3
+// wiederverwendet, nicht neu geschrieben.
+//
+// Ausnahmen: Eine Zeile mit "check-docs-ignore:" wird übersprungen (repliziert aus
+// Prüfung 1/2/3, wie dort begründet).
+
+const dokumentPaare = [
+  { quelle: 'docs/harness/HARNESS-CHANGELOG.md', ziel: 'docs/harness/HARNESS-LEARNING-STATE.md' },
+]
+
+for (const { quelle, ziel } of dokumentPaare) {
+  const quellZeilen = readFileSync(quelle, 'utf-8').split('\n')
+
+  let quellMaximum = null
+  let quellMaximumTreffer = null
+  quellZeilen.forEach((zeile) => {
+    if (zeile.includes('check-docs-ignore:')) return
+    for (const treffer of new Set(zeile.match(standDatumsMuster) ?? [])) {
+      const datum = parseDatum(treffer)
+      if (quellMaximum === null || datum > quellMaximum) {
+        quellMaximum = datum
+        quellMaximumTreffer = treffer
+      }
+    }
+  })
+
+  if (quellMaximum === null) continue
+
+  const zielZeilen = readFileSync(ziel, 'utf-8').split('\n')
+  const zielMarkerZeile = zielZeilen.findIndex((zeile) => standMarkerZeile.test(zeile))
+  if (zielMarkerZeile === -1) continue
+
+  const zielTreffer = zielZeilen[zielMarkerZeile].match(standMarkerZeile)[1]
+  const zielDatum = parseDatum(zielTreffer)
+
+  if (quellMaximum > zielDatum) {
+    befunde.push(
+      `${quelle}: jüngstes Datum ${quellMaximumTreffer} ist neuer als "Stand dieser Fassung: ${zielTreffer}" in ${ziel}:${zielMarkerZeile + 1} — Ziel-Datei nachziehen oder Marker aktualisieren`
+    )
+  }
+}
+
+// ─── Prüfung 5: Hedging-Wort ohne Evidenz-Marker im selben Absatz? ──────────
+//
+// Anlass: Berichtsdateien unter state/ markieren unsichere Aussagen mit [Fakt],
+// [Schlussfolgerung], [Annahme] oder [offene Unsicherheit] — ein Hedging-Wort wie
+// "vermutlich" ohne einen dieser Marker im selben Absatz ist eine getarnte, nicht
+// als solche gekennzeichnete Vermutung.
+//
+// Vergleich ist ABSATZWEISE (durch Leerzeile getrennter Block), nicht zeilenweise:
+// state/advisor-findings-pricing.md:82-87 zeigt ein korrekt markiertes Finding, bei
+// dem Marker und Hedging-Wort durch einen Markdown-Zeilenumbruch desselben Absatzes
+// getrennt sind — eine zeilenweise Prüfung würde dieses korrekte Finding fälschlich
+// melden.
+//
+// Geltungsbereich ist NICHT rekursiv: nur direkte Kinder von state/, deren Name auf
+// .md endet und "advisor-findings-" oder "review" enthält. state/tasks/** bleibt
+// außerhalb, auch wenn ein Dateiname dort "review" enthält.
+//
+// Ausnahmen: "check-docs-ignore:" im selben Absatz wird übersprungen (repliziert
+// aus Prüfung 1/2/3/4, wie dort begründet).
+
+const hedgingWortMuster = /\b(vermutlich|wahrscheinlich|offenbar|scheinbar|anscheinend)\b/i
+const evidenzMarkerMuster = /\[(Fakt|Schlussfolgerung|Annahme|offene Unsicherheit)\b/
+
+const hedgingKandidaten = readdirSync('state', { withFileTypes: true })
+  .filter(
+    (eintrag) =>
+      eintrag.isFile() &&
+      eintrag.name.endsWith('.md') &&
+      (eintrag.name.includes('advisor-findings-') || eintrag.name.includes('review'))
+  )
+  .map((eintrag) => join('state', eintrag.name))
+
+for (const datei of hedgingKandidaten) {
+  const inhalt = readFileSync(datei, 'utf-8')
+  const absätze = inhalt.split(/\n\s*\n/)
+
+  for (const absatz of absätze) {
+    if (!hedgingWortMuster.test(absatz)) continue
+    if (evidenzMarkerMuster.test(absatz)) continue
+    if (absatz.includes('check-docs-ignore:')) continue
+
+    const auszug = absatz.trim().slice(0, 80)
+    befunde.push(
+      `${datei}: "${auszug}" — Hedging-Wort ohne Evidenz-Marker im selben Absatz — Marker ergänzen oder Formulierung schärfen`
+    )
+  }
+}
+
 // ─── Ergebnis ───────────────────────────────────────────────────────────────
 if (befunde.length === 0) {
   console.log('✓ Keine Befunde.\n')

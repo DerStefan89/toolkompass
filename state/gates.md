@@ -4,7 +4,7 @@
 |---|---|---|---|---|
 | Lint | ESLint | Ja | `package.json` Script `check`: `npm run lint && ...`; CI-Job `check` in `.github/workflows/ci.yml` (Schritt "Lint, Typecheck, Doku-Gate", `run: npm run check`), ausgelöst bei Push auf `main` und bei Pull Requests; Branch-Protection-Regel `main` markiert `check` als Required Status Check (seit 04.08.2026) | Bewusst keine — "Do not allow bypassing the above settings" aktiviert (04.08.2026), auch Admin-Pushes werden geprüft. Abweichung nur durch aktives Ändern dieser Einstellung, sichtbar im Repo-Audit-Log. |
 | Typecheck | `tsc --noEmit` | Ja | `package.json` Script `check`: `... && npm run typecheck && ...`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben | s. Lint |
-| Doku-Gate | `scripts/check-docs.mjs` | Ja | `package.json` Script `check`: `... && node scripts/check-docs.mjs`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben; seit 06.08.2026 zusätzlich Prüfung 3 (Frische-Regel: kein Datum im Text darf jünger sein als der `Stand dieser Fassung:`-Marker derselben Datei; Geltungsbereich rekursiv `docs/harness/` und `state/` inkl. `state/tasks/`) — Kalibrierungsfund + Gegentest unten | s. Lint |
+| Doku-Gate | `scripts/check-docs.mjs` | Ja | `package.json` Script `check`: `... && node scripts/check-docs.mjs`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben; seit 06.08.2026 zusätzlich Prüfung 3 (Frische-Regel: kein Datum im Text darf jünger sein als der `Stand dieser Fassung:`-Marker derselben Datei; Geltungsbereich rekursiv `docs/harness/` und `state/` inkl. `state/tasks/`); seit 08.08.2026 zusätzlich Prüfung 4 (Dokument-Paare: `HARNESS-CHANGELOG.md` darf keinen Marker in `HARNESS-LEARNING-STATE.md` überholen) und Prüfung 5 (Hedging-Absatz: Hedging-Wort ohne Evidenz-Marker im selben Absatz in direkten `state/`-Kindern mit `advisor-findings-` oder `review` im Namen) — Kalibrierungsfunde + Gegentests unten | s. Lint |
 | Regel-Gate | `scripts/check-rules.mjs` | Ja | `package.json` Script `check`: `... && node scripts/check-rules.mjs`; selber CI-Job/Schritt und Branch-Protection-Regel wie oben | s. Lint |
 | Secret-Scan | `gitleaks` (Docker-Image, nicht der proprietäre `gitleaks-action`-Wrapper) | Ja | Schritt "Secret-Scan (gitleaks)" im selben CI-Job `check` in `.github/workflows/ci.yml`; fällt der Schritt, fällt der ganze Job, der bereits Required Status Check ist — keine eigene Branch-Protection-Regel nötig | s. Lint |
 | Settings-Guard | `.claude/hooks/guard-settings.js` (PreToolUse-Hook, Matcher `Edit|Write`, registriert in `.claude/settings.json` unter `hooks.PreToolUse`) | Ja — `permissionDecision: "deny"` (nicht `"ask"`, s. Kalibrierungsfund unten); blockiert jede Edit/Write-Ausführung auf `.claude/settings.json`, kein Bypass ohne den Hook selbst zu entfernen | Testfall B (Write auf `docs/_guard-test-scratch.md`, danach gelöscht): Hook lief, kein Treffer, keine Ausgabe, Datei ging normal durch. Testfall A NEU (Edit auf `.claude/settings.json` mit `deny`): Tool-Aufruf scheiterte direkt mit `is_error:true` und Inhalt = `permissionDecisionReason` des Hooks ("Schreibzugriff auf geteilte settings.json blockiert...") — kein `git diff` auf der Datei danach, die Änderung kam nie an. Belegt im Transkript (`"is_error":true,"content":"Schreibzugriff auf geteilte settings.json blockiert..."`). | Absichtliche, legitime Änderung an `.claude/settings.json`: Hook-Eintrag unter `hooks.PreToolUse` in `.claude/settings.json` selbst temporär entfernen (das ist die einzig funktionierende Ausnahme, da der Hook jede andere Editier-Route auf diese Datei blockiert), Grund im Commit nennen, danach Hook wiederherstellen. |
@@ -121,3 +121,38 @@ to compact"), und die offizielle Doku bestätigt die Nutzung von `decision`/`rea
 nur allgemein ("by some events"), nicht namentlich für `PreCompact`. Nach Playbook 05
 Regel 2 gilt dieser Teilaspekt des Gates deshalb NICHT als belegt; die Skript-Logik
 selbst (rot + grün) schon. Details in `state/tasks/zwischenstand-geruest.md`.
+
+**Kalibrierungsfund (08.08.2026, Doku-Gate Prüfung 4 — Dokument-Paare):**
+`docs/harness/HARNESS-CHANGELOG.md` wurde testweise um eine Zeile mit dem Datum
+`2026-08-08` ergänzt („Testzeile"), ohne den Marker „Stand dieser Fassung:
+07.08.2026" in `docs/harness/HARNESS-LEARNING-STATE.md:4` nachzuziehen. `npm run
+check` scheiterte danach in Prüfung 4 mit genau einem Befund: `docs/harness/
+HARNESS-CHANGELOG.md: jüngstes Datum 2026-08-08 ist neuer als "Stand dieser
+Fassung: 07.08.2026" in docs/harness/HARNESS-LEARNING-STATE.md:4 — Ziel-Datei
+nachziehen oder Marker aktualisieren`. Lint, Typecheck und Prüfung 1–3 liefen davor
+unauffällig durch.
+
+**Gegentest bestanden (08.08.2026, Doku-Gate Prüfung 4):** Die Testzeile wurde
+wieder aus `HARNESS-CHANGELOG.md` entfernt (`git diff` auf die Datei danach leer).
+`node scripts/check-docs.mjs` lief erneut durch, „✓ Keine Befunde." Nach Playbook
+05 Regel 2 ist damit auch für dieses Gate der rote UND der grüne Zustand
+beobachtet — Gate gilt als belegt.
+
+**Kalibrierungsfund (08.08.2026, Doku-Gate Prüfung 5 — Hedging-Absatz):** Eine
+temporäre Datei `state/advisor-findings-testbefund.md` mit einem Absatz „Dies ist
+vermutlich ein Problem, aber es fehlt ein Evidenz-Marker im selben Absatz." (kein
+`[Fakt]`/`[Schlussfolgerung]`/`[Annahme]`/`[offene Unsicherheit]`-Marker) wurde
+angelegt. `npm run check` scheiterte danach in Prüfung 5 mit genau einem Befund:
+`state\advisor-findings-testbefund.md: "Dies ist vermutlich ein Problem, aber es
+fehlt ein Evidenz-Marker im selben Absa" — Hedging-Wort ohne Evidenz-Marker im
+selben Absatz — Marker ergänzen oder Formulierung schärfen`. Lint, Typecheck und
+Prüfung 1–4 liefen davor unauffällig durch.
+
+**Gegentest bestanden (08.08.2026, Doku-Gate Prüfung 5):** Die Testdatei wurde
+gelöscht. `node scripts/check-docs.mjs` lief erneut durch, „✓ Keine Befunde." —
+ausdrücklich OHNE dass `state/advisor-findings-pricing.md` angefasst wurde
+(`git status --porcelain` auf die Datei danach leer): der einzige Bestandstreffer
+für „vermutlich" (Zeilen 82–87, Marker und Hedging-Wort im selben, durch
+Markdown-Zeilenumbruch getrennten Absatz) löst nach der absatzweisen Logik keinen
+Befund aus. Nach Playbook 05 Regel 2 ist damit auch für dieses Gate der rote UND
+der grüne Zustand beobachtet — Gate gilt als belegt.
